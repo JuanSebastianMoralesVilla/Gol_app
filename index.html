@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Marcadores Selección Colombia</title>
+  <title>Polla Selección Colombia</title>
   <style>
     :root{
-      --bg:#07111f; --card:#0f2138; --muted:#9fb3c8; --text:#f7fbff;
-      --yellow:#ffd43b; --blue:#2f80ed; --red:#eb5757; --ok:#2ecc71;
+      --bg:#07111f; --card:#10243d; --muted:#c7d6e6; --text:#f7fbff;
+      --yellow:#ffd43b; --blue:#2f80ed; --red:#ff6b6b; --ok:#7dffb1;
+      --border:rgba(255,255,255,.16);
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:
@@ -17,99 +18,106 @@
     header{padding:28px 18px;text-align:center}
     header h1{margin:0;font-size:clamp(28px,6vw,58px);line-height:1.05}
     header p{color:var(--muted);margin:12px auto 0;max-width:760px}
-    .wrap{max-width:1100px;margin:0 auto;padding:0 16px 48px}
+    main{display:block}
+    .wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
     .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
     @media(max-width:860px){.grid{grid-template-columns:1fr}}
-    .card{background:rgba(15,33,56,.82);border:1px solid rgba(255,255,255,.10);border-radius:22px;padding:18px;box-shadow:0 18px 45px rgba(0,0,0,.25)}
+    .card{background:rgba(16,36,61,.88);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px rgba(0,0,0,.25)}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-    button,.btn{border:0;border-radius:14px;padding:11px 14px;font-weight:700;cursor:pointer;color:#07111f;background:var(--yellow)}
-    button.secondary{background:#183250;color:var(--text);border:1px solid rgba(255,255,255,.12)}
-    button.danger{background:var(--red);color:white}
+    button{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;color:#07111f;background:var(--yellow)}
+    button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}
+    button.danger{background:var(--red);color:#111}
     button:disabled{opacity:.55;cursor:not-allowed}
-    input,select{width:100%;border:1px solid rgba(255,255,255,.14);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
+    button:focus,input:focus{outline:3px solid rgba(255,212,59,.5);outline-offset:2px}
+    input{width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
     label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
-    .match{border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,255,255,.035)}
+    .match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,255,255,.04)}
     .teams{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:18px;font-weight:800}
     .date{color:var(--muted);font-size:13px;margin-top:5px}
-    .scorebox{display:grid;grid-template-columns:1fr 70px 20px 70px 1fr;align-items:end;gap:8px;margin-top:12px}
+    .scorebox{display:grid;grid-template-columns:1fr 74px 20px 74px 1fr;align-items:end;gap:8px;margin-top:12px}
+    @media(max-width:560px){.scorebox{grid-template-columns:1fr 70px 18px 70px 1fr;font-size:13px}}
     .scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
-    .leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.10)}
     .leader:last-child,.historyRow:last-child{border-bottom:0}
     .pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:rgba(255,212,59,.16);color:var(--yellow)}
     .small{font-size:13px;color:var(--muted)}
     .notice{background:rgba(47,128,237,.14);border:1px solid rgba(47,128,237,.28);border-radius:16px;padding:12px;color:#d8e8ff;margin:12px 0}
-    .ok{color:#7dffb1}.bad{color:#ffaaa5}.warn{color:#ffd43b}
+    .ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
+    .admin{display:none} body.admin-on .admin{display:block}
     .adminAdd{border:1px solid rgba(255,212,59,.25);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,212,59,.05)}
     .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .statusOpen{color:#7dffb1;font-weight:800}
+    .statusOpen{color:var(--ok);font-weight:800}
     .statusClosed{color:#ffaaa5;font-weight:800}
     .miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
     .summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-    .summaryItem{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px;text-align:center}
+    .summaryItem{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:10px;text-align:center}
     .summaryItem b{font-size:20px}
+    .feedback{min-height:24px;margin:10px 0;font-size:14px}
     @media(max-width:560px){.two,.summaryBox{grid-template-columns:1fr}}
-    .admin{display:none}
-    body.admin-on .admin{display:block}
     footer{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}
   </style>
 </head>
 <body>
 <header>
   <h1>Polla Selección Colombia</h1>
-  <p>Pon tu marcador y listo!</p>
+  <p>Pon tu marcador, revisa historial y compite con tus amigos.</p>
 </header>
 
 <main class="wrap">
-  <section class="grid">
-    <div class="card">
-      <div class="tabs">
-        <button id="tabPredict">Hacer predicción</button>
-        <button class="secondary" id="tabMine">Mis marcadores</button>
-        <button class="secondary" id="tabHistory">Historial</button>
-        <button class="secondary" id="tabRules">Reglas</button>
-      </div>
+  <section class="grid" aria-label="Aplicación de polla">
+    <article class="card">
+      <nav class="tabs" aria-label="Secciones">
+        <button id="tabPredict" type="button" aria-label="Ir a hacer predicción">Hacer predicción</button>
+        <button class="secondary" id="tabMine" type="button" aria-label="Ir a mis marcadores">Mis marcadores</button>
+        <button class="secondary" id="tabHistory" type="button" aria-label="Ir al historial">Historial</button>
+        <button class="secondary" id="tabRules" type="button" aria-label="Ir a reglas">Reglas</button>
+      </nav>
 
-      <div id="viewPredict">
-        <label>Tu nombre</label>
-        <input id="playerName" placeholder="Ej: Sebastián" maxlength="35" />
+      <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
 
+      <section id="viewPredict">
+        <form id="playerForm" onsubmit="return false;">
+          <label for="playerName">Tu nombre</label>
+          <input id="playerName" aria-label="Nombre del participante" placeholder="Ej: Sebastián" maxlength="35" autocomplete="name" />
+        </form>
         <div id="matches"></div>
-      </div>
+      </section>
 
-      <div id="viewMine" style="display:none">
+      <section id="viewMine" style="display:none">
         <h2>Mis marcadores</h2>
         <div id="myPredictions" class="small">Escribe tu nombre para ver tus marcadores.</div>
-      </div>
+      </section>
 
-      <div id="viewHistory" style="display:none">
+      <section id="viewHistory" style="display:none">
         <h2>Historial de marcadores</h2>
         <p class="small">Aquí se ve lo que ha guardado cada participante.</p>
         <div id="historyPanel" class="small">Cargando historial...</div>
-      </div>
+      </section>
 
-      <div id="viewRules" style="display:none">
+      <section id="viewRules" style="display:none">
         <h2>Reglas de puntos</h2>
         <p><span class="pill">5 pts</span> Marcador exacto.</p>
-        <p><span class="pill">3 pts</span> Acertar ganador o empate, aunque no sea exacto.</p>
-        <p><span class="pill">1 pt</span> Acertar la diferencia de gol, solo si no acertaste ganador/empate.</p>
-        <p class="small"><b>Diferencia de gol:</b> es goles del equipo local menos goles del visitante. Ejemplo: si el final es Colombia 2-0 Portugal, la diferencia es +2. Si alguien puso Colombia 3-1 Portugal, también tiene diferencia +2, pero como además acertó ganador recibe 3 pts, no 1. Si puso Colombia 4-2, también es +2.</p>
-        <p class="small">Puedes cambiar tu predicción hasta antes del partido. El administrador registra el marcador final.</p>
-      </div>
-    </div>
+        <p><span class="pill">3 pts</span> Acertar ganador o empate.</p>
+        <p><span class="pill">1 pt</span> Acertar diferencia de gol, solo si no acertaste ganador/empate.</p>
+        <p class="small"><b>Diferencia de gol:</b> goles local menos goles visitante. Ejemplo: final Colombia 2-0 Portugal = +2. Si alguien puso 3-1, también es +2, pero recibe 3 puntos por acertar ganador.</p>
+        <p class="small"><b>Desempate ranking:</b> 1) más puntos, 2) más marcadores exactos, 3) más predicciones registradas, 4) orden alfabético.</p>
+      </section>
+    </article>
 
-    <aside class="card">
+    <aside class="card" aria-label="Tabla y administración">
       <h2>🏆 Tabla de posiciones</h2>
       <div id="leaderboard" class="small">Cargando ranking...</div>
       <div id="summaryStats" class="summaryBox"></div>
 
       <div class="notice">
-        Comparte el link con tus amigos. Soporta 20+ usuarios usando Firebase gratis.
+        Comparte el link con tus amigos. Los datos se guardan en Firebase.
       </div>
       <div id="connectionStatus" class="small warn">Verificando conexión con Firebase...</div>
+      <button class="secondary" type="button" onclick="exportCSV()" aria-label="Exportar datos en CSV">Exportar CSV</button>
 
       <div class="admin">
         <h2>Panel admin</h2>
-        <p class="small">Visible si entras con <b>?admin=1234</b>. Cambia el PIN en el código antes de publicar.</p>
+        <p class="small">Visible con <b>?admin=1234</b>. Cambia el PIN en el código antes de publicar.</p>
         <div id="adminPanel"></div>
       </div>
     </aside>
@@ -118,35 +126,40 @@
 </main>
 
 <script type="module">
-  // 1) Pega aquí tu configuración de Firebase.
-  // Firebase Console > Project settings > General > Your apps > Web app.
   const firebaseConfig = {
-   apiKey: "AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk",
-  authDomain: "golbd-d1aec.firebaseapp.com",
-  databaseURL: "https://golbd-d1aec-default-rtdb.firebaseio.com",
-  projectId: "golbd-d1aec",
-  storageBucket: "golbd-d1aec.firebasestorage.app",
-  messagingSenderId: "953286115242",
-  appId: "1:953286115242:web:c207860ca2f546c05475d3"
+    apiKey: "AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk",
+    authDomain: "golbd-d1aec.firebaseapp.com",
+    databaseURL: "https://golbd-d1aec-default-rtdb.firebaseio.com",
+    projectId: "golbd-d1aec",
+    storageBucket: "golbd-d1aec.firebasestorage.app",
+    messagingSenderId: "953286115242",
+    appId: "1:953286115242:web:c207860ca2f546c05475d3"
   };
 
-  const ADMIN_PIN = "1234"; // Cambia esto antes de compartir.
+  const ADMIN_PIN = "1234";
+  const MAX_SCORE = 20;
 
   const defaultMatches = [
     { id:"COL-UZB-2026-06-17", home:"Uzbekistán", away:"Colombia", date:"17 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-17T21:00:00-05:00", closed:false },
     { id:"COL-COD-2026-06-23", home:"Colombia", away:"RD Congo", date:"23 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-23T21:00:00-05:00", closed:false },
     { id:"COL-POR-2026-06-27", home:"Colombia", away:"Portugal", date:"27 jun 2026 - 6:30 p.m. Colombia", lock:"2026-06-27T18:30:00-05:00", closed:false }
   ];
-  let matches = [...defaultMatches];
 
   let db = null;
+  let unsubscribe = null;
   let usingFirebase = false;
   let state = { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
+  let matches = [...defaultMatches];
 
-  function cleanKey(s){ return (s||"").trim().toLowerCase().replace(/[.#$[\]/]/g,"-").slice(0,35); }
-  function makeMatchId(home, away, lock){
-    return (cleanKey(home) + "-" + cleanKey(away) + "-" + lock.slice(0,10)).toUpperCase();
+  const escapeHTML = (v) => String(v ?? "").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  const onlyText = (s) => String(s ?? "").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
+  const cleanKey = (s) => onlyText(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
+  const makeMatchId = (home, away, lock) => (cleanKey(home) + "-" + cleanKey(away) + "-" + lock.slice(0,10)).toUpperCase();
+
+  function showFeedback(message, type="ok"){
+    document.getElementById("feedback").innerHTML = `<span class="${type}">${escapeHTML(message)}</span>`;
   }
+
   function resultType(a,b){ return a===b ? "D" : a>b ? "H" : "A"; }
   function calcPoints(pred, res){
     if(!pred || !res || res.home === "" || res.away === "") return 0;
@@ -156,105 +169,123 @@
     if((ph-pa) === (rh-ra)) return 1;
     return 0;
   }
+  function exactCount(data){
+    return matches.reduce((sum,m)=> sum + (calcPoints(data[m.id], state.results?.[m.id]) === 5 ? 1 : 0), 0);
+  }
+  function isLocked(match){ return match.closed === true; }
+
+  function validateScore(value){
+    if(value === "" || value === null || value === undefined) return "Completa ambos goles.";
+    const n = Number(value);
+    if(!Number.isInteger(n)) return "Los goles deben ser números enteros.";
+    if(n < 0 || n > MAX_SCORE) return `Los goles deben estar entre 0 y ${MAX_SCORE}.`;
+    return null;
+  }
+
+  function validatePlayerName(name){
+    const cleaned = onlyText(name);
+    if(!cleaned) return {error:"Escribe tu nombre."};
+    if(cleaned.length < 2) return {error:"El nombre debe tener al menos 2 caracteres."};
+    return {value:cleaned};
+  }
+
+  function validateMatchInput(home, away, dateText, lockInput){
+    home = onlyText(home); away = onlyText(away); dateText = onlyText(dateText);
+    if(!home || !away || !dateText || !lockInput) return {error:"Completa todos los datos del partido."};
+    if(cleanKey(home) === cleanKey(away)) return {error:"El equipo local y visitante no pueden ser iguales."};
+    const d = new Date(lockInput);
+    if(Number.isNaN(d.getTime())) return {error:"La fecha/hora del partido no es válida."};
+    return {home, away, dateText, lock: new Date(lockInput).toISOString()};
+  }
+
+  function rebuildMatches(){
+    matches = [
+      ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
+      ...Object.values(state.extraMatches || {})
+    ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
+  }
 
   async function init(){
     const status = document.getElementById("connectionStatus");
-    const validConfig = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("PEGA_AQUI");
-    if(validConfig){
-      try{
-        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
-        const { getDatabase, ref, onValue, set, remove } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
-        window.firebaseSet = set; window.firebaseRef = ref; window.firebaseRemove = remove;
-        db = getDatabase(initializeApp(firebaseConfig));
-        usingFirebase = true;
-        status.innerHTML = '<span class="ok">✅ Conectado a Firebase.</span>';
-        onValue(ref(db, "/quiniela_colombia"), snap => {
-          state = snap.val() || { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
-          matches = [
-            ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
-            ...Object.values(state.extraMatches || {})
-          ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
-          renderAll();
-        }, error => {
-          status.innerHTML = '<span class="bad">❌ Error leyendo Firebase: '+ error.message +'</span>';
-          alert("Error leyendo Firebase: " + error.message);
-        });
-      } catch(error){
-        usingFirebase = false;
-        status.innerHTML = '<span class="bad">❌ Error conectando Firebase: '+ error.message +'</span>';
-        alert("Error conectando Firebase: " + error.message);
+    try{
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
+      const { getDatabase, ref, onValue, set, remove } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
+      window.firebaseSet = set; window.firebaseRef = ref; window.firebaseRemove = remove;
+      db = getDatabase(initializeApp(firebaseConfig));
+      usingFirebase = true;
+      status.innerHTML = '<span class="ok">✅ Conectado a Firebase.</span>';
+
+      unsubscribe = onValue(ref(db, "/quiniela_colombia"), snap => {
+        state = snap.val() || { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
+        rebuildMatches();
         renderAll();
-      }
-    } else {
+      }, error => {
+        status.innerHTML = '<span class="bad">❌ Error leyendo Firebase: '+ escapeHTML(error.message) +'</span>';
+        showFeedback("Error leyendo Firebase: " + error.message, "bad");
+      });
+    } catch(error){
       usingFirebase = false;
-      state = JSON.parse(localStorage.getItem("quiniela_colombia_demo") || '{"predictions":{},"results":{},"extraMatches":{},"baseMatchesStatus":{}}');
-      matches = [
-        ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
-        ...Object.values(state.extraMatches || {})
-      ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
+      status.innerHTML = '<span class="bad">❌ Error conectando Firebase: '+ escapeHTML(error.message) +'</span>';
+      showFeedback("Error conectando Firebase: " + error.message, "bad");
       renderAll();
-      alert("Modo demo local: pega tu configuración de Firebase para que funcione entre varios usuarios.");
     }
   }
 
+  window.addEventListener("beforeunload", () => {
+    if(typeof unsubscribe === "function") unsubscribe();
+  });
+
   async function save(path, value){
     try{
-      if(usingFirebase){
-        await window.firebaseSet(window.firebaseRef(db, "/quiniela_colombia/" + path), value);
-        document.getElementById("connectionStatus").innerHTML = '<span class="ok">✅ Último guardado correcto.</span>';
-      } else {
-        const parts = path.split("/");
-        let obj = state;
-        for(let i=0;i<parts.length-1;i++){ obj[parts[i]] ??= {}; obj = obj[parts[i]]; }
-        obj[parts.at(-1)] = value;
-        localStorage.setItem("quiniela_colombia_demo", JSON.stringify(state));
-        matches = [
-        ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
-        ...Object.values(state.extraMatches || {})
-      ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
-        renderAll();
-      }
+      if(!usingFirebase) throw new Error("Firebase no está conectado.");
+      await window.firebaseSet(window.firebaseRef(db, "/quiniela_colombia/" + path), value);
+      document.getElementById("connectionStatus").innerHTML = '<span class="ok">✅ Último guardado correcto.</span>';
     } catch(error){
-      document.getElementById("connectionStatus").innerHTML = '<span class="bad">❌ No guardó: '+ error.message +'</span>';
-      alert("No se pudo guardar en Firebase: " + error.message + "\\n\\nRevisa las reglas de Realtime Database.");
+      document.getElementById("connectionStatus").innerHTML = '<span class="bad">❌ No guardó: '+ escapeHTML(error.message) +'</span>';
+      showFeedback("No se pudo guardar: " + error.message, "bad");
       throw error;
     }
   }
 
-  function isLocked(match){ return match.closed === true; }
+  function scoreInput(id, value, disabled, label){
+    return `<input id="${id}" aria-label="${escapeHTML(label)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${escapeHTML(value)}" ${disabled?'disabled':''}/>`;
+  }
 
   function renderMatches(){
     const player = cleanKey(document.getElementById("playerName").value);
-    const html = matches.map(m => {
+    document.getElementById("matches").innerHTML = matches.map(m => {
       const pred = state.predictions?.[player]?.[m.id] || {home:"", away:""};
       const locked = isLocked(m);
-      return `<div class="match">
-        <div class="teams"><span>${m.home}</span><span>vs</span><span>${m.away}</span></div>
-        <div class="date">${m.date} · ${locked ? '<span class="statusClosed">🔴 Cerrado por admin</span>' : '<span class="statusOpen">🟢 Abierto</span>'}</div>
+      return `<form class="match" onsubmit="return false;" aria-label="Predicción ${escapeHTML(m.home)} vs ${escapeHTML(m.away)}">
+        <div class="teams"><span>${escapeHTML(m.home)}</span><span>vs</span><span>${escapeHTML(m.away)}</span></div>
+        <div class="date">${escapeHTML(m.date)} · ${locked ? '<span class="statusClosed">🔴 Cerrado por admin</span>' : '<span class="statusOpen">🟢 Abierto</span>'}</div>
         <div class="scorebox">
-          <label>${m.home}</label><input type="number" min="0" max="20" value="${pred.home}" id="p-${m.id}-h" ${locked?'disabled':''}/>
+          <label for="p-${m.id}-h">${escapeHTML(m.home)}</label>${scoreInput(`p-${m.id}-h`, pred.home, locked, `Goles ${m.home}`)}
           <span>-</span>
-          <input type="number" min="0" max="20" value="${pred.away}" id="p-${m.id}-a" ${locked?'disabled':''}/>
-          <label>${m.away}</label>
+          ${scoreInput(`p-${m.id}-a`, pred.away, locked, `Goles ${m.away}`)}<label for="p-${m.id}-a">${escapeHTML(m.away)}</label>
         </div>
-        <button style="margin-top:12px" ${locked?'disabled':''} onclick="savePrediction('${m.id}')">Guardar marcador</button>
-      </div>`;
+        <button type="button" style="margin-top:12px" ${locked?'disabled':''} onclick="savePrediction('${escapeHTML(m.id)}')" aria-label="Guardar marcador ${escapeHTML(m.home)} vs ${escapeHTML(m.away)}">Guardar marcador</button>
+      </form>`;
     }).join("");
-    document.getElementById("matches").innerHTML = html;
   }
 
   window.savePrediction = async (matchId) => {
-    const playerNameRaw = document.getElementById("playerName").value.trim();
+    const playerCheck = validatePlayerName(document.getElementById("playerName").value);
+    if(playerCheck.error) return showFeedback(playerCheck.error, "bad");
+    const playerNameRaw = playerCheck.value;
     const player = cleanKey(playerNameRaw);
-    if(!player) return alert("Escribe tu nombre.");
     const match = matches.find(x=>x.id===matchId);
-    if(isLocked(match)) return alert("Este partido ya está cerrado.");
+    if(!match) return showFeedback("No se encontró el partido.", "bad");
+    if(isLocked(match)) return showFeedback("Este partido está cerrado por el admin.", "bad");
+
     const home = document.getElementById(`p-${matchId}-h`).value;
     const away = document.getElementById(`p-${matchId}-a`).value;
-    if(home==="" || away==="") return alert("Completa ambos goles.");
+    const errHome = validateScore(home), errAway = validateScore(away);
+    if(errHome || errAway) return showFeedback(errHome || errAway, "bad");
+
     await save(`predictions/${player}/name`, playerNameRaw);
     await save(`predictions/${player}/${matchId}`, {home:Number(home), away:Number(away), updatedAt:Date.now()});
-    alert("Marcador guardado ✅");
+    showFeedback("Marcador guardado ✅", "ok");
   }
 
   function renderLeaderboard(){
@@ -262,11 +293,12 @@
     const rows = players.map(([key, data]) => {
       const total = matches.reduce((sum,m)=> sum + calcPoints(data[m.id], state.results?.[m.id]), 0);
       const completed = matches.filter(m => data[m.id]).length;
-      return { name:data.name || key, total, completed };
-    }).sort((a,b)=>b.total-a.total);
+      const exact = exactCount(data);
+      return { name:data.name || key, total, completed, exact };
+    }).sort((a,b)=> b.total-a.total || b.exact-a.exact || b.completed-a.completed || a.name.localeCompare(b.name));
 
     document.getElementById("leaderboard").innerHTML = rows.length ? rows.map((r,i)=>
-      `<div class="leader"><b>${i+1}. ${r.name}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${r.completed}/${matches.length} predicciones</span></span></div>`
+      `<div class="leader"><b>${i+1}. ${escapeHTML(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">Exactos: ${r.exact} · ${r.completed}/${matches.length}</span></span></div>`
     ).join("") : "Aún no hay participantes.";
 
     const openCount = matches.filter(m=>!m.closed).length;
@@ -284,12 +316,11 @@
     document.getElementById("myPredictions").innerHTML = matches.map(m=>{
       const p = data[m.id];
       const r = state.results?.[m.id];
-      return `<div class="leader"><span>${m.home} vs ${m.away}<br>
-      <span class="small">Tu marcador: ${p ? `${p.home}-${p.away}` : "sin registrar"} · Final: ${r ? `${r.home}-${r.away}` : "pendiente"}</span></span>
+      return `<div class="leader"><span>${escapeHTML(m.home)} vs ${escapeHTML(m.away)}<br>
+      <span class="small">Tu marcador: ${p ? `${p.home}-${p.away}` : "sin registrar"} · Final: ${r ? `${r.home}-${r.away}` : "pendiente"} · ${m.closed ? "Cerrado" : "Abierto"}</span></span>
       <b>${calcPoints(p,r)} pts</b></div>`;
     }).join("");
   }
-
 
   function renderHistory(){
     const players = Object.entries(state.predictions || {});
@@ -306,12 +337,12 @@
         const pts = calcPoints(p,r);
         const when = p?.updatedAt ? new Date(p.updatedAt).toLocaleString("es-CO") : "";
         return `<div class="historyRow">
-          <span><b>${m.home} vs ${m.away}</b><br>
-          <span class="small">Predicción: ${p ? `${p.home}-${p.away}` : "Sin registrar"}${when ? " · " + when : ""} · ${m.closed ? "Cerrado" : "Abierto"}</span></span>
+          <span><b>${escapeHTML(m.home)} vs ${escapeHTML(m.away)}</b><br>
+          <span class="small">Predicción: ${p ? `${p.home}-${p.away}` : "Sin registrar"}${when ? " · " + escapeHTML(when) : ""} · ${m.closed ? "Cerrado" : "Abierto"}</span></span>
           <span class="pill">${pts} pts</span>
         </div>`;
       }).join("");
-      return `<div class="match"><h3>👤 ${name}</h3>${rows}</div>`;
+      return `<section class="match"><h3>👤 ${escapeHTML(name)}</h3>${rows}</section>`;
     }).join("");
   }
 
@@ -319,99 +350,101 @@
     if(new URLSearchParams(location.search).get("admin") !== ADMIN_PIN) return;
     document.body.classList.add("admin-on");
 
-    const addForm = `<div class="adminAdd">
+    const addForm = `<form class="adminAdd" onsubmit="return false;" aria-label="Agregar partido">
       <h3>➕ Agregar partido</h3>
-      <p class="small">Si Colombia pasa de ronda, agrega aquí el nuevo partido y se verá para todos los usuarios.</p>
+      <p class="small">Si Colombia pasa de ronda, agrega aquí el nuevo partido y se verá para todos.</p>
       <div class="two">
-        <div><label>Equipo local</label><input id="newHome" placeholder="Ej: Colombia"></div>
-        <div><label>Equipo visitante</label><input id="newAway" placeholder="Ej: Argentina"></div>
+        <div><label for="newHome">Equipo local</label><input id="newHome" aria-label="Equipo local" placeholder="Ej: Colombia" maxlength="35"></div>
+        <div><label for="newAway">Equipo visitante</label><input id="newAway" aria-label="Equipo visitante" placeholder="Ej: Argentina" maxlength="35"></div>
       </div>
-      <label>Texto de fecha visible</label>
-      <input id="newDateText" placeholder="Ej: 2 jul 2026 - 7:00 p.m. Colombia">
-      <label>Fecha y hora informativa</label>
-      <input id="newLock" type="datetime-local">
-      <button style="margin-top:12px" onclick="addMatch()">Agregar partido</button>
-    </div>`;
+      <label for="newDateText">Texto de fecha visible</label>
+      <input id="newDateText" aria-label="Texto de fecha visible" placeholder="Ej: 2 jul 2026 - 7:00 p.m. Colombia" maxlength="60">
+      <label for="newLock">Fecha y hora informativa</label>
+      <input id="newLock" aria-label="Fecha y hora del partido" type="datetime-local">
+      <button type="button" style="margin-top:12px" onclick="addMatch()">Agregar partido</button>
+    </form>`;
 
-    const adminTips = `<div class="notice">
-      <b>Admin:</b> cierra cada partido manualmente cuando quieras bloquear pronósticos. 
-      Puedes reabrirlo si alguien tuvo problema antes de empezar.
-    </div>`;
+    const adminTips = `<div class="notice"><b>Admin:</b> cierra cada partido manualmente cuando quieras bloquear pronósticos.</div>`;
 
     const resultsForm = matches.map(m=>{
       const r = state.results?.[m.id] || {home:"", away:""};
       const isExtra = state.extraMatches?.[m.id];
       const status = m.closed ? '<span class="statusClosed">🔴 Cerrado</span>' : '<span class="statusOpen">🟢 Abierto</span>';
-      return `<div class="match">
-        <b>${m.home} vs ${m.away}</b><br>
-        <span class="small">${m.date} · ${status}</span><br>
-        <button class="miniBtn ${m.closed ? "secondary" : "danger"}" onclick="toggleMatchClosed('${m.id}')">
-          ${m.closed ? "Reabrir partido" : "Cerrar partido"}
-        </button>
-        ${isExtra ? `<button class="danger miniBtn" onclick="deleteExtraMatch('${m.id}')">Eliminar partido agregado</button>` : ""}
+      return `<form class="match" onsubmit="return false;" aria-label="Admin ${escapeHTML(m.home)} vs ${escapeHTML(m.away)}">
+        <b>${escapeHTML(m.home)} vs ${escapeHTML(m.away)}</b><br>
+        <span class="small">${escapeHTML(m.date)} · ${status}</span><br>
+        <button type="button" class="miniBtn ${m.closed ? "secondary" : "danger"}" onclick="toggleMatchClosed('${escapeHTML(m.id)}')">${m.closed ? "Reabrir partido" : "Cerrar partido"}</button>
+        ${isExtra ? `<button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${escapeHTML(m.id)}')">Eliminar partido agregado</button>` : ""}
         <div class="scorebox">
-          <label>${m.home}</label><input type="number" min="0" max="20" value="${r.home}" id="r-${m.id}-h"/>
+          <label for="r-${m.id}-h">${escapeHTML(m.home)}</label>${scoreInput(`r-${m.id}-h`, r.home, false, `Resultado ${m.home}`)}
           <span>-</span>
-          <input type="number" min="0" max="20" value="${r.away}" id="r-${m.id}-a"/>
-          <label>${m.away}</label>
+          ${scoreInput(`r-${m.id}-a`, r.away, false, `Resultado ${m.away}`)}<label for="r-${m.id}-a">${escapeHTML(m.away)}</label>
         </div>
-        <button style="margin-top:12px" onclick="saveResult('${m.id}')">Guardar resultado final</button>
-      </div>`;
+        <button type="button" style="margin-top:12px" onclick="saveResult('${escapeHTML(m.id)}')">Guardar resultado final</button>
+      </form>`;
     }).join("");
 
     document.getElementById("adminPanel").innerHTML = addForm + adminTips + resultsForm;
   }
 
   window.addMatch = async()=>{
-    const home = document.getElementById("newHome").value.trim();
-    const away = document.getElementById("newAway").value.trim();
-    const dateText = document.getElementById("newDateText").value.trim();
-    const lockInput = document.getElementById("newLock").value;
-    if(!home || !away || !dateText || !lockInput) return alert("Completa todos los datos del nuevo partido.");
-    const lock = lockInput + ":00-05:00";
-    const id = makeMatchId(home, away, lock);
-    const newMatch = { id, home, away, date: dateText, lock, closed:false };
-    await save(`extraMatches/${id}`, newMatch);
-    alert("Partido agregado ✅ Ya se verá para todos los usuarios.");
+    const check = validateMatchInput(
+      document.getElementById("newHome").value,
+      document.getElementById("newAway").value,
+      document.getElementById("newDateText").value,
+      document.getElementById("newLock").value
+    );
+    if(check.error) return showFeedback(check.error, "bad");
+    const id = makeMatchId(check.home, check.away, check.lock);
+    if(matches.some(m=>m.id===id)) return showFeedback("Ese partido ya existe.", "bad");
+    await save(`extraMatches/${id}`, { id, home:check.home, away:check.away, date:check.dateText, lock:check.lock, closed:false });
+    showFeedback("Partido agregado ✅", "ok");
   }
 
   window.deleteExtraMatch = async(id)=>{
-    if(!confirm("¿Eliminar este partido agregado? También se ocultará para todos.")) return;
-    if(usingFirebase){
-      await window.firebaseRemove(window.firebaseRef(db, "/quiniela_colombia/extraMatches/" + id));
-    } else {
-      delete state.extraMatches[id];
-      localStorage.setItem("quiniela_colombia_demo", JSON.stringify(state));
-      matches = [
-        ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
-        ...Object.values(state.extraMatches || {})
-      ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
-      renderAll();
-    }
+    if(!confirm("¿Eliminar este partido agregado?")) return;
+    if(!state.extraMatches?.[id]) return showFeedback("Solo puedes eliminar partidos agregados.", "bad");
+    await window.firebaseRemove(window.firebaseRef(db, "/quiniela_colombia/extraMatches/" + id));
+    showFeedback("Partido eliminado.", "ok");
   }
 
   async function setMatchClosed(id, closed){
-    const isExtra = !!state.extraMatches?.[id];
-    if(isExtra){
-      await save(`extraMatches/${id}/closed`, closed);
-    } else {
-      await save(`baseMatchesStatus/${id}/closed`, closed);
-    }
+    if(state.extraMatches?.[id]) await save(`extraMatches/${id}/closed`, closed);
+    else await save(`baseMatchesStatus/${id}/closed`, closed);
   }
 
   window.toggleMatchClosed = async(id)=>{
     const match = matches.find(m=>m.id===id);
-    if(!match) return alert("No encontré el partido.");
+    if(!match) return showFeedback("No encontré el partido.", "bad");
     await setMatchClosed(id, !match.closed);
-    alert(!match.closed ? "Partido cerrado 🔒" : "Partido reabierto 🟢");
+    showFeedback(!match.closed ? "Partido cerrado 🔒" : "Partido reabierto 🟢", "ok");
   }
 
   window.saveResult = async(matchId)=>{
     const home = document.getElementById(`r-${matchId}-h`).value;
     const away = document.getElementById(`r-${matchId}-a`).value;
-    if(home==="" || away==="") return alert("Completa ambos goles del resultado final.");
+    const errHome = validateScore(home), errAway = validateScore(away);
+    if(errHome || errAway) return showFeedback(errHome || errAway, "bad");
     await save(`results/${matchId}`, {home:Number(home), away:Number(away), updatedAt:Date.now()});
-    alert("Resultado guardado ✅");
+    showFeedback("Resultado guardado ✅", "ok");
+  }
+
+  window.exportCSV = ()=>{
+    const rows = [["Participante","Partido","PrediccionLocal","PrediccionVisitante","ResultadoLocal","ResultadoVisitante","Puntos","Estado"]];
+    Object.entries(state.predictions || {}).forEach(([key,data])=>{
+      matches.forEach(m=>{
+        const p = data[m.id] || {};
+        const r = state.results?.[m.id] || {};
+        rows.push([data.name || key, `${m.home} vs ${m.away}`, p.home ?? "", p.away ?? "", r.home ?? "", r.away ?? "", calcPoints(p,r), m.closed ? "Cerrado" : "Abierto"]);
+      });
+    });
+    const csv = rows.map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "polla_colombia.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   function renderAll(){ renderMatches(); renderLeaderboard(); renderMine(); renderHistory(); renderAdmin(); }
@@ -419,7 +452,8 @@
   document.getElementById("playerName").value = localStorage.getItem("playerName") || "";
   document.getElementById("playerName").addEventListener("input", ()=>{
     localStorage.setItem("playerName", document.getElementById("playerName").value);
-    renderAll();
+    renderMatches();
+    renderMine();
   });
   document.getElementById("tabPredict").onclick=()=>show("Predict");
   document.getElementById("tabMine").onclick=()=>show("Mine");
