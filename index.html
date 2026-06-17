@@ -170,6 +170,11 @@ const key=s=>txt(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9á�
 const matchId=(h,a,l)=>(key(h)+"-"+key(a)+"-"+l.slice(0,10)).toUpperCase();
 const msg=(m,t="ok")=>{
  const html=`<span class="${t}">${esc(m)}</span>`;
+ const f=document.getElementById("feedback");
+ const af=document.getElementById("adminFeedback");
+ if(f) f.innerHTML=html;
+ if(af) af.innerHTML=html;
+}">${esc(m)}</span>`;
  if(document.getElementById("feedback")) feedback.innerHTML=html;
  if(document.getElementById("adminFeedback")) adminFeedback.innerHTML=html;
 }
@@ -231,7 +236,7 @@ async function init(){
    currentUser=user;
    if(user){
      authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");
-     if(isAdmin()){
+     if(ADMIN_EMAILS.includes((user.email||"").toLowerCase())){
        userMode.classList.add("hidden");
        adminMode.classList.remove("hidden");
        adminUserLabel.textContent=user.displayName||user.email;
@@ -261,14 +266,21 @@ window.registerUser=async()=>{
  if(name.length<2)return authMsg("Nombre inválido","bad");
  if(!email.includes("@"))return authMsg("Correo inválido","bad");
  if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");
- try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅. Espera activación del admin.")}
- catch(e){authMsg(authError(e),"bad")}
+ try{
+   let c=await fb.createUserWithEmailAndPassword(auth,email,pass);
+   await fb.updateProfile(c.user,{displayName:name});
+   try{await saveUser(c.user.uid,name,email)}catch(dbErr){console.warn(dbErr)}
+   authMsg("Usuario creado ✅. Espera activación del admin.")
+ }catch(e){authMsg(authError(e),"bad")}
 }
 window.login=async()=>{
  let email=document.getElementById("email").value.trim(),pass=password.value;
  if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");
- try{let c=await fb.signInWithEmailAndPassword(auth,email,pass);await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email);authMsg("Ingreso correcto ✅")}
- catch(e){authMsg(authError(e),"bad")}
+ try{
+   let c=await fb.signInWithEmailAndPassword(auth,email,pass);
+   try{await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email)}catch(dbErr){console.warn(dbErr)}
+   authMsg("Ingreso correcto ✅")
+ }catch(e){authMsg(authError(e),"bad")}
 }
 window.resetPassword=async()=>{
  let email=document.getElementById("email").value.trim();
@@ -280,7 +292,9 @@ window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado. Usa Ingresar.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("weak-password"))return"Contraseña débil.";if(c.includes("invalid-email"))return"Correo inválido.";if(c.includes("configuration-not-found"))return"Falta habilitar Authentication > Email/Password en Firebase.";return e.message||"Error"}
 
 async function saveUser(uid,name,email){
- const emailLower=String(email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(emailLower),existing=state.users?.[uid]||{};
+ const emailLower=String(email||"").toLowerCase();
+ const initialAdmin=ADMIN_EMAILS.includes(emailLower);
+ const existing=state.users?.[uid]||{};
  await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{
    name:txt(name),
    email:String(email||"").slice(0,80),
@@ -454,7 +468,13 @@ function showAdminSection(name){
 
 function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin(); if(isAdmin()) showAdminSection('Dash')}
 tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
-admDash.onclick=()=>showAdminSection("Dash");admUsers.onclick=()=>showAdminSection("Users");admGroups.onclick=()=>showAdminSection("Groups");admMatches.onclick=()=>showAdminSection("Matches");admResults.onclick=()=>showAdminSection("Results");
+if(document.getElementById("admDash")){
+ admDash.onclick=()=>showAdminSection("Dash");
+ admUsers.onclick=()=>showAdminSection("Users");
+ admGroups.onclick=()=>showAdminSection("Groups");
+ admMatches.onclick=()=>showAdminSection("Matches");
+ admResults.onclick=()=>showAdminSection("Results");
+}
 function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
 const authMsgEl=document.getElementById("authMsg"),matchesDiv=document.getElementById("matches");
 init();
