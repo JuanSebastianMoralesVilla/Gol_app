@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiniela Selección Colombia</title>
+  <style>
+    :root{
+      --bg:#07111f; --card:#0f2138; --muted:#9fb3c8; --text:#f7fbff;
+      --yellow:#ffd43b; --blue:#2f80ed; --red:#eb5757; --ok:#2ecc71;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:
+      radial-gradient(circle at top left, rgba(255,212,59,.20), transparent 28%),
+      radial-gradient(circle at top right, rgba(47,128,237,.22), transparent 32%),
+      linear-gradient(180deg,#07111f,#0b1627 55%,#09111f);color:var(--text)}
+    header{padding:28px 18px;text-align:center}
+    header h1{margin:0;font-size:clamp(28px,6vw,58px);line-height:1.05}
+    header p{color:var(--muted);margin:12px auto 0;max-width:760px}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 16px 48px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+    .card{background:rgba(15,33,56,.82);border:1px solid rgba(255,255,255,.10);border-radius:22px;padding:18px;box-shadow:0 18px 45px rgba(0,0,0,.25)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    button,.btn{border:0;border-radius:14px;padding:11px 14px;font-weight:700;cursor:pointer;color:#07111f;background:var(--yellow)}
+    button.secondary{background:#183250;color:var(--text);border:1px solid rgba(255,255,255,.12)}
+    button.danger{background:var(--red);color:white}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    input,select{width:100%;border:1px solid rgba(255,255,255,.14);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
+    label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+    .match{border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,255,255,.035)}
+    .teams{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:18px;font-weight:800}
+    .date{color:var(--muted);font-size:13px;margin-top:5px}
+    .scorebox{display:grid;grid-template-columns:1fr 70px 20px 70px 1fr;align-items:end;gap:8px;margin-top:12px}
+    .scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
+    .leader{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .leader:last-child{border-bottom:0}
+    .pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:rgba(255,212,59,.16);color:var(--yellow)}
+    .small{font-size:13px;color:var(--muted)}
+    .notice{background:rgba(47,128,237,.14);border:1px solid rgba(47,128,237,.28);border-radius:16px;padding:12px;color:#d8e8ff;margin:12px 0}
+    .admin{display:none}
+    body.admin-on .admin{display:block}
+    footer{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>🇨🇴 Quiniela Selección Colombia</h1>
+  <p>Predice marcadores, suma puntos y compite con tus amigos. Sin dinero, solo diversión y orgullo cafetero.</p>
+</header>
+
+<main class="wrap">
+  <section class="grid">
+    <div class="card">
+      <div class="tabs">
+        <button id="tabPredict">Hacer predicción</button>
+        <button class="secondary" id="tabMine">Mis marcadores</button>
+        <button class="secondary" id="tabRules">Reglas</button>
+      </div>
+
+      <div id="viewPredict">
+        <label>Tu nombre</label>
+        <input id="playerName" placeholder="Ej: Sebastián" maxlength="35" />
+
+        <div id="matches"></div>
+      </div>
+
+      <div id="viewMine" style="display:none">
+        <h2>Mis marcadores</h2>
+        <div id="myPredictions" class="small">Escribe tu nombre para ver tus marcadores.</div>
+      </div>
+
+      <div id="viewRules" style="display:none">
+        <h2>Reglas de puntos</h2>
+        <p><span class="pill">5 pts</span> Marcador exacto.</p>
+        <p><span class="pill">3 pts</span> Acertar ganador o empate, aunque no sea exacto.</p>
+        <p><span class="pill">1 pt</span> Acertar la diferencia de gol.</p>
+        <p class="small">Puedes cambiar tu predicción hasta antes del partido. El administrador registra el marcador final.</p>
+      </div>
+    </div>
+
+    <aside class="card">
+      <h2>🏆 Tabla de posiciones</h2>
+      <div id="leaderboard" class="small">Cargando ranking...</div>
+
+      <div class="notice">
+        Comparte el link con tus amigos. Soporta 20+ usuarios usando Firebase gratis.
+      </div>
+
+      <div class="admin">
+        <h2>Panel admin</h2>
+        <p class="small">Visible si entras con <b>?admin=1234</b>. Cambia el PIN en el código antes de publicar.</p>
+        <div id="adminPanel"></div>
+      </div>
+    </aside>
+  </section>
+  <footer>Hecho para la Selección Colombia 🇨🇴</footer>
+</main>
+
+<script type="module">
+  // 1) Pega aquí tu configuración de Firebase.
+  // Firebase Console > Project settings > General > Your apps > Web app.
+  const firebaseConfig = {
+    apiKey: "PEGA_AQUI_TU_API_KEY",
+    authDomain: "PEGA_AQUI.firebaseapp.com",
+    databaseURL: "https://PEGA_AQUI-default-rtdb.firebaseio.com",
+    projectId: "PEGA_AQUI",
+    storageBucket: "PEGA_AQUI.appspot.com",
+    messagingSenderId: "PEGA_AQUI",
+    appId: "PEGA_AQUI"
+  };
+
+  const ADMIN_PIN = "1234"; // Cambia esto antes de compartir.
+
+  const matches = [
+    { id:"COL-UZB-2026-06-17", home:"Uzbekistán", away:"Colombia", date:"17 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-17T21:00:00-05:00" },
+    { id:"COL-COD-2026-06-23", home:"Colombia", away:"RD Congo", date:"23 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-23T21:00:00-05:00" },
+    { id:"COL-POR-2026-06-27", home:"Colombia", away:"Portugal", date:"27 jun 2026 - 6:30 p.m. Colombia", lock:"2026-06-27T18:30:00-05:00" }
+  ];
+
+  let db = null;
+  let usingFirebase = false;
+  let state = { predictions:{}, results:{} };
+
+  function cleanKey(s){ return (s||"").trim().toLowerCase().replace(/[.#$[\]/]/g,"-").slice(0,35); }
+  function resultType(a,b){ return a===b ? "D" : a>b ? "H" : "A"; }
+  function calcPoints(pred, res){
+    if(!pred || !res || res.home === "" || res.away === "") return 0;
+    const ph=Number(pred.home), pa=Number(pred.away), rh=Number(res.home), ra=Number(res.away);
+    if(ph===rh && pa===ra) return 5;
+    if(resultType(ph,pa) === resultType(rh,ra)) return 3;
+    if((ph-pa) === (rh-ra)) return 1;
+    return 0;
+  }
+
+  async function init(){
+    const validConfig = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("PEGA_AQUI");
+    if(validConfig){
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
+      const { getDatabase, ref, onValue, set } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
+      window.firebaseSet = set; window.firebaseRef = ref;
+      db = getDatabase(initializeApp(firebaseConfig));
+      usingFirebase = true;
+      onValue(ref(db, "/quiniela_colombia"), snap => {
+        state = snap.val() || { predictions:{}, results:{} };
+        renderAll();
+      });
+    } else {
+      usingFirebase = false;
+      state = JSON.parse(localStorage.getItem("quiniela_colombia_demo") || '{"predictions":{},"results":{}}');
+      renderAll();
+      alert("Modo demo local: pega tu configuración de Firebase para que funcione entre varios usuarios.");
+    }
+  }
+
+  async function save(path, value){
+    if(usingFirebase){
+      await window.firebaseSet(window.firebaseRef(db, "/quiniela_colombia/" + path), value);
+    } else {
+      const parts = path.split("/");
+      let obj = state;
+      for(let i=0;i<parts.length-1;i++){ obj[parts[i]] ??= {}; obj = obj[parts[i]]; }
+      obj[parts.at(-1)] = value;
+      localStorage.setItem("quiniela_colombia_demo", JSON.stringify(state));
+      renderAll();
+    }
+  }
+
+  function isLocked(match){ return new Date() >= new Date(match.lock); }
+
+  function renderMatches(){
+    const player = cleanKey(document.getElementById("playerName").value);
+    const html = matches.map(m => {
+      const pred = state.predictions?.[player]?.[m.id] || {home:"", away:""};
+      const locked = isLocked(m);
+      return `<div class="match">
+        <div class="teams"><span>${m.home}</span><span>vs</span><span>${m.away}</span></div>
+        <div class="date">${m.date} ${locked ? " · 🔒 Cerrado" : ""}</div>
+        <div class="scorebox">
+          <label>${m.home}</label><input type="number" min="0" max="20" value="${pred.home}" id="p-${m.id}-h" ${locked?'disabled':''}/>
+          <span>-</span>
+          <input type="number" min="0" max="20" value="${pred.away}" id="p-${m.id}-a" ${locked?'disabled':''}/>
+          <label>${m.away}</label>
+        </div>
+        <button style="margin-top:12px" ${locked?'disabled':''} onclick="savePrediction('${m.id}')">Guardar marcador</button>
+      </div>`;
+    }).join("");
+    document.getElementById("matches").innerHTML = html;
+  }
+
+  window.savePrediction = async (matchId) => {
+    const playerNameRaw = document.getElementById("playerName").value.trim();
+    const player = cleanKey(playerNameRaw);
+    if(!player) return alert("Escribe tu nombre.");
+    const match = matches.find(x=>x.id===matchId);
+    if(isLocked(match)) return alert("Este partido ya está cerrado.");
+    const home = document.getElementById(`p-${matchId}-h`).value;
+    const away = document.getElementById(`p-${matchId}-a`).value;
+    if(home==="" || away==="") return alert("Completa ambos goles.");
+    await save(`predictions/${player}/name`, playerNameRaw);
+    await save(`predictions/${player}/${matchId}`, {home:Number(home), away:Number(away), updatedAt:Date.now()});
+    alert("Marcador guardado ✅");
+  }
+
+  function renderLeaderboard(){
+    const rows = Object.entries(state.predictions || {}).map(([key, data]) => {
+      const total = matches.reduce((sum,m)=> sum + calcPoints(data[m.id], state.results?.[m.id]), 0);
+      return { name:data.name || key, total };
+    }).sort((a,b)=>b.total-a.total);
+
+    document.getElementById("leaderboard").innerHTML = rows.length ? rows.map((r,i)=>
+      `<div class="leader"><b>${i+1}. ${r.name}</b><span class="pill">${r.total} pts</span></div>`
+    ).join("") : "Aún no hay participantes.";
+  }
+
+  function renderMine(){
+    const player = cleanKey(document.getElementById("playerName").value);
+    const data = state.predictions?.[player];
+    if(!player || !data){ document.getElementById("myPredictions").innerHTML = "Escribe tu nombre para ver tus marcadores."; return; }
+    document.getElementById("myPredictions").innerHTML = matches.map(m=>{
+      const p = data[m.id];
+      const r = state.results?.[m.id];
+      return `<div class="leader"><span>${m.home} vs ${m.away}<br>
+      <span class="small">Tu marcador: ${p ? `${p.home}-${p.away}` : "sin registrar"} · Final: ${r ? `${r.home}-${r.away}` : "pendiente"}</span></span>
+      <b>${calcPoints(p,r)} pts</b></div>`;
+    }).join("");
+  }
+
+  function renderAdmin(){
+    if(new URLSearchParams(location.search).get("admin") !== ADMIN_PIN) return;
+    document.body.classList.add("admin-on");
+    document.getElementById("adminPanel").innerHTML = matches.map(m=>{
+      const r = state.results?.[m.id] || {home:"", away:""};
+      return `<div class="match">
+        <b>${m.home} vs ${m.away}</b>
+        <div class="scorebox">
+          <label>${m.home}</label><input type="number" min="0" max="20" value="${r.home}" id="r-${m.id}-h"/>
+          <span>-</span>
+          <input type="number" min="0" max="20" value="${r.away}" id="r-${m.id}-a"/>
+          <label>${m.away}</label>
+        </div>
+        <button style="margin-top:12px" onclick="saveResult('${m.id}')">Guardar resultado final</button>
+      </div>`;
+    }).join("");
+  }
+
+  window.saveResult = async(matchId)=>{
+    const home = document.getElementById(`r-${matchId}-h`).value;
+    const away = document.getElementById(`r-${matchId}-a`).value;
+    if(home==="" || away==="") return alert("Completa ambos goles del resultado final.");
+    await save(`results/${matchId}`, {home:Number(home), away:Number(away), updatedAt:Date.now()});
+    alert("Resultado guardado ✅");
+  }
+
+  function renderAll(){ renderMatches(); renderLeaderboard(); renderMine(); renderAdmin(); }
+
+  document.getElementById("playerName").addEventListener("input", renderAll);
+  document.getElementById("tabPredict").onclick=()=>show("Predict");
+  document.getElementById("tabMine").onclick=()=>show("Mine");
+  document.getElementById("tabRules").onclick=()=>show("Rules");
+  function show(name){
+    for(const v of ["Predict","Mine","Rules"]) document.getElementById("view"+v).style.display = v===name ? "block":"none";
+  }
+
+  init();
+</script>
+</body>
+</html>
