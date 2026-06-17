@@ -182,7 +182,24 @@ function flagFor(team){
  if(t.includes("croacia")||t.includes("croatia"))return"🇭🇷"; if(t.includes("panama"))return"🇵🇦"; if(t.includes("ghana"))return"🇬🇭";
  return"🏳️";
 }
-function isAdmin(){return currentUser && ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase())}
+const TEAM_PRESETS=[
+ ["Colombia","🇨🇴"],["Uzbekistán","🇺🇿"],["Portugal","🇵🇹"],["RD Congo","🇨🇩"],["Argentina","🇦🇷"],["Brasil","🇧🇷"],["Inglaterra","🏴"],["Croacia","🇭🇷"],["Panamá","🇵🇦"],["Ghana","🇬🇭"],["Otro","🏳️"]
+];
+function teamOptions(selected=""){
+ return TEAM_PRESETS.map(([name])=>`<option value="${esc(name)}" ${selected===name?"selected":""}>${esc(name)}</option>`).join("");
+}
+function teamNameFromSelect(id, customId){
+ const v=document.getElementById(id).value;
+ if(v==="Otro")return txt(document.getElementById(customId).value);
+ return v;
+}
+function visibleDateFromInput(value){
+ if(!value)return "";
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return "";
+ return d.toLocaleString("es-CO",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"})+" Colombia";
+}
+return currentUser && (ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase()) || state.users?.[currentUser.uid]?.role==="admin")}
 function currentUserGroup(){return state.users?.[currentUser?.uid]?.group||"Sin asignar"}
 function visiblePlayerEntries(){
  const entries=Object.entries(state.predictions||{});
@@ -191,7 +208,11 @@ function visiblePlayerEntries(){
  return entries.filter(([uid])=>(state.users?.[uid]?.group||"Sin asignar")===group);
 }
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
-function getGroupValue(groupName){const g=Object.values(state.groups||{}).find(x=>x.name===groupName);return Number(g?.value||0)}
+function getGroupValue(groupName){
+ const target=String(groupName||"").trim().toLowerCase();
+ const g=Object.values(state.groups||{}).find(x=>String(x.name||"").trim().toLowerCase()===target);
+ return Number(g?.value||0);
+}).find(x=>x.name===groupName);return Number(g?.value||0)}
 function rt(a,b){return a===b?"D":a>b?"H":"A"}
 function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;return 0}
 function exact(data){return matches.reduce((s,m)=>s+(pts(data[m.id],state.results?.[m.id])===5?1:0),0)}
@@ -259,7 +280,16 @@ window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado. Usa Ingresar.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("weak-password"))return"Contraseña débil.";if(c.includes("invalid-email"))return"Correo inválido.";if(c.includes("configuration-not-found"))return"Falta habilitar Authentication > Email/Password en Firebase.";return e.message||"Error"}
 
 async function saveUser(uid,name,email){
- const emailLower=String(email||"").toLowerCase(),admin=ADMIN_EMAILS.includes(emailLower),existing=state.users?.[uid]||{};
+ const emailLower=String(email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(emailLower),existing=state.users?.[uid]||{};
+ await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{
+   name:txt(name),
+   email:String(email||"").slice(0,80),
+   group:existing.group||(initialAdmin?"Administradores":"Sin asignar"),
+   active:initialAdmin?true:(existing.active===true),
+   role:existing.role || (initialAdmin?"admin":"user"),
+   updatedAt:Date.now()
+ });
+};
  await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{name:txt(name),email:String(email||"").slice(0,80),group:existing.group||(admin?"Administradores":"Sin asignar"),active:admin?true:(existing.active===true),role:admin?"admin":(existing.role||"user"),updatedAt:Date.now()});
 }
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
@@ -335,12 +365,22 @@ function renderAdmin(){
    const p=state.predictions?.[uid]||{}, total=matches.reduce((s,m)=>s+pts(p[m.id],state.results?.[m.id]),0);
    return `<tr><td>${esc(u.name||"Usuario")}</td><td>${esc(u.email||"")}</td><td><select id="grp-${uid}">${opts}</select></td><td>${total} pts</td><td>${u.active===false?"Pendiente/Inactivo":"Activo"}</td><td><button class="miniBtn" onclick="changeUserGroup('${uid}')">Guardar grupo</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button></td></tr>`;
  }).join("");
- adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><p class="small">Activa usuarios y asígnalos a un grupo. Los pendientes no pueden pronosticar.</p><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div>`;
+ adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><p class="small">Activa usuarios y asígnalos a un grupo. Los pendientes no pueden pronosticar.</p><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Rol</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='7'>Sin usuarios</td></tr>"}</tbody></table></div>`;
 
  const groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name||'')}" maxlength="35"></td><td><input id="gval-${gid}" type="number" inputmode="numeric" min="0" value="${Number(g.value||0)}"></td><td>${Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===(g.name||"")).length}</td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
  adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><div class="match"><label>Nombre del nuevo grupo</label><input id="newGroupName" placeholder="Ej: Oficina Carvajal"><label>Valor por participante</label><input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000"><button type="button" onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Aún no hay grupos creados.</td></tr>"}</tbody></table></div>`;
 
- const addMatchForm=`<form class="match" onsubmit="return false"><h3>➕ Agregar partido</h3><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText" placeholder="Ej: 2 jul 2026 - 7:00 p.m. Colombia"><label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local"><button type="button" onclick="addMatch()">Agregar partido</button></form>`;
+ const addMatchForm=`<form class="match" onsubmit="return false">
+ <h3>➕ Agregar partido fácil</h3>
+ <div class="two">
+  <div><label>Local</label><select id="newHomeSel" onchange="toggleCustomTeam('newHomeSel','newHomeCustom')">${teamOptions("Colombia")}</select><input id="newHomeCustom" class="hidden" placeholder="Nombre local"></div>
+  <div><label>Visitante</label><select id="newAwaySel" onchange="toggleCustomTeam('newAwaySel','newAwayCustom')">${teamOptions("Portugal")}</select><input id="newAwayCustom" class="hidden" placeholder="Nombre visitante"></div>
+ </div>
+ <label>Competencia / fase</label><input id="newCompetition" value="Siguiente ronda" placeholder="Ej: Octavos de final">
+ <label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local" onchange="newDateText.value=visibleDateFromInput(this.value)">
+ <label>Fecha visible automática</label><input id="newDateText" placeholder="Se llena automáticamente">
+ <button type="button" onclick="addMatch()">Agregar partido</button>
+</form>`;
  const matchRows=matches.map(m=>`<div class="match"><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">${isLocked(m)?(m.closed?"🔴 Cerrado por admin":"🔴 Cerrado automático"):"🟢 Abierto"} · ${esc(m.date)}</span><br><button class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>${state.extraMatches?.[m.id]?` <button class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}</div>`).join("");
  adminMatchesView.innerHTML=`<h2>⚽ Partidos</h2>${addMatchForm}${matchRows}`;
 
@@ -356,12 +396,44 @@ function renderGroupSummaryTable(){
  }).join("");
  return `<div class="match"><h3>Resumen por grupos</h3><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios activos</th><th>Bolsa</th></tr></thead><tbody>${rows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div></div>`;
 }
+window.toggleCustomTeam=(selId,inputId)=>{
+ const show=document.getElementById(selId).value==="Otro";
+ document.getElementById(inputId).classList.toggle("hidden",!show);
+}
 window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(name.length<2)return msg("Nombre de grupo inválido","bad");if(!Number.isFinite(value)||value<0)return msg("Valor inválido","bad");let id=key(name).toUpperCase();if(state.groups?.[id])return msg("Ese grupo ya existe","bad");await save(`groups/${id}`,{id,name,value,createdAt:Date.now(),updatedAt:Date.now()});msg("Grupo creado ✅")}
 window.updateGroup=async gid=>{let old=state.groups?.[gid];if(!old)return msg("Grupo no encontrado","bad");let newName=txt(document.getElementById("gname-"+gid).value),newValue=Number(document.getElementById("gval-"+gid).value||0);if(newName.length<2)return msg("Nombre de grupo inválido","bad");if(!Number.isFinite(newValue)||newValue<0)return msg("Valor inválido","bad");await save(`groups/${gid}/name`,newName);await save(`groups/${gid}/value`,newValue);await save(`groups/${gid}/updatedAt`,Date.now());if(old.name&&old.name!==newName){for(const [uid,u] of Object.entries(state.users||{})){if((u.group||"Sin asignar")===old.name)await save(`users/${uid}/group`,newName)}}msg("Grupo actualizado ✅")}
 window.deleteGroup=async gid=>{let g=state.groups?.[gid];if(!g)return msg("Grupo no encontrado","bad");let count=Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===g.name).length;if(count>0)return msg("No puedes eliminar un grupo con usuarios. Muévelos primero.","bad");if(confirm("¿Eliminar este grupo?")){await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));msg("Grupo eliminado ✅")}}
 window.changeUserGroup=async uid=>{let group=document.getElementById("grp-"+uid).value;await save(`users/${uid}/group`,group);msg("Grupo actualizado ✅")}
+window.saveUserAdmin=async uid=>{
+ if(!isAdmin())return msg("Solo admin","bad");
+ let group=document.getElementById("grp-"+uid).value;
+ let role=document.getElementById("role-"+uid).value;
+ await save(`users/${uid}/group`,group);
+ await save(`users/${uid}/role`,role);
+ msg("Usuario actualizado ✅");
+}
+window.deleteUser=async uid=>{
+ if(!isAdmin())return msg("Solo admin","bad");
+ const u=state.users?.[uid]||{};
+ if((u.email||"").toLowerCase()===(currentUser.email||"").toLowerCase())return msg("No puedes eliminar tu propio usuario admin.","bad");
+ if(!confirm("¿Eliminar este usuario y sus pronósticos?"))return;
+ await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));
+ await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));
+ msg("Usuario eliminado ✅");
+}
 window.toggleUserActive=async uid=>{let active=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!active);msg(active?"Usuario desactivado":"Usuario activado ✅")}
-window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim().slice(0,60),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa todos los datos","bad");if(key(h)===key(a))return msg("Los equipos no pueden ser iguales","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
+window.addMatch=async()=>{
+ let h=teamNameFromSelect("newHomeSel","newHomeCustom");
+ let a=teamNameFromSelect("newAwaySel","newAwayCustom");
+ let date=String(newDateText.value||visibleDateFromInput(newLock.value)).trim().slice(0,60);
+ let li=newLock.value;
+ let competition=txt(newCompetition.value)||"Siguiente ronda";
+ if(!h||!a||!date||!li)return msg("Completa local, visitante y fecha/hora","bad");
+ if(key(h)===key(a))return msg("Los equipos no pueden ser iguales","bad");
+ let lock=new Date(li).toISOString(),id=matchId(h,a,lock);
+ await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition,date,lock,closed:false});
+ msg("Partido agregado ✅");
+}
 window.deleteExtraMatch=async id=>{if(confirm("¿Eliminar partido?"))await fb.remove(fb.ref(db,"/quiniela_colombia/extraMatches/"+id))}
 window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed);msg(!m.closed?"Partido cerrado 🔒":"Partido reabierto 🟢")}
 window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
