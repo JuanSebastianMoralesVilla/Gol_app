@@ -1,469 +1,135 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Polla Selección Colombia</title>
-  <style>
-    :root{
-      --bg:#07111f; --card:#10243d; --muted:#c7d6e6; --text:#f7fbff;
-      --yellow:#ffd43b; --blue:#2f80ed; --red:#ff6b6b; --ok:#7dffb1;
-      --border:rgba(255,255,255,.16);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:
-      radial-gradient(circle at top left, rgba(255,212,59,.20), transparent 28%),
-      radial-gradient(circle at top right, rgba(47,128,237,.22), transparent 32%),
-      linear-gradient(180deg,#07111f,#0b1627 55%,#09111f);color:var(--text)}
-    header{padding:28px 18px;text-align:center}
-    header h1{margin:0;font-size:clamp(28px,6vw,58px);line-height:1.05}
-    header p{color:var(--muted);margin:12px auto 0;max-width:760px}
-    main{display:block}
-    .wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-    @media(max-width:860px){.grid{grid-template-columns:1fr}}
-    .card{background:rgba(16,36,61,.88);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px rgba(0,0,0,.25)}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-    button{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;color:#07111f;background:var(--yellow)}
-    button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}
-    button.danger{background:var(--red);color:#111}
-    button:disabled{opacity:.55;cursor:not-allowed}
-    button:focus,input:focus{outline:3px solid rgba(255,212,59,.5);outline-offset:2px}
-    input{width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
-    label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
-    .match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,255,255,.04)}
-    .teams{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:18px;font-weight:800}
-    .date{color:var(--muted);font-size:13px;margin-top:5px}
-    .scorebox{display:grid;grid-template-columns:1fr 74px 20px 74px 1fr;align-items:end;gap:8px;margin-top:12px}
-    @media(max-width:560px){.scorebox{grid-template-columns:1fr 70px 18px 70px 1fr;font-size:13px}}
-    .scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
-    .leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.10)}
-    .leader:last-child,.historyRow:last-child{border-bottom:0}
-    .pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:rgba(255,212,59,.16);color:var(--yellow)}
-    .small{font-size:13px;color:var(--muted)}
-    .notice{background:rgba(47,128,237,.14);border:1px solid rgba(47,128,237,.28);border-radius:16px;padding:12px;color:#d8e8ff;margin:12px 0}
-    .ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
-    .admin{display:none} body.admin-on .admin{display:block}
-    .adminAdd{border:1px solid rgba(255,212,59,.25);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,212,59,.05)}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .statusOpen{color:var(--ok);font-weight:800}
-    .statusClosed{color:#ffaaa5;font-weight:800}
-    .miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
-    .summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-    .summaryItem{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:10px;text-align:center}
-    .summaryItem b{font-size:20px}
-    .feedback{min-height:24px;margin:10px 0;font-size:14px}
-    @media(max-width:560px){.two,.summaryBox{grid-template-columns:1fr}}
-    footer{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polla Colombia con Login</title>
+<style>
+:root{--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;--red:#ff6b6b;--ok:#7dffb1;--border:rgba(255,255,255,.16)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
+header{text-align:center;padding:28px 16px}h1{margin:0;font-size:clamp(28px,6vw,54px)}p,.small{color:var(--muted)}
+.wrap{max-width:1120px;margin:auto;padding:0 16px 48px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:rgba(16,36,61,.9);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px #0006}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}button{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--yellow);color:#07111f}
+button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}button.danger{background:var(--red);color:#111}button:disabled{opacity:.55}
+input{width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:#ffffff0a}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-size:18px;font-weight:800}
+.teamBox{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.flag{font-size:42px;line-height:1;filter:drop-shadow(0 6px 8px #0007)}
+.vsBadge{background:#ffd43b;color:#07111f;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900}
+.groupBadge{display:inline-block;margin-top:8px;border-radius:999px;padding:5px 10px;background:#2f80ed33;border:1px solid #2f80ed77;color:#d8e8ff;font-size:12px;font-weight:800}
+.groupSelect{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.groupSelect button.active{background:#7dffb1;color:#07111f}.date{color:var(--muted);font-size:13px;margin-top:5px}
+.scorebox{display:grid;grid-template-columns:1fr 74px 20px 74px 1fr;align-items:end;gap:8px;margin-top:12px}.scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
+@media(max-width:560px){.scorebox{grid-template-columns:1fr 70px 18px 70px 1fr;font-size:13px}}
+.leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid #fff2}
+.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:#ffd43b29;color:var(--yellow)}
+.notice{background:#2f80ed24;border:1px solid #2f80ed47;border-radius:16px;padding:12px;margin:12px 0}.ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
+.hidden{display:none!important}.admin{display:none}body.admin-on .admin{display:block}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.two{grid-template-columns:1fr}}
+.statusOpen{color:var(--ok);font-weight:800}.statusClosed{color:#ffaaa5;font-weight:800}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
+.summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.summaryItem{background:#fff1;border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center}.summaryItem b{font-size:20px}
+</style>
 </head>
 <body>
-<header>
-  <h1>Polla Selección Colombia</h1>
-  <p>Pon tu marcador, revisa historial y compite con tus amigos.</p>
-</header>
-
+<header><h1>Polla Selección Colombia</h1><p>Cada participante entra con correo y contraseña.</p></header>
 <main class="wrap">
-  <section class="grid" aria-label="Aplicación de polla">
-    <article class="card">
-      <nav class="tabs" aria-label="Secciones">
-        <button id="tabPredict" type="button" aria-label="Ir a hacer predicción">Hacer predicción</button>
-        <button class="secondary" id="tabMine" type="button" aria-label="Ir a mis marcadores">Mis marcadores</button>
-        <button class="secondary" id="tabHistory" type="button" aria-label="Ir al historial">Historial</button>
-        <button class="secondary" id="tabRules" type="button" aria-label="Ir a reglas">Reglas</button>
-      </nav>
+<section id="authCard" class="card">
+<h2>Ingreso</h2><p class="small">Regístrate una vez. Firebase guarda la contraseña de forma segura; la app no la ve.</p>
+<div id="authMsg" class="small warn"></div>
+<label>Nombre visible</label><input id="displayName" maxlength="35" autocomplete="name">
+<label>Grupo de polla</label><select id="poolGroup" style="width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px"><option value="Grupo 1">Polla Grupo 1</option><option value="Grupo 2">Polla Grupo 2</option><option value="Grupo 3">Polla Grupo 3</option></select>
+<label>Correo</label><input id="email" type="email" autocomplete="email">
+<label>Contraseña</label><input id="password" type="password" minlength="6" autocomplete="current-password">
+<br><br><button onclick="login()">Ingresar</button> <button class="secondary" onclick="registerUser()">Registrarme</button>
+</section>
 
-      <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
-
-      <section id="viewPredict">
-        <form id="playerForm" onsubmit="return false;">
-          <label for="playerName">Tu nombre</label>
-          <input id="playerName" aria-label="Nombre del participante" placeholder="Ej: Sebastián" maxlength="35" autocomplete="name" />
-        </form>
-        <div id="matches"></div>
-      </section>
-
-      <section id="viewMine" style="display:none">
-        <h2>Mis marcadores</h2>
-        <div id="myPredictions" class="small">Escribe tu nombre para ver tus marcadores.</div>
-      </section>
-
-      <section id="viewHistory" style="display:none">
-        <h2>Historial de marcadores</h2>
-        <p class="small">Aquí se ve lo que ha guardado cada participante.</p>
-        <div id="historyPanel" class="small">Cargando historial...</div>
-      </section>
-
-      <section id="viewRules" style="display:none">
-        <h2>Reglas de puntos</h2>
-        <p><span class="pill">5 pts</span> Marcador exacto.</p>
-        <p><span class="pill">3 pts</span> Acertar ganador o empate.</p>
-        <p><span class="pill">1 pt</span> Acertar diferencia de gol, solo si no acertaste ganador/empate.</p>
-        <p class="small"><b>Diferencia de gol:</b> goles local menos goles visitante. Ejemplo: final Colombia 2-0 Portugal = +2. Si alguien puso 3-1, también es +2, pero recibe 3 puntos por acertar ganador.</p>
-        <p class="small"><b>Desempate ranking:</b> 1) más puntos, 2) más marcadores exactos, 3) más predicciones registradas, 4) orden alfabético.</p>
-      </section>
-    </article>
-
-    <aside class="card" aria-label="Tabla y administración">
-      <h2>🏆 Tabla de posiciones</h2>
-      <div id="leaderboard" class="small">Cargando ranking...</div>
-      <div id="summaryStats" class="summaryBox"></div>
-
-      <div class="notice">
-        Comparte el link con tus amigos. Los datos se guardan en Firebase.
-      </div>
-      <div id="connectionStatus" class="small warn">Verificando conexión con Firebase...</div>
-      <button class="secondary" type="button" onclick="exportCSV()" aria-label="Exportar datos en CSV">Exportar CSV</button>
-
-      <div class="admin">
-        <h2>Panel admin</h2>
-        <p class="small">Visible con <b>?admin=1234</b>. Cambia el PIN en el código antes de publicar.</p>
-        <div id="adminPanel"></div>
-      </div>
-    </aside>
-  </section>
-  <footer>Hecho para la Selección Colombia 🇨🇴</footer>
+<section id="app" class="grid hidden">
+<article class="card">
+<nav class="tabs">
+<button id="tabPredict">Predicción</button><button class="secondary" id="tabMine">Mis marcadores</button><button class="secondary" id="tabHistory">Historial</button><button class="secondary" id="tabRules">Reglas</button>
+</nav>
+<div id="feedback" class="small warn"></div>
+<section id="viewPredict"><p class="small">Usuario: <b id="currentUserLabel"></b></p><button class="secondary" onclick="logout()">Cerrar sesión</button><div id="matches"></div></section>
+<section id="viewMine" style="display:none"><h2>Mis marcadores</h2><div id="myPredictions" class="small"></div></section>
+<section id="viewHistory" style="display:none"><h2>Historial</h2><div id="historyPanel" class="small"></div></section>
+<section id="viewRules" style="display:none"><h2>Reglas</h2><p><span class="pill">5 pts</span> Marcador exacto.</p><p><span class="pill">3 pts</span> Ganador o empate.</p><p><span class="pill">1 pt</span> Diferencia de gol si no acertó ganador.</p><p class="small">Desempate: puntos, exactos, predicciones registradas y orden alfabético.</p></section>
+</article>
+<aside class="card">
+<h2>🏆 Tabla</h2><div class="groupSelect" id="groupButtons"></div><div id="leaderboard" class="small"></div><div id="summaryStats" class="summaryBox"></div>
+<div class="notice">Los marcadores quedan amarrados al usuario autenticado.</div><div id="connectionStatus" class="small warn"></div>
+<button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+<div class="admin"><h2>Panel admin</h2><p class="small">Visible con ?admin=1234</p><div id="adminPanel"></div></div>
+</aside>
+</section>
 </main>
 
 <script type="module">
-  const firebaseConfig = {
-    apiKey: "AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk",
-    authDomain: "golbd-d1aec.firebaseapp.com",
-    databaseURL: "https://golbd-d1aec-default-rtdb.firebaseio.com",
-    projectId: "golbd-d1aec",
-    storageBucket: "golbd-d1aec.firebasestorage.app",
-    messagingSenderId: "953286115242",
-    appId: "1:953286115242:web:c207860ca2f546c05475d3"
-  };
-
-  const ADMIN_PIN = "1234";
-  const MAX_SCORE = 20;
-
-  const defaultMatches = [
-    { id:"COL-UZB-2026-06-17", home:"Uzbekistán", away:"Colombia", date:"17 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-17T21:00:00-05:00", closed:false },
-    { id:"COL-COD-2026-06-23", home:"Colombia", away:"RD Congo", date:"23 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-23T21:00:00-05:00", closed:false },
-    { id:"COL-POR-2026-06-27", home:"Colombia", away:"Portugal", date:"27 jun 2026 - 6:30 p.m. Colombia", lock:"2026-06-27T18:30:00-05:00", closed:false }
-  ];
-
-  let db = null;
-  let unsubscribe = null;
-  let usingFirebase = false;
-  let state = { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
-  let matches = [...defaultMatches];
-
-  const escapeHTML = (v) => String(v ?? "").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-  const onlyText = (s) => String(s ?? "").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
-  const cleanKey = (s) => onlyText(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
-  const makeMatchId = (home, away, lock) => (cleanKey(home) + "-" + cleanKey(away) + "-" + lock.slice(0,10)).toUpperCase();
-
-  function showFeedback(message, type="ok"){
-    document.getElementById("feedback").innerHTML = `<span class="${type}">${escapeHTML(message)}</span>`;
-  }
-
-  function resultType(a,b){ return a===b ? "D" : a>b ? "H" : "A"; }
-  function calcPoints(pred, res){
-    if(!pred || !res || res.home === "" || res.away === "") return 0;
-    const ph=Number(pred.home), pa=Number(pred.away), rh=Number(res.home), ra=Number(res.away);
-    if(ph===rh && pa===ra) return 5;
-    if(resultType(ph,pa) === resultType(rh,ra)) return 3;
-    if((ph-pa) === (rh-ra)) return 1;
-    return 0;
-  }
-  function exactCount(data){
-    return matches.reduce((sum,m)=> sum + (calcPoints(data[m.id], state.results?.[m.id]) === 5 ? 1 : 0), 0);
-  }
-  function isLocked(match){ return match.closed === true; }
-
-  function validateScore(value){
-    if(value === "" || value === null || value === undefined) return "Completa ambos goles.";
-    const n = Number(value);
-    if(!Number.isInteger(n)) return "Los goles deben ser números enteros.";
-    if(n < 0 || n > MAX_SCORE) return `Los goles deben estar entre 0 y ${MAX_SCORE}.`;
-    return null;
-  }
-
-  function validatePlayerName(name){
-    const cleaned = onlyText(name);
-    if(!cleaned) return {error:"Escribe tu nombre."};
-    if(cleaned.length < 2) return {error:"El nombre debe tener al menos 2 caracteres."};
-    return {value:cleaned};
-  }
-
-  function validateMatchInput(home, away, dateText, lockInput){
-    home = onlyText(home); away = onlyText(away); dateText = onlyText(dateText);
-    if(!home || !away || !dateText || !lockInput) return {error:"Completa todos los datos del partido."};
-    if(cleanKey(home) === cleanKey(away)) return {error:"El equipo local y visitante no pueden ser iguales."};
-    const d = new Date(lockInput);
-    if(Number.isNaN(d.getTime())) return {error:"La fecha/hora del partido no es válida."};
-    return {home, away, dateText, lock: new Date(lockInput).toISOString()};
-  }
-
-  function rebuildMatches(){
-    matches = [
-      ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
-      ...Object.values(state.extraMatches || {})
-    ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
-  }
-
-  async function init(){
-    const status = document.getElementById("connectionStatus");
-    try{
-      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
-      const { getDatabase, ref, onValue, set, remove } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
-      window.firebaseSet = set; window.firebaseRef = ref; window.firebaseRemove = remove;
-      db = getDatabase(initializeApp(firebaseConfig));
-      usingFirebase = true;
-      status.innerHTML = '<span class="ok">✅ Conectado a Firebase.</span>';
-
-      unsubscribe = onValue(ref(db, "/quiniela_colombia"), snap => {
-        state = snap.val() || { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
-        rebuildMatches();
-        renderAll();
-      }, error => {
-        status.innerHTML = '<span class="bad">❌ Error leyendo Firebase: '+ escapeHTML(error.message) +'</span>';
-        showFeedback("Error leyendo Firebase: " + error.message, "bad");
-      });
-    } catch(error){
-      usingFirebase = false;
-      status.innerHTML = '<span class="bad">❌ Error conectando Firebase: '+ escapeHTML(error.message) +'</span>';
-      showFeedback("Error conectando Firebase: " + error.message, "bad");
-      renderAll();
-    }
-  }
-
-  window.addEventListener("beforeunload", () => {
-    if(typeof unsubscribe === "function") unsubscribe();
-  });
-
-  async function save(path, value){
-    try{
-      if(!usingFirebase) throw new Error("Firebase no está conectado.");
-      await window.firebaseSet(window.firebaseRef(db, "/quiniela_colombia/" + path), value);
-      document.getElementById("connectionStatus").innerHTML = '<span class="ok">✅ Último guardado correcto.</span>';
-    } catch(error){
-      document.getElementById("connectionStatus").innerHTML = '<span class="bad">❌ No guardó: '+ escapeHTML(error.message) +'</span>';
-      showFeedback("No se pudo guardar: " + error.message, "bad");
-      throw error;
-    }
-  }
-
-  function scoreInput(id, value, disabled, label){
-    return `<input id="${id}" aria-label="${escapeHTML(label)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${escapeHTML(value)}" ${disabled?'disabled':''}/>`;
-  }
-
-  function renderMatches(){
-    const player = cleanKey(document.getElementById("playerName").value);
-    document.getElementById("matches").innerHTML = matches.map(m => {
-      const pred = state.predictions?.[player]?.[m.id] || {home:"", away:""};
-      const locked = isLocked(m);
-      return `<form class="match" onsubmit="return false;" aria-label="Predicción ${escapeHTML(m.home)} vs ${escapeHTML(m.away)}">
-        <div class="teams"><span>${escapeHTML(m.home)}</span><span>vs</span><span>${escapeHTML(m.away)}</span></div>
-        <div class="date">${escapeHTML(m.date)} · ${locked ? '<span class="statusClosed">🔴 Cerrado por admin</span>' : '<span class="statusOpen">🟢 Abierto</span>'}</div>
-        <div class="scorebox">
-          <label for="p-${m.id}-h">${escapeHTML(m.home)}</label>${scoreInput(`p-${m.id}-h`, pred.home, locked, `Goles ${m.home}`)}
-          <span>-</span>
-          ${scoreInput(`p-${m.id}-a`, pred.away, locked, `Goles ${m.away}`)}<label for="p-${m.id}-a">${escapeHTML(m.away)}</label>
-        </div>
-        <button type="button" style="margin-top:12px" ${locked?'disabled':''} onclick="savePrediction('${escapeHTML(m.id)}')" aria-label="Guardar marcador ${escapeHTML(m.home)} vs ${escapeHTML(m.away)}">Guardar marcador</button>
-      </form>`;
-    }).join("");
-  }
-
-  window.savePrediction = async (matchId) => {
-    const playerCheck = validatePlayerName(document.getElementById("playerName").value);
-    if(playerCheck.error) return showFeedback(playerCheck.error, "bad");
-    const playerNameRaw = playerCheck.value;
-    const player = cleanKey(playerNameRaw);
-    const match = matches.find(x=>x.id===matchId);
-    if(!match) return showFeedback("No se encontró el partido.", "bad");
-    if(isLocked(match)) return showFeedback("Este partido está cerrado por el admin.", "bad");
-
-    const home = document.getElementById(`p-${matchId}-h`).value;
-    const away = document.getElementById(`p-${matchId}-a`).value;
-    const errHome = validateScore(home), errAway = validateScore(away);
-    if(errHome || errAway) return showFeedback(errHome || errAway, "bad");
-
-    await save(`predictions/${player}/name`, playerNameRaw);
-    await save(`predictions/${player}/${matchId}`, {home:Number(home), away:Number(away), updatedAt:Date.now()});
-    showFeedback("Marcador guardado ✅", "ok");
-  }
-
-  function renderLeaderboard(){
-    const players = Object.entries(state.predictions || {});
-    const rows = players.map(([key, data]) => {
-      const total = matches.reduce((sum,m)=> sum + calcPoints(data[m.id], state.results?.[m.id]), 0);
-      const completed = matches.filter(m => data[m.id]).length;
-      const exact = exactCount(data);
-      return { name:data.name || key, total, completed, exact };
-    }).sort((a,b)=> b.total-a.total || b.exact-a.exact || b.completed-a.completed || a.name.localeCompare(b.name));
-
-    document.getElementById("leaderboard").innerHTML = rows.length ? rows.map((r,i)=>
-      `<div class="leader"><b>${i+1}. ${escapeHTML(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">Exactos: ${r.exact} · ${r.completed}/${matches.length}</span></span></div>`
-    ).join("") : "Aún no hay participantes.";
-
-    const openCount = matches.filter(m=>!m.closed).length;
-    const closedCount = matches.filter(m=>m.closed).length;
-    document.getElementById("summaryStats").innerHTML = `
-      <div class="summaryItem"><b>${players.length}</b><br><span class="small">Participantes</span></div>
-      <div class="summaryItem"><b>${openCount}</b><br><span class="small">Abiertos</span></div>
-      <div class="summaryItem"><b>${closedCount}</b><br><span class="small">Cerrados</span></div>`;
-  }
-
-  function renderMine(){
-    const player = cleanKey(document.getElementById("playerName").value);
-    const data = state.predictions?.[player];
-    if(!player || !data){ document.getElementById("myPredictions").innerHTML = "Escribe tu nombre para ver tus marcadores."; return; }
-    document.getElementById("myPredictions").innerHTML = matches.map(m=>{
-      const p = data[m.id];
-      const r = state.results?.[m.id];
-      return `<div class="leader"><span>${escapeHTML(m.home)} vs ${escapeHTML(m.away)}<br>
-      <span class="small">Tu marcador: ${p ? `${p.home}-${p.away}` : "sin registrar"} · Final: ${r ? `${r.home}-${r.away}` : "pendiente"} · ${m.closed ? "Cerrado" : "Abierto"}</span></span>
-      <b>${calcPoints(p,r)} pts</b></div>`;
-    }).join("");
-  }
-
-  function renderHistory(){
-    const players = Object.entries(state.predictions || {});
-    if(!players.length){
-      document.getElementById("historyPanel").innerHTML = "Aún no hay marcadores guardados.";
-      return;
-    }
-
-    document.getElementById("historyPanel").innerHTML = players.map(([key, data]) => {
-      const name = data.name || key;
-      const rows = matches.map(m => {
-        const p = data[m.id];
-        const r = state.results?.[m.id];
-        const pts = calcPoints(p,r);
-        const when = p?.updatedAt ? new Date(p.updatedAt).toLocaleString("es-CO") : "";
-        return `<div class="historyRow">
-          <span><b>${escapeHTML(m.home)} vs ${escapeHTML(m.away)}</b><br>
-          <span class="small">Predicción: ${p ? `${p.home}-${p.away}` : "Sin registrar"}${when ? " · " + escapeHTML(when) : ""} · ${m.closed ? "Cerrado" : "Abierto"}</span></span>
-          <span class="pill">${pts} pts</span>
-        </div>`;
-      }).join("");
-      return `<section class="match"><h3>👤 ${escapeHTML(name)}</h3>${rows}</section>`;
-    }).join("");
-  }
-
-  function renderAdmin(){
-    if(new URLSearchParams(location.search).get("admin") !== ADMIN_PIN) return;
-    document.body.classList.add("admin-on");
-
-    const addForm = `<form class="adminAdd" onsubmit="return false;" aria-label="Agregar partido">
-      <h3>➕ Agregar partido</h3>
-      <p class="small">Si Colombia pasa de ronda, agrega aquí el nuevo partido y se verá para todos.</p>
-      <div class="two">
-        <div><label for="newHome">Equipo local</label><input id="newHome" aria-label="Equipo local" placeholder="Ej: Colombia" maxlength="35"></div>
-        <div><label for="newAway">Equipo visitante</label><input id="newAway" aria-label="Equipo visitante" placeholder="Ej: Argentina" maxlength="35"></div>
-      </div>
-      <label for="newDateText">Texto de fecha visible</label>
-      <input id="newDateText" aria-label="Texto de fecha visible" placeholder="Ej: 2 jul 2026 - 7:00 p.m. Colombia" maxlength="60">
-      <label for="newLock">Fecha y hora informativa</label>
-      <input id="newLock" aria-label="Fecha y hora del partido" type="datetime-local">
-      <button type="button" style="margin-top:12px" onclick="addMatch()">Agregar partido</button>
-    </form>`;
-
-    const adminTips = `<div class="notice"><b>Admin:</b> cierra cada partido manualmente cuando quieras bloquear pronósticos.</div>`;
-
-    const resultsForm = matches.map(m=>{
-      const r = state.results?.[m.id] || {home:"", away:""};
-      const isExtra = state.extraMatches?.[m.id];
-      const status = m.closed ? '<span class="statusClosed">🔴 Cerrado</span>' : '<span class="statusOpen">🟢 Abierto</span>';
-      return `<form class="match" onsubmit="return false;" aria-label="Admin ${escapeHTML(m.home)} vs ${escapeHTML(m.away)}">
-        <b>${escapeHTML(m.home)} vs ${escapeHTML(m.away)}</b><br>
-        <span class="small">${escapeHTML(m.date)} · ${status}</span><br>
-        <button type="button" class="miniBtn ${m.closed ? "secondary" : "danger"}" onclick="toggleMatchClosed('${escapeHTML(m.id)}')">${m.closed ? "Reabrir partido" : "Cerrar partido"}</button>
-        ${isExtra ? `<button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${escapeHTML(m.id)}')">Eliminar partido agregado</button>` : ""}
-        <div class="scorebox">
-          <label for="r-${m.id}-h">${escapeHTML(m.home)}</label>${scoreInput(`r-${m.id}-h`, r.home, false, `Resultado ${m.home}`)}
-          <span>-</span>
-          ${scoreInput(`r-${m.id}-a`, r.away, false, `Resultado ${m.away}`)}<label for="r-${m.id}-a">${escapeHTML(m.away)}</label>
-        </div>
-        <button type="button" style="margin-top:12px" onclick="saveResult('${escapeHTML(m.id)}')">Guardar resultado final</button>
-      </form>`;
-    }).join("");
-
-    document.getElementById("adminPanel").innerHTML = addForm + adminTips + resultsForm;
-  }
-
-  window.addMatch = async()=>{
-    const check = validateMatchInput(
-      document.getElementById("newHome").value,
-      document.getElementById("newAway").value,
-      document.getElementById("newDateText").value,
-      document.getElementById("newLock").value
-    );
-    if(check.error) return showFeedback(check.error, "bad");
-    const id = makeMatchId(check.home, check.away, check.lock);
-    if(matches.some(m=>m.id===id)) return showFeedback("Ese partido ya existe.", "bad");
-    await save(`extraMatches/${id}`, { id, home:check.home, away:check.away, date:check.dateText, lock:check.lock, closed:false });
-    showFeedback("Partido agregado ✅", "ok");
-  }
-
-  window.deleteExtraMatch = async(id)=>{
-    if(!confirm("¿Eliminar este partido agregado?")) return;
-    if(!state.extraMatches?.[id]) return showFeedback("Solo puedes eliminar partidos agregados.", "bad");
-    await window.firebaseRemove(window.firebaseRef(db, "/quiniela_colombia/extraMatches/" + id));
-    showFeedback("Partido eliminado.", "ok");
-  }
-
-  async function setMatchClosed(id, closed){
-    if(state.extraMatches?.[id]) await save(`extraMatches/${id}/closed`, closed);
-    else await save(`baseMatchesStatus/${id}/closed`, closed);
-  }
-
-  window.toggleMatchClosed = async(id)=>{
-    const match = matches.find(m=>m.id===id);
-    if(!match) return showFeedback("No encontré el partido.", "bad");
-    await setMatchClosed(id, !match.closed);
-    showFeedback(!match.closed ? "Partido cerrado 🔒" : "Partido reabierto 🟢", "ok");
-  }
-
-  window.saveResult = async(matchId)=>{
-    const home = document.getElementById(`r-${matchId}-h`).value;
-    const away = document.getElementById(`r-${matchId}-a`).value;
-    const errHome = validateScore(home), errAway = validateScore(away);
-    if(errHome || errAway) return showFeedback(errHome || errAway, "bad");
-    await save(`results/${matchId}`, {home:Number(home), away:Number(away), updatedAt:Date.now()});
-    showFeedback("Resultado guardado ✅", "ok");
-  }
-
-  window.exportCSV = ()=>{
-    const rows = [["Participante","Partido","PrediccionLocal","PrediccionVisitante","ResultadoLocal","ResultadoVisitante","Puntos","Estado"]];
-    Object.entries(state.predictions || {}).forEach(([key,data])=>{
-      matches.forEach(m=>{
-        const p = data[m.id] || {};
-        const r = state.results?.[m.id] || {};
-        rows.push([data.name || key, `${m.home} vs ${m.away}`, p.home ?? "", p.away ?? "", r.home ?? "", r.away ?? "", calcPoints(p,r), m.closed ? "Cerrado" : "Abierto"]);
-      });
-    });
-    const csv = rows.map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
-    const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "polla_colombia.csv";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function renderAll(){ renderMatches(); renderLeaderboard(); renderMine(); renderHistory(); renderAdmin(); }
-
-  document.getElementById("playerName").value = localStorage.getItem("playerName") || "";
-  document.getElementById("playerName").addEventListener("input", ()=>{
-    localStorage.setItem("playerName", document.getElementById("playerName").value);
-    renderMatches();
-    renderMine();
-  });
-  document.getElementById("tabPredict").onclick=()=>show("Predict");
-  document.getElementById("tabMine").onclick=()=>show("Mine");
-  document.getElementById("tabHistory").onclick=()=>show("History");
-  document.getElementById("tabRules").onclick=()=>show("Rules");
-  function show(name){
-    for(const v of ["Predict","Mine","History","Rules"]) document.getElementById("view"+v).style.display = v===name ? "block":"none";
-  }
-
-  init();
+const firebaseConfig={apiKey:"AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk",authDomain:"golbd-d1aec.firebaseapp.com",databaseURL:"https://golbd-d1aec-default-rtdb.firebaseio.com",projectId:"golbd-d1aec",storageBucket:"golbd-d1aec.firebasestorage.app",messagingSenderId:"953286115242",appId:"1:953286115242:web:c207860ca2f546c05475d3"};
+const ADMIN_PIN="1234",MAX_SCORE=20;
+const defaultMatches=[
+{id:"COL-UZB-2026-06-17",home:"Uzbekistán",away:"Colombia",homeFlag:"🇺🇿",awayFlag:"🇨🇴",competition:"Grupo K",date:"17 jun 2026 - 9:00 p.m. Colombia",lock:"2026-06-17T21:00:00-05:00",closed:false},
+{id:"COL-COD-2026-06-23",home:"Colombia",away:"RD Congo",homeFlag:"🇨🇴",awayFlag:"🇨🇩",competition:"Grupo K",date:"23 jun 2026 - 9:00 p.m. Colombia",lock:"2026-06-23T21:00:00-05:00",closed:false},
+{id:"COL-POR-2026-06-27",home:"Colombia",away:"Portugal",homeFlag:"🇨🇴",awayFlag:"🇵🇹",competition:"Grupo K",date:"27 jun 2026 - 6:30 p.m. Colombia",lock:"2026-06-27T18:30:00-05:00",closed:false}];
+let auth,db,currentUser=null,unsubscribeData=null,state={predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{}},matches=[...defaultMatches];
+let selectedGroup="Todos";
+const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
+const txt=s=>String(s??"").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
+const key=s=>txt(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
+const matchId=(h,a,l)=>(key(h)+"-"+key(a)+"-"+l.slice(0,10)).toUpperCase();
+function flagFor(team){
+ const t=key(team);
+ if(t.includes("colombia"))return "🇨🇴";
+ if(t.includes("uzbek"))return "🇺🇿";
+ if(t.includes("portugal"))return "🇵🇹";
+ if(t.includes("congo"))return "🇨🇩";
+ if(t.includes("argentina"))return "🇦🇷";
+ if(t.includes("brasil")||t.includes("brazil"))return "🇧🇷";
+ if(t.includes("inglaterra")||t.includes("england"))return "🏴";
+ if(t.includes("croacia")||t.includes("croatia"))return "🇭🇷";
+ return "🏳️";
+}
+const msg=(m,t="ok")=>document.getElementById("feedback").innerHTML=`<span class="${t}">${esc(m)}</span>`;
+const authMsg=(m,t="ok")=>document.getElementById("authMsg").innerHTML=`<span class="${t}">${esc(m)}</span>`;
+function rt(a,b){return a===b?"D":a>b?"H":"A"}
+function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;if(ph-pa===rh-ra)return 1;return 0}
+function validScore(v){if(v==="")return"Completa ambos goles.";let n=Number(v);if(!Number.isInteger(n))return"Los goles deben ser enteros.";if(n<0||n>MAX_SCORE)return`Los goles deben estar entre 0 y ${MAX_SCORE}.`;return null}
+function rebuild(){matches=[...defaultMatches.map(m=>({...m,...(state.baseMatchesStatus?.[m.id]||{})})),...Object.values(state.extraMatches||{})].sort((a,b)=>new Date(a.lock)-new Date(b.lock))}
+async function init(){
+const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
+const {getDatabase,ref,onValue,set,remove}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
+const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
+window.fb={ref,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile};
+const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
+onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");currentUserLabel.textContent=user.displayName||user.email;listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
+}
+function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue?null:null;import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js").then(({onValue})=>{unsubscribeData=onValue(fb.ref(db,"/quiniela_colombia"),snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{}};rebuild();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')})}
+window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
+window.login=async()=>{let email=document.getElementById("email").value.trim(),pass=password.value;if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");try{let c=await fb.signInWithEmailAndPassword(auth,email,pass);await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email);authMsg("Ingreso correcto ✅")}catch(e){authMsg(authError(e),"bad")}}
+window.logout=()=>fb.signOut(auth);
+function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado. Usa Ingresar.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("weak-password"))return"Contraseña débil.";if(c.includes("invalid-email"))return"Correo inválido.";return e.message||"Error"}
+async function saveUser(uid,name,email){let group=document.getElementById("poolGroup")?.value||"Grupo 1";await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{name:txt(name),email:String(email).slice(0,80),group,updatedAt:Date.now()})}
+async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
+const score=(id,v,d,l)=>`<input id="${id}" aria-label="${esc(l)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${esc(v??"")}" ${d?"disabled":""}>`;
+function renderMatches(){let uid=currentUser?.uid;matchesDiv.innerHTML=matches.map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},closed=m.closed===true;return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${closed?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,closed,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,closed,"Goles "+m.away)}<label>${esc(m.away)}</label></div><button type="button" ${closed?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
+window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(m.closed)return msg("Partido cerrado por admin","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
+function exact(data){return matches.reduce((s,m)=>s+(pts(data[m.id],state.results?.[m.id])===5?1:0),0)}
+function renderGroupButtons(){
+ let groups=["Todos",...new Set(Object.values(state.users||{}).map(u=>u.group||"Grupo 1"))];
+ groupButtons.innerHTML=groups.map(g=>`<button class="${selectedGroup===g?"active":"secondary"}" onclick="setGroup('${esc(g)}')">${g==="Todos"?"Todos":"Polla "+esc(g)}</button>`).join("");
+}
+window.setGroup=(g)=>{selectedGroup=g;renderLeaderboard();renderGroupButtons();};
+function renderLeaderboard(){renderGroupButtons();let rows=Object.entries(state.predictions||{}).filter(([uid])=>selectedGroup==="Todos"||(state.users?.[uid]?.group||"Grupo 1")===selectedGroup).map(([uid,data])=>{let name=state.users?.[uid]?.name||data.name||"Usuario",total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0),completed=matches.filter(m=>data[m.id]).length,ex=exact(data);return{name,total,completed,ex,group:state.users?.[uid]?.group||"Grupo 1"}}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));leaderboard.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Aún no hay participantes.";summaryStats.innerHTML=`<div class="summaryItem"><b>${rows.length}</b><br><span class="small">Participantes</span></div><div class="summaryItem"><b>${matches.filter(m=>!m.closed).length}</b><br><span class="small">Abiertos</span></div><div class="summaryItem"><b>${matches.filter(m=>m.closed).length}</b><br><span class="small">Cerrados</span></div>`}
+function renderMine(){let d=state.predictions?.[currentUser?.uid];myPredictions.innerHTML=d?matches.map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
+function renderHistory(){let players=Object.entries(state.predictions||{});historyPanel.innerHTML=players.length?players.map(([uid,data])=>`<section class="match"><h3>👤 ${esc(state.users?.[uid]?.name||data.name||"Usuario")} <span class="pill">${esc(state.users?.[uid]?.group||"Grupo 1")}</span></h3>${matches.map(m=>{let p=data[m.id],r=state.results?.[m.id],when=p?.updatedAt?new Date(p.updatedAt).toLocaleString("es-CO"):"";return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}${when?" · "+esc(when):""}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")}</section>`).join(""):"Aún no hay marcadores."}
+function renderAdmin(){if(new URLSearchParams(location.search).get("admin")!==ADMIN_PIN)return;document.body.classList.add("admin-on");adminPanel.innerHTML=`<form class="match" onsubmit="return false"><h3>➕ Agregar partido</h3><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Fecha/hora</label><input id="newLock" type="datetime-local"><button onclick="addMatch()">Agregar</button></form>`+matches.map(m=>{let r=state.results?.[m.id]||{},extra=state.extraMatches?.[m.id];return`<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">${m.closed?"🔴 Cerrado":"🟢 Abierto"}</span><br><button type="button" class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>${extra?` <button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}<div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado "+m.home)}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado "+m.away)}<label>${esc(m.away)}</label></div><button type="button" onclick="saveResult('${esc(m.id)}')">Guardar resultado</button></form>`}).join("")}
+window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim().slice(0,60),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa todos los datos","bad");if(key(h)===key(a))return msg("Los equipos no pueden ser iguales","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Eliminatoria / Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
+window.deleteExtraMatch=async id=>{if(confirm("¿Eliminar partido?"))await fb.remove(fb.ref(db,"/quiniela_colombia/extraMatches/"+id))}
+window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed);msg(!m.closed?"Partido cerrado 🔒":"Partido reabierto 🟢")}
+window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
+window.exportCSV=()=>{let rows=[["Participante","Partido","PredLocal","PredVisit","ResLocal","ResVisit","Puntos"]];Object.entries(state.predictions||{}).forEach(([uid,data])=>matches.forEach(m=>{let p=data[m.id]||{},r=state.results?.[m.id]||{};rows.push([state.users?.[uid]?.name||data.name||"Usuario",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)])}));let csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="polla_colombia.csv";a.click();URL.revokeObjectURL(a.href)}
+function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin()}
+tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
+function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
+const matchesDiv=document.getElementById("matches");init();
 </script>
-</body>
-</html>
+</body></html>
