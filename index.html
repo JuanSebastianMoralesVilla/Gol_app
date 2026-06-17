@@ -24,7 +24,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 @media(max-width:560px){.scorebox{grid-template-columns:1fr 70px 18px 70px 1fr;font-size:13px}}
 .leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid #fff2}
 .pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:#ffd43b29;color:var(--yellow)}
-.notice{background:#2f80ed24;border:1px solid #2f80ed47;border-radius:16px;padding:12px;margin:12px 0}.ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
+.notice{background:#2f80ed24;border:1px solid #2f80ed47;border-radius:16px;padding:12px;margin:12px 0}.pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}.ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
 .hidden{display:none!important}.admin{display:none}body.admin-on .admin{display:block}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.two{grid-template-columns:1fr}}
 .statusOpen{color:var(--ok);font-weight:800}.statusClosed{color:#ffaaa5;font-weight:800}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}.adminTable{width:100%;border-collapse:collapse;font-size:13px}.adminTable th,.adminTable td{border-bottom:1px solid #fff2;padding:8px;text-align:left}.adminSection{margin-top:14px}
 .summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.summaryItem{background:#fff1;border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center}.summaryItem b{font-size:20px}
@@ -37,7 +37,6 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 <h2>Ingreso</h2><p class="small">Regístrate una vez. Firebase guarda la contraseña de forma segura; la app no la ve.</p>
 <div id="authMsg" class="small warn"></div>
 <label>Nombre visible</label><input id="displayName" maxlength="35" autocomplete="name">
-<label>Grupo de polla</label><select id="poolGroup" style="width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px"><option value="Grupo 1">Polla Grupo 1</option><option value="Grupo 2">Polla Grupo 2</option><option value="Grupo 3">Polla Grupo 3</option></select>
 <label>Correo</label><input id="email" type="email" autocomplete="email">
 <label>Contraseña</label><input id="password" type="password" minlength="6" autocomplete="current-password">
 <br><br><button onclick="login()">Ingresar</button> <button class="secondary" onclick="registerUser()">Registrarme</button>
@@ -101,7 +100,7 @@ const {getDatabase,ref,onValue,set,remove}=await import("https://www.gstatic.com
 const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
 window.fb={ref,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile};
 const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
-onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");currentUserLabel.textContent=(user.displayName||user.email)+(ADMIN_EMAILS.includes((user.email||"").toLowerCase())?" · ADMIN":"");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
+onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");currentUserLabel.textContent=(user.displayName||user.email)+(ADMIN_EMAILS.includes((user.email||"").toLowerCase())?" · 👑 ADMIN":"");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
 }
 function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue?null:null;import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js").then(({onValue})=>{unsubscribeData=onValue(fb.ref(db,"/quiniela_colombia"),snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')})}
 window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
@@ -114,12 +113,18 @@ async function saveUser(uid,name,email){
 }
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
 const score=(id,v,d,l)=>`<input id="${id}" aria-label="${esc(l)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${esc(v??"")}" ${d?"disabled":""}>`;
-function renderMatches(){let uid=currentUser?.uid;matchesDiv.innerHTML=matches.map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},closed=m.closed===true;return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${closed?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,closed,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,closed,"Goles "+m.away)}<label>${esc(m.away)}</label></div><button type="button" ${closed?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
-window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false)return msg("Tu usuario está desactivado. Habla con el admin.","bad");if(m.closed)return msg("Partido cerrado por admin","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
+function renderMatches(){let uid=currentUser?.uid;
+let userInfo=state.users?.[uid]||{};
+if(userInfo.active===false && !isAdmin()){
+ matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>Tu usuario ya fue creado, pero el administrador debe activarte y asignarte un grupo antes de que puedas registrar marcadores.</div>`;
+ return;
+}
+matchesDiv.innerHTML=matches.map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},closed=m.closed===true;return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${closed?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,closed,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,closed,"Goles "+m.away)}<label>${esc(m.away)}</label></div><button type="button" ${closed?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
+window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Tu usuario está pendiente de activación por el admin.","bad");if(m.closed)return msg("Partido cerrado por admin","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
 function exact(data){return matches.reduce((s,m)=>s+(pts(data[m.id],state.results?.[m.id])===5?1:0),0)}
 function renderGroupButtons(){
  let groups=["Todos",...new Set(Object.values(state.users||{}).map(u=>u.group||"Grupo 1"))];
- groupButtons.innerHTML=groups.map(g=>`<button class="${selectedGroup===g?"active":"secondary"}" onclick="setGroup('${esc(g)}')">${g==="Todos"?"Todos":"Polla "+esc(g)}</button>`).join("");
+ groupButtons.innerHTML=groups.map(g=>`<button class="${selectedGroup===g?"active":"secondary"}" onclick="setGroup('${esc(g)}')">${g==="Todos"?"Todos":(g==="Sin asignar"?"Sin asignar":"Polla "+esc(g))}</button>`).join("");
 }
 window.setGroup=(g)=>{selectedGroup=g;renderLeaderboard();renderGroupButtons();};
 function renderLeaderboard(){renderGroupButtons();let rows=Object.entries(state.predictions||{}).filter(([uid])=>selectedGroup==="Todos"||(state.users?.[uid]?.group||"Grupo 1")===selectedGroup).map(([uid,data])=>{let name=state.users?.[uid]?.name||data.name||"Usuario",total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0),completed=matches.filter(m=>data[m.id]).length,ex=exact(data);return{name,total,completed,ex,group:state.users?.[uid]?.group||"Grupo 1"}}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));leaderboard.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Aún no hay participantes.";summaryStats.innerHTML=`<div class="summaryItem"><b>${rows.length}</b><br><span class="small">Participantes</span></div><div class="summaryItem"><b>${matches.filter(m=>!m.closed).length}</b><br><span class="small">Abiertos</span></div><div class="summaryItem"><b>${matches.filter(m=>m.closed).length}</b><br><span class="small">Cerrados</span></div>`}
@@ -128,14 +133,15 @@ function renderHistory(){let players=Object.entries(state.predictions||{});histo
 function renderAdmin(){
  if(!isAdmin())return;
  document.body.classList.add("admin-on");
+
  const totalUsers=Object.keys(state.users||{}).length;
  const totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
- const groups=[...new Set(["Grupo 1","Grupo 2","Grupo 3",...Object.values(state.users||{}).map(u=>u.group||"Grupo 1"),...Object.values(state.groups||{}).map(g=>g.name)].filter(Boolean))];
+ const groups=[...new Set(["Grupo 1","Grupo 2","Grupo 3",...Object.values(state.users||{}).map(u=>u.group||"Sin asignar"),...Object.values(state.groups||{}).map(g=>g.name)].filter(Boolean))];
 
  const dashboard=`<div class="summaryBox">
    <div class="summaryItem"><b>${totalUsers}</b><br><span class="small">Usuarios</span></div>
    <div class="summaryItem"><b>${totalPred}</b><br><span class="small">Predicciones</span></div>
-   <div class="summaryItem"><b>${groups.length}</b><br><span class="small">Grupos</span></div>
+   <div class="summaryItem"><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div>
  </div>`;
 
  const groupAdmin=`<div class="match adminSection">
@@ -146,24 +152,26 @@ function renderAdmin(){
  </div>`;
 
  const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{
-   const opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Grupo 1")===g?"selected":""}>${esc(g)}</option>`).join("");
+   const opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Sin asignar")===g?"selected":""}>${esc(g)}</option>`).join("");
    const p=state.predictions?.[uid]||{};
    const total=matches.reduce((s,m)=>s+pts(p[m.id],state.results?.[m.id]),0);
+   const status=u.active===false?"Pendiente/Inactivo":"Activo";
    return `<tr>
      <td>${esc(u.name||"Usuario")}</td>
      <td>${esc(u.email||"")}</td>
      <td><select id="grp-${uid}" style="background:#09182b;color:white;border-radius:10px;padding:7px">${opts}</select></td>
      <td>${total} pts</td>
-     <td>${u.active===false?"Inactivo":"Activo"}</td>
+     <td>${status}</td>
      <td>
        <button class="miniBtn" onclick="changeUserGroup('${uid}')">Guardar grupo</button>
-       <button class="danger miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button>
+       <button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button>
      </td>
    </tr>`;
  }).join("");
 
  const usersAdmin=`<div class="match adminSection">
    <h3>🙋 Participantes</h3>
+   <p class="small">Los usuarios se registran sin grupo. Aquí los activas y les asignas grupo.</p>
    <table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table>
  </div>`;
 
@@ -203,9 +211,9 @@ window.changeUserGroup=async(uid)=>{
 }
 window.toggleUserActive=async(uid)=>{
  if(!isAdmin())return msg("Solo admin","bad");
- let active=state.users?.[uid]?.active!==false;
+ let active=state.users?.[uid]?.active===true;
  await save(`users/${uid}/active`,!active);
- msg(active?"Usuario desactivado":"Usuario activado");
+ msg(active?"Usuario desactivado":"Usuario activado ✅");
 }
 window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim().slice(0,60),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa todos los datos","bad");if(key(h)===key(a))return msg("Los equipos no pueden ser iguales","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Eliminatoria / Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
 window.deleteExtraMatch=async id=>{if(confirm("¿Eliminar partido?"))await fb.remove(fb.ref(db,"/quiniela_colombia/extraMatches/"+id))}
