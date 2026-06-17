@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Polla Colombia</title>
+<title>Polla Colombia con Login</title>
 <style>
 :root{--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;--red:#ff6b6b;--ok:#7dffb1;--border:rgba(255,255,255,.16)}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
@@ -27,7 +27,12 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 .notice{background:#2f80ed24;border:1px solid #2f80ed47;border-radius:16px;padding:12px;margin:12px 0}.pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}.ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
 .hidden{display:none!important}.admin{display:none}body.admin-on .admin{display:block}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.two{grid-template-columns:1fr}}
 .statusOpen{color:var(--ok);font-weight:800}.statusClosed{color:#ffaaa5;font-weight:800}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}.adminTable{width:100%;border-collapse:collapse;font-size:13px}.adminTable th,.adminTable td{border-bottom:1px solid #fff2;padding:8px;text-align:left}.adminSection{margin-top:14px}
-.summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.summaryItem{background:#fff1;border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center}.summaryItem b{font-size:20px}
+.summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.dashCard{background:linear-gradient(180deg,#ffffff12,#ffffff08);border:1px solid #ffffff22;border-radius:18px;padding:14px;text-align:center}
+.dashCard .icon{font-size:26px;display:block;margin-bottom:5px}
+.dashCard b{font-size:22px}
+@media(max-width:760px){.dashGrid{grid-template-columns:repeat(2,1fr)}}.summaryItem{background:#fff1;border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center}.summaryItem b{font-size:20px}
 </style>
 </head>
 <body>
@@ -62,7 +67,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 <aside class="card">
 <h2>🏆 Tabla</h2><div class="groupSelect" id="groupButtons"></div><div id="leaderboard" class="small"></div><div id="summaryStats" class="summaryBox"></div>
 <div class="notice">Solo puedes ver los participantes de tu grupo.</div><div id="connectionStatus" class="small warn"></div>
-<button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+<button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button>
 <div class="admin"><h2>Panel admin</h2><p class="small">Visible solo para el correo admin autorizado.</p><div id="adminPanel"></div></div>
 </aside>
 </section>
@@ -129,8 +134,8 @@ if(userInfo.active===false && !isAdmin()){
  matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>Tu usuario ya fue creado, pero el administrador debe activarte y asignarte un grupo antes de que puedas registrar marcadores.</div>`;
  return;
 }
-matchesDiv.innerHTML=matches.map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},closed=m.closed===true;return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${closed?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,closed,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,closed,"Goles "+m.away)}<label>${esc(m.away)}</label></div><button type="button" ${closed?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
-window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Tu usuario está pendiente de activación por el admin.","bad");if(m.closed)return msg("Partido cerrado por admin","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
+matchesDiv.innerHTML=matches.map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},closed=m.closed===true;return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${closed?`<span class="statusClosed">🔴 ${m.closed?'Cerrado por admin':'Cerrado automático'}</span>`:'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,closed,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,closed,"Goles "+m.away)}<label>${esc(m.away)}</label></div><button type="button" ${closed?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
+window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Tu usuario está pendiente de activación por el admin.","bad");if(isLocked(m))return msg(m.closed?"Partido cerrado por admin":"Partido cerrado automáticamente por fecha/hora","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
 function exact(data){return matches.reduce((s,m)=>s+(pts(data[m.id],state.results?.[m.id])===5?1:0),0)}
 function renderGroupButtons(){
  let groups=["Todos",...new Set(Object.values(state.users||{}).map(u=>u.group||"Grupo 1"))];
@@ -154,7 +159,12 @@ leaderboard.innerHTML=`<div class="notice"><b>${title}</b></div>`+(rows.length?r
 let groupName=currentUserGroup();
 let groupValue=isAdmin()?0:getGroupValue(groupName);
 let bag=groupValue*entries.length;
-summaryStats.innerHTML=`<div class="summaryItem"><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="summaryItem"><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor</span></div><div class="summaryItem"><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div>`;
+summaryStats.innerHTML=`<div class="dashGrid">
+ <div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div>
+ <div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div>
+ <div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div>
+ <div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Partidos abiertos</span></div>
+</div>`;
 }
 function renderMine(){let d=state.predictions?.[currentUser?.uid];myPredictions.innerHTML=d?matches.map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
 function renderHistory(){
@@ -175,10 +185,11 @@ function renderAdmin(){
  const totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
  const groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];
 
- const dashboard=`<div class="summaryBox">
-   <div class="summaryItem"><b>${totalUsers}</b><br><span class="small">Usuarios</span></div>
-   <div class="summaryItem"><b>${totalPred}</b><br><span class="small">Predicciones</span></div>
-   <div class="summaryItem"><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div>
+ const dashboard=`<div class="dashGrid">
+   <div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div>
+   <div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div>
+   <div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div>
+   <div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(Object.values(state.users||{}).reduce((s,u)=>s+getGroupValue(u.group||"Sin asignar"),0))}</b><br><span class="small">Recaudado estimado</span></div>
  </div>`;
 
  const groupAdmin=`<div class="match adminSection">
@@ -214,14 +225,14 @@ function renderAdmin(){
    <h3>➕ Agregar partido</h3>
    <div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div>
    <label>Fecha visible</label><input id="newDateText">
-   <label>Fecha/hora</label><input id="newLock" type="datetime-local">
+   <label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local">
    <button type="button" onclick="addMatch()">Agregar</button>
  </form>`;
 
  const matchAdmin=matches.map(m=>{
    let r=state.results?.[m.id]||{},extra=state.extraMatches?.[m.id];
    return `<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><br>
-   <span class="small">${m.closed?"🔴 Cerrado":"🟢 Abierto"}</span><br>
+   <span class="small">${isLocked(m)?(m.closed?"🔴 Cerrado por admin":"🔴 Cerrado automático"):"🟢 Abierto"}</span><br>
    <button type="button" class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>
    ${extra?` <button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}
    <div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado "+m.home)}
@@ -256,10 +267,30 @@ window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=Str
 window.deleteExtraMatch=async id=>{if(confirm("¿Eliminar partido?"))await fb.remove(fb.ref(db,"/quiniela_colombia/extraMatches/"+id))}
 window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed);msg(!m.closed?"Partido cerrado 🔒":"Partido reabierto 🟢")}
 window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
-window.exportCSV=()=>{let rows=[["Participante","Partido","PredLocal","PredVisit","ResLocal","ResVisit","Puntos"]];Object.entries(state.predictions||{}).forEach(([uid,data])=>matches.forEach(m=>{let p=data[m.id]||{},r=state.results?.[m.id]||{};rows.push([state.users?.[uid]?.name||data.name||"Usuario",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)])}));let csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="polla_colombia.csv";a.click();URL.revokeObjectURL(a.href)}
+
+window.exportExcel=()=>{
+ const rows=[["Grupo","Participante","Correo","Partido","Predicción Local","Predicción Visitante","Resultado Local","Resultado Visitante","Puntos","Estado"]];
+ const entries=isAdmin()?Object.entries(state.predictions||{}):visiblePlayerEntries();
+ entries.forEach(([uid,data])=>{
+   const u=state.users?.[uid]||{};
+   matches.forEach(m=>{
+     const p=data[m.id]||{}, r=state.results?.[m.id]||{};
+     rows.push([u.group||"Sin asignar",u.name||data.name||"Usuario",u.email||"",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r),isLocked(m)?"Cerrado":"Abierto"]);
+   });
+ });
+ const htmlTable=`<html><head><meta charset="utf-8"></head><body><table border="1">${rows.map(row=>`<tr>${row.map(cell=>`<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</table></body></html>`;
+ const blob=new Blob([htmlTable],{type:"application/vnd.ms-excel;charset=utf-8"});
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="polla_colombia.xls";
+ a.click();
+ URL.revokeObjectURL(a.href);
+}
+
 function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin()}
 tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
 function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
 const matchesDiv=document.getElementById("matches");init();
+setInterval(()=>{ if(currentUser) renderAll(); }, 60000);
 </script>
 </body></html>
