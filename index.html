@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quiniela Selección Colombia</title>
+  <title>Marcadores Selección Colombia</title>
   <style>
     :root{
       --bg:#07111f; --card:#0f2138; --muted:#9fb3c8; --text:#f7fbff;
@@ -45,8 +45,8 @@
 </head>
 <body>
 <header>
-  <h1>🇨🇴 Quiniela Selección Colombia</h1>
-  <p>Predice marcadores, suma puntos y compite con tus amigos. Sin dinero, solo diversión y orgullo cafetero.</p>
+  <h1>Polla Selección Colombia</h1>
+  <p>Pon tu marcador y listo!</p>
 </header>
 
 <main class="wrap">
@@ -101,13 +101,13 @@
   // 1) Pega aquí tu configuración de Firebase.
   // Firebase Console > Project settings > General > Your apps > Web app.
   const firebaseConfig = {
-    apiKey: "PEGA_AQUI_TU_API_KEY",
-    authDomain: "PEGA_AQUI.firebaseapp.com",
-    databaseURL: "https://PEGA_AQUI-default-rtdb.firebaseio.com",
-    projectId: "PEGA_AQUI",
-    storageBucket: "PEGA_AQUI.appspot.com",
-    messagingSenderId: "PEGA_AQUI",
-    appId: "PEGA_AQUI"
+   apiKey: "AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk",
+  authDomain: "golbd-d1aec.firebaseapp.com",
+  databaseURL: "https://golbd-d1aec-default-rtdb.firebaseio.com",
+  projectId: "golbd-d1aec",
+  storageBucket: "golbd-d1aec.firebasestorage.app",
+  messagingSenderId: "953286115242",
+  appId: "1:953286115242:web:c207860ca2f546c05475d3"
   };
 
   const ADMIN_PIN = "1234"; // Cambia esto antes de compartir.
@@ -134,7 +134,7 @@
   }
 
   async function init(){
-    const validConfig = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("PEGA_AQUI");
+    const validConfig = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk");
     if(validConfig){
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
       const { getDatabase, ref, onValue, set } = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
