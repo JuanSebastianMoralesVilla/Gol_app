@@ -26,7 +26,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 .pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:#ffd43b29;color:var(--yellow)}
 .notice{background:#2f80ed24;border:1px solid #2f80ed47;border-radius:16px;padding:12px;margin:12px 0}.pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}.ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
 .hidden{display:none!important}.admin{display:none}body.admin-on .admin{display:block}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.two{grid-template-columns:1fr}}
-.statusOpen{color:var(--ok);font-weight:800}.statusClosed{color:#ffaaa5;font-weight:800}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}.adminTable{width:100%;border-collapse:collapse;font-size:13px}.adminTable th,.adminTable td{border-bottom:1px solid #fff2;padding:8px;text-align:left}.adminSection{margin-top:14px}
+.statusOpen{color:var(--ok);font-weight:800}.statusClosed{color:#ffaaa5;font-weight:800}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}.adminTable,.groupTable{width:100%;border-collapse:collapse;font-size:13px}.adminTable th,.adminTable td,.groupTable th,.groupTable td{border-bottom:1px solid #fff2;padding:8px;text-align:left}.adminSection{margin-top:14px}
 .summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
 .dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
 .dashCard{background:linear-gradient(180deg,#ffffff12,#ffffff08);border:1px solid #ffffff22;border-radius:18px;padding:14px;text-align:center}
@@ -44,7 +44,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 <label>Nombre visible</label><input id="displayName" maxlength="35" autocomplete="name">
 <label>Correo</label><input id="email" type="email" autocomplete="email">
 <label>Contraseña</label><input id="password" type="password" minlength="6" autocomplete="current-password">
-<br><br><button onclick="login()">Ingresar</button> <button class="secondary" onclick="registerUser()">Registrarme</button>
+<br><br><button onclick="login()">Ingresar</button> <button class="secondary" onclick="registerUser()">Registrarme</button><p class="small"><a href="#" onclick="resetPassword();return false;" style="color:#ffd43b;font-weight:800">🔑 ¿Olvidaste tu contraseña?</a><br>Escribe tu correo y te enviaremos el enlace de recuperación.</p>
 </section>
 
 <section id="app" class="grid hidden">
@@ -112,14 +112,24 @@ function rebuild(){matches=[...defaultMatches.map(m=>({...m,...(state.baseMatche
 async function init(){
 const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
 const {getDatabase,ref,onValue,set,remove}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
-const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
-window.fb={ref,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile};
+const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
+window.fb={ref,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};
 const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
 onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");currentUserLabel.textContent=(user.displayName||user.email)+(ADMIN_EMAILS.includes((user.email||"").toLowerCase())?" · 👑 ADMIN":"");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
 }
 function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue?null:null;import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js").then(({onValue})=>{unsubscribeData=onValue(fb.ref(db,"/quiniela_colombia"),snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')})}
 window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
 window.login=async()=>{let email=document.getElementById("email").value.trim(),pass=password.value;if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");try{let c=await fb.signInWithEmailAndPassword(auth,email,pass);await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email);authMsg("Ingreso correcto ✅")}catch(e){authMsg(authError(e),"bad")}}
+window.resetPassword=async()=>{
+ let email=document.getElementById("email").value.trim();
+ if(!email||!email.includes("@"))return authMsg("Escribe tu correo válido primero.","bad");
+ try{
+   await fb.sendPasswordResetEmail(auth,email);
+   authMsg("✅ Te enviamos un correo para restablecer tu contraseña. Revisa también Spam.","ok");
+ }catch(e){
+   authMsg(authError(e),"bad");
+ }
+}
 window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado. Usa Ingresar.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("weak-password"))return"Contraseña débil.";if(c.includes("invalid-email"))return"Correo inválido.";return e.message||"Error"}
 async function saveUser(uid,name,email){
@@ -192,9 +202,30 @@ function renderAdmin(){
    <div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(Object.values(state.users||{}).reduce((s,u)=>s+getGroupValue(u.group||"Sin asignar"),0))}</b><br><span class="small">Recaudado estimado</span></div>
  </div>`;
 
+ const groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`
+   <tr>
+    <td><input id="gname-${gid}" value="${esc(g.name||'')}" maxlength="35"></td>
+    <td><input id="gval-${gid}" type="number" inputmode="numeric" min="0" value="${Number(g.value||0)}"></td>
+    <td>${Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===(g.name||"")).length}</td>
+    <td>
+      <button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button>
+      <button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button>
+    </td>
+   </tr>`).join("");
+
  const groupAdmin=`<div class="match adminSection">
-   <h3>👥 Crear grupo</h3>
-   <label>Nombre del nuevo grupo</label><input id="newGroupName" placeholder="Ej: Oficina Carvajal"><label>Valor por participante</label><input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000"><button type="button" onclick="addGroup()">Crear grupo</button>
+   <h3>👥 Grupos</h3>
+   <p class="small">Crea o edita grupos. El valor se usa solo como referencia interna del grupo.</p>
+   <label>Nombre del nuevo grupo</label>
+   <input id="newGroupName" placeholder="Ej: Oficina Carvajal">
+   <label>Valor por participante</label>
+   <input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000">
+   <button type="button" onclick="addGroup()">Crear grupo</button>
+   <br><br>
+   <table class="groupTable">
+    <thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead>
+    <tbody>${groupRows||"<tr><td colspan='4'>Aún no hay grupos creados.</td></tr>"}</tbody>
+   </table>
  </div>`;
 
  const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{
@@ -248,8 +279,46 @@ window.addGroup=async()=>{
  if(name.length<2)return msg("Nombre de grupo inválido","bad");
  if(!Number.isFinite(value)||value<0)return msg("Valor inválido","bad");
  let id=key(name).toUpperCase();
- await save(`groups/${id}`,{id,name,value,createdAt:Date.now()});
+ if(state.groups?.[id])return msg("Ese grupo ya existe","bad");
+ await save(`groups/${id}`,{id,name,value,createdAt:Date.now(),updatedAt:Date.now()});
  msg("Grupo creado ✅");
+}
+
+window.updateGroup=async(gid)=>{
+ if(!isAdmin())return msg("Solo admin","bad");
+ const oldGroup=state.groups?.[gid];
+ if(!oldGroup)return msg("Grupo no encontrado","bad");
+ const newName=txt(document.getElementById("gname-"+gid).value);
+ const newValue=Number(document.getElementById("gval-"+gid).value||0);
+ if(newName.length<2)return msg("Nombre de grupo inválido","bad");
+ if(!Number.isFinite(newValue)||newValue<0)return msg("Valor inválido","bad");
+
+ await save(`groups/${gid}/name`,newName);
+ await save(`groups/${gid}/value`,newValue);
+ await save(`groups/${gid}/updatedAt`,Date.now());
+
+ // Si se cambia el nombre del grupo, actualiza los usuarios que estaban en ese grupo.
+ const oldName=oldGroup.name;
+ if(oldName && oldName!==newName){
+   const usersToMove=Object.entries(state.users||{}).filter(([uid,u])=>(u.group||"Sin asignar")===oldName);
+   for(const [uid] of usersToMove){
+     await save(`users/${uid}/group`,newName);
+   }
+ }
+ msg("Grupo actualizado ✅");
+}
+
+window.deleteGroup=async(gid)=>{
+ if(!isAdmin())return msg("Solo admin","bad");
+ const g=state.groups?.[gid];
+ if(!g)return msg("Grupo no encontrado","bad");
+ const count=Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===g.name).length;
+ if(count>0){
+   return msg("No puedes eliminar un grupo con usuarios. Primero muévelos a otro grupo.","bad");
+ }
+ if(!confirm("¿Eliminar este grupo?"))return;
+ await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));
+ msg("Grupo eliminado ✅");
 }
 window.changeUserGroup=async(uid)=>{
  if(!isAdmin())return msg("Solo admin","bad");
