@@ -41,7 +41,13 @@
     .ok{color:#7dffb1}.bad{color:#ffaaa5}.warn{color:#ffd43b}
     .adminAdd{border:1px solid rgba(255,212,59,.25);border-radius:18px;padding:14px;margin:12px 0;background:rgba(255,212,59,.05)}
     .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:560px){.two{grid-template-columns:1fr}}
+    .statusOpen{color:#7dffb1;font-weight:800}
+    .statusClosed{color:#ffaaa5;font-weight:800}
+    .miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
+    .summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+    .summaryItem{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px;text-align:center}
+    .summaryItem b{font-size:20px}
+    @media(max-width:560px){.two,.summaryBox{grid-template-columns:1fr}}
     .admin{display:none}
     body.admin-on .admin{display:block}
     footer{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}
@@ -94,6 +100,7 @@
     <aside class="card">
       <h2>🏆 Tabla de posiciones</h2>
       <div id="leaderboard" class="small">Cargando ranking...</div>
+      <div id="summaryStats" class="summaryBox"></div>
 
       <div class="notice">
         Comparte el link con tus amigos. Soporta 20+ usuarios usando Firebase gratis.
@@ -126,15 +133,15 @@
   const ADMIN_PIN = "1234"; // Cambia esto antes de compartir.
 
   const defaultMatches = [
-    { id:"COL-UZB-2026-06-17", home:"Uzbekistán", away:"Colombia", date:"17 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-17T21:00:00-05:00" },
-    { id:"COL-COD-2026-06-23", home:"Colombia", away:"RD Congo", date:"23 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-23T21:00:00-05:00" },
-    { id:"COL-POR-2026-06-27", home:"Colombia", away:"Portugal", date:"27 jun 2026 - 6:30 p.m. Colombia", lock:"2026-06-27T18:30:00-05:00" }
+    { id:"COL-UZB-2026-06-17", home:"Uzbekistán", away:"Colombia", date:"17 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-17T21:00:00-05:00", closed:false },
+    { id:"COL-COD-2026-06-23", home:"Colombia", away:"RD Congo", date:"23 jun 2026 - 9:00 p.m. Colombia", lock:"2026-06-23T21:00:00-05:00", closed:false },
+    { id:"COL-POR-2026-06-27", home:"Colombia", away:"Portugal", date:"27 jun 2026 - 6:30 p.m. Colombia", lock:"2026-06-27T18:30:00-05:00", closed:false }
   ];
   let matches = [...defaultMatches];
 
   let db = null;
   let usingFirebase = false;
-  let state = { predictions:{}, results:{}, extraMatches:{} };
+  let state = { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
 
   function cleanKey(s){ return (s||"").trim().toLowerCase().replace(/[.#$[\]/]/g,"-").slice(0,35); }
   function makeMatchId(home, away, lock){
@@ -162,8 +169,11 @@
         usingFirebase = true;
         status.innerHTML = '<span class="ok">✅ Conectado a Firebase.</span>';
         onValue(ref(db, "/quiniela_colombia"), snap => {
-          state = snap.val() || { predictions:{}, results:{}, extraMatches:{} };
-          matches = [...defaultMatches, ...Object.values(state.extraMatches || {})].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
+          state = snap.val() || { predictions:{}, results:{}, extraMatches:{}, baseMatchesStatus:{} };
+          matches = [
+            ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
+            ...Object.values(state.extraMatches || {})
+          ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
           renderAll();
         }, error => {
           status.innerHTML = '<span class="bad">❌ Error leyendo Firebase: '+ error.message +'</span>';
@@ -177,8 +187,11 @@
       }
     } else {
       usingFirebase = false;
-      state = JSON.parse(localStorage.getItem("quiniela_colombia_demo") || '{"predictions":{},"results":{},"extraMatches":{}}');
-      matches = [...defaultMatches, ...Object.values(state.extraMatches || {})].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
+      state = JSON.parse(localStorage.getItem("quiniela_colombia_demo") || '{"predictions":{},"results":{},"extraMatches":{},"baseMatchesStatus":{}}');
+      matches = [
+        ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
+        ...Object.values(state.extraMatches || {})
+      ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
       renderAll();
       alert("Modo demo local: pega tu configuración de Firebase para que funcione entre varios usuarios.");
     }
@@ -195,7 +208,10 @@
         for(let i=0;i<parts.length-1;i++){ obj[parts[i]] ??= {}; obj = obj[parts[i]]; }
         obj[parts.at(-1)] = value;
         localStorage.setItem("quiniela_colombia_demo", JSON.stringify(state));
-        matches = [...defaultMatches, ...Object.values(state.extraMatches || {})].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
+        matches = [
+        ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
+        ...Object.values(state.extraMatches || {})
+      ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
         renderAll();
       }
     } catch(error){
@@ -205,7 +221,7 @@
     }
   }
 
-  function isLocked(match){ return new Date() >= new Date(match.lock); }
+  function isLocked(match){ return match.closed === true; }
 
   function renderMatches(){
     const player = cleanKey(document.getElementById("playerName").value);
@@ -214,7 +230,7 @@
       const locked = isLocked(m);
       return `<div class="match">
         <div class="teams"><span>${m.home}</span><span>vs</span><span>${m.away}</span></div>
-        <div class="date">${m.date} ${locked ? " · 🔒 Cerrado" : ""}</div>
+        <div class="date">${m.date} · ${locked ? '<span class="statusClosed">🔴 Cerrado por admin</span>' : '<span class="statusOpen">🟢 Abierto</span>'}</div>
         <div class="scorebox">
           <label>${m.home}</label><input type="number" min="0" max="20" value="${pred.home}" id="p-${m.id}-h" ${locked?'disabled':''}/>
           <span>-</span>
@@ -242,14 +258,23 @@
   }
 
   function renderLeaderboard(){
-    const rows = Object.entries(state.predictions || {}).map(([key, data]) => {
+    const players = Object.entries(state.predictions || {});
+    const rows = players.map(([key, data]) => {
       const total = matches.reduce((sum,m)=> sum + calcPoints(data[m.id], state.results?.[m.id]), 0);
-      return { name:data.name || key, total };
+      const completed = matches.filter(m => data[m.id]).length;
+      return { name:data.name || key, total, completed };
     }).sort((a,b)=>b.total-a.total);
 
     document.getElementById("leaderboard").innerHTML = rows.length ? rows.map((r,i)=>
-      `<div class="leader"><b>${i+1}. ${r.name}</b><span class="pill">${r.total} pts</span></div>`
+      `<div class="leader"><b>${i+1}. ${r.name}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${r.completed}/${matches.length} predicciones</span></span></div>`
     ).join("") : "Aún no hay participantes.";
+
+    const openCount = matches.filter(m=>!m.closed).length;
+    const closedCount = matches.filter(m=>m.closed).length;
+    document.getElementById("summaryStats").innerHTML = `
+      <div class="summaryItem"><b>${players.length}</b><br><span class="small">Participantes</span></div>
+      <div class="summaryItem"><b>${openCount}</b><br><span class="small">Abiertos</span></div>
+      <div class="summaryItem"><b>${closedCount}</b><br><span class="small">Cerrados</span></div>`;
   }
 
   function renderMine(){
@@ -282,7 +307,7 @@
         const when = p?.updatedAt ? new Date(p.updatedAt).toLocaleString("es-CO") : "";
         return `<div class="historyRow">
           <span><b>${m.home} vs ${m.away}</b><br>
-          <span class="small">Predicción: ${p ? `${p.home}-${p.away}` : "Sin registrar"}${when ? " · " + when : ""}</span></span>
+          <span class="small">Predicción: ${p ? `${p.home}-${p.away}` : "Sin registrar"}${when ? " · " + when : ""} · ${m.closed ? "Cerrado" : "Abierto"}</span></span>
           <span class="pill">${pts} pts</span>
         </div>`;
       }).join("");
@@ -303,17 +328,27 @@
       </div>
       <label>Texto de fecha visible</label>
       <input id="newDateText" placeholder="Ej: 2 jul 2026 - 7:00 p.m. Colombia">
-      <label>Fecha y hora de cierre</label>
+      <label>Fecha y hora informativa</label>
       <input id="newLock" type="datetime-local">
       <button style="margin-top:12px" onclick="addMatch()">Agregar partido</button>
+    </div>`;
+
+    const adminTips = `<div class="notice">
+      <b>Admin:</b> cierra cada partido manualmente cuando quieras bloquear pronósticos. 
+      Puedes reabrirlo si alguien tuvo problema antes de empezar.
     </div>`;
 
     const resultsForm = matches.map(m=>{
       const r = state.results?.[m.id] || {home:"", away:""};
       const isExtra = state.extraMatches?.[m.id];
+      const status = m.closed ? '<span class="statusClosed">🔴 Cerrado</span>' : '<span class="statusOpen">🟢 Abierto</span>';
       return `<div class="match">
-        <b>${m.home} vs ${m.away}</b>
-        ${isExtra ? `<br><button class="danger" style="margin-top:8px" onclick="deleteExtraMatch('${m.id}')">Eliminar partido agregado</button>` : ""}
+        <b>${m.home} vs ${m.away}</b><br>
+        <span class="small">${m.date} · ${status}</span><br>
+        <button class="miniBtn ${m.closed ? "secondary" : "danger"}" onclick="toggleMatchClosed('${m.id}')">
+          ${m.closed ? "Reabrir partido" : "Cerrar partido"}
+        </button>
+        ${isExtra ? `<button class="danger miniBtn" onclick="deleteExtraMatch('${m.id}')">Eliminar partido agregado</button>` : ""}
         <div class="scorebox">
           <label>${m.home}</label><input type="number" min="0" max="20" value="${r.home}" id="r-${m.id}-h"/>
           <span>-</span>
@@ -324,7 +359,7 @@
       </div>`;
     }).join("");
 
-    document.getElementById("adminPanel").innerHTML = addForm + resultsForm;
+    document.getElementById("adminPanel").innerHTML = addForm + adminTips + resultsForm;
   }
 
   window.addMatch = async()=>{
@@ -335,7 +370,7 @@
     if(!home || !away || !dateText || !lockInput) return alert("Completa todos los datos del nuevo partido.");
     const lock = lockInput + ":00-05:00";
     const id = makeMatchId(home, away, lock);
-    const newMatch = { id, home, away, date: dateText, lock };
+    const newMatch = { id, home, away, date: dateText, lock, closed:false };
     await save(`extraMatches/${id}`, newMatch);
     alert("Partido agregado ✅ Ya se verá para todos los usuarios.");
   }
@@ -347,9 +382,28 @@
     } else {
       delete state.extraMatches[id];
       localStorage.setItem("quiniela_colombia_demo", JSON.stringify(state));
-      matches = [...defaultMatches, ...Object.values(state.extraMatches || {})].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
+      matches = [
+        ...defaultMatches.map(m => ({...m, ...(state.baseMatchesStatus?.[m.id] || {})})),
+        ...Object.values(state.extraMatches || {})
+      ].sort((a,b)=> new Date(a.lock) - new Date(b.lock));
       renderAll();
     }
+  }
+
+  async function setMatchClosed(id, closed){
+    const isExtra = !!state.extraMatches?.[id];
+    if(isExtra){
+      await save(`extraMatches/${id}/closed`, closed);
+    } else {
+      await save(`baseMatchesStatus/${id}/closed`, closed);
+    }
+  }
+
+  window.toggleMatchClosed = async(id)=>{
+    const match = matches.find(m=>m.id===id);
+    if(!match) return alert("No encontré el partido.");
+    await setMatchClosed(id, !match.closed);
+    alert(!match.closed ? "Partido cerrado 🔒" : "Partido reabierto 🟢");
   }
 
   window.saveResult = async(matchId)=>{
@@ -362,7 +416,11 @@
 
   function renderAll(){ renderMatches(); renderLeaderboard(); renderMine(); renderHistory(); renderAdmin(); }
 
-  document.getElementById("playerName").addEventListener("input", renderAll);
+  document.getElementById("playerName").value = localStorage.getItem("playerName") || "";
+  document.getElementById("playerName").addEventListener("input", ()=>{
+    localStorage.setItem("playerName", document.getElementById("playerName").value);
+    renderAll();
+  });
   document.getElementById("tabPredict").onclick=()=>show("Predict");
   document.getElementById("tabMine").onclick=()=>show("Mine");
   document.getElementById("tabHistory").onclick=()=>show("History");
