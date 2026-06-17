@@ -1,338 +1,306 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Polla Colombia con Login</title>
-<style>
-:root{--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;--red:#ff6b6b;--ok:#7dffb1;--border:rgba(255,255,255,.16)}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
-header{text-align:center;padding:28px 16px}h1{margin:0;font-size:clamp(28px,6vw,54px)}p,.small{color:var(--muted)}
-.wrap{max-width:1120px;margin:auto;padding:0 16px 48px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}@media(max-width:860px){.grid{grid-template-columns:1fr}}
-.card{background:rgba(16,36,61,.9);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px #0006}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}button{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--yellow);color:#07111f}
-button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}button.danger{background:var(--red);color:#111}button:disabled{opacity:.55}
-input{width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
-label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:#ffffff0a}
-.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-size:18px;font-weight:800}
-.teamBox{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
-.flag{font-size:42px;line-height:1;filter:drop-shadow(0 6px 8px #0007)}
-.vsBadge{background:#ffd43b;color:#07111f;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900}
-.groupBadge{display:inline-block;margin-top:8px;border-radius:999px;padding:5px 10px;background:#2f80ed33;border:1px solid #2f80ed77;color:#d8e8ff;font-size:12px;font-weight:800}
-.groupSelect{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.groupSelect button.active{background:#7dffb1;color:#07111f}.date{color:var(--muted);font-size:13px;margin-top:5px}
-.scorebox{display:grid;grid-template-columns:1fr 74px 20px 74px 1fr;align-items:end;gap:8px;margin-top:12px}.scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
-@media(max-width:560px){.scorebox{grid-template-columns:1fr 70px 18px 70px 1fr;font-size:13px}}
-.leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid #fff2}
-.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:#ffd43b29;color:var(--yellow)}
-.notice{background:#2f80ed24;border:1px solid #2f80ed47;border-radius:16px;padding:12px;margin:12px 0}.pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}.ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
-.hidden{display:none!important}.admin{display:none}body.admin-on .admin{display:block}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.two{grid-template-columns:1fr}}
-.statusOpen{color:var(--ok);font-weight:800}.statusClosed{color:#ffaaa5;font-weight:800}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}.adminTable,.groupTable{width:100%;border-collapse:collapse;font-size:13px}.adminTable th,.adminTable td,.groupTable th,.groupTable td{border-bottom:1px solid #fff2;padding:8px;text-align:left}.adminSection{margin-top:14px}
-.summaryBox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-.dashCard{background:linear-gradient(180deg,#ffffff12,#ffffff08);border:1px solid #ffffff22;border-radius:18px;padding:14px;text-align:center}
-.dashCard .icon{font-size:26px;display:block;margin-bottom:5px}
-.dashCard b{font-size:22px}
-@media(max-width:760px){.dashGrid{grid-template-columns:repeat(2,1fr)}}.summaryItem{background:#fff1;border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center}.summaryItem b{font-size:20px}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Polla Selección Colombia</title>
+  <style>
+    :root{
+      --bg:#07111f;--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;
+      --red:#ff6b6b;--ok:#7dffb1;--blue:#2f80ed;--border:rgba(255,255,255,.16)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:
+      radial-gradient(circle at top left,rgba(255,212,59,.18),transparent 28%),
+      radial-gradient(circle at top right,rgba(47,128,237,.20),transparent 30%),
+      linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
+    header{text-align:center;padding:26px 16px}
+    h1{margin:0;font-size:clamp(30px,6vw,58px)}
+    p,.small{color:var(--muted)}
+    .wrap{max-width:1180px;margin:0 auto;padding:0 16px 48px}
+    .grid{display:grid;grid-template-columns:1.18fr .82fr;gap:16px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:rgba(16,36,61,.92);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px #0007}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    button{border:0;border-radius:14px;padding:11px 14px;font-weight:850;cursor:pointer;background:var(--yellow);color:#07111f}
+    button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}
+    button.danger{background:var(--red);color:#111}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    input,select{width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
+    label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+    a{color:var(--yellow);font-weight:800}
+    .hidden{display:none!important}
+    .notice{background:#2f80ed24;border:1px solid #2f80ed55;border-radius:16px;padding:12px;margin:12px 0}
+    .pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}
+    .ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
+    .match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:#ffffff0a}
+    .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-size:18px;font-weight:850}
+    .teamBox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+    .flag{font-size:44px;line-height:1;filter:drop-shadow(0 6px 8px #0008)}
+    .vsBadge{background:var(--yellow);color:#07111f;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900}
+    .groupBadge{display:inline-block;margin:2px 0 10px;border-radius:999px;padding:5px 10px;background:#2f80ed33;border:1px solid #2f80ed77;color:#d8e8ff;font-size:12px;font-weight:850}
+    .date{color:var(--muted);font-size:13px;margin-top:8px}
+    .statusOpen{color:var(--ok);font-weight:850}.statusClosed{color:#ffaaa5;font-weight:850}
+    .scorebox{display:grid;grid-template-columns:1fr 76px 20px 76px 1fr;align-items:end;gap:8px;margin-top:12px}
+    .scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
+    @media(max-width:560px){.scorebox{grid-template-columns:1fr 64px 16px 64px 1fr;font-size:13px}.flag{font-size:36px}}
+    .leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid #fff2}
+    .pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850;background:#ffd43b29;color:var(--yellow)}
+    .dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+    .dashCard{background:linear-gradient(180deg,#ffffff12,#ffffff08);border:1px solid #ffffff22;border-radius:18px;padding:14px;text-align:center}
+    .dashCard .icon{font-size:26px;display:block;margin-bottom:5px}.dashCard b{font-size:22px}
+    @media(max-width:760px){.dashGrid{grid-template-columns:repeat(2,1fr)}}
+    .admin{display:none}body.admin-on .admin{display:block}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+    .miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
+    .adminTable,.groupTable{width:100%;border-collapse:collapse;font-size:13px}
+    .adminTable th,.adminTable td,.groupTable th,.groupTable td{border-bottom:1px solid #fff2;padding:8px;text-align:left;vertical-align:top}
+    .tableWrap{overflow:auto}
+  </style>
 </head>
 <body>
-<header><h1>Polla Selección Colombia</h1><p>Cada participante ve solo su grupo y su ranking.</p></header>
-<main class="wrap">
-<section id="authCard" class="card">
-<h2>Ingreso</h2><p class="small">Regístrate una vez. Firebase guarda la contraseña de forma segura; la app no la ve.</p>
-<div id="authMsg" class="small warn"></div>
-<label>Nombre visible</label><input id="displayName" maxlength="35" autocomplete="name">
-<label>Correo</label><input id="email" type="email" autocomplete="email">
-<label>Contraseña</label><input id="password" type="password" minlength="6" autocomplete="current-password">
-<br><br><button onclick="login()">Ingresar</button> <button class="secondary" onclick="registerUser()">Registrarme</button><p class="small"><a href="#" onclick="resetPassword();return false;" style="color:#ffd43b;font-weight:800">🔑 ¿Olvidaste tu contraseña?</a><br>Escribe tu correo y te enviaremos el enlace de recuperación.</p>
-</section>
+<header>
+  <h1>Polla Selección Colombia</h1>
+  <p>Cada participante ve solo su grupo y su ranking.</p>
+</header>
 
-<section id="app" class="grid hidden">
-<article class="card">
-<nav class="tabs">
-<button id="tabPredict">Predicción</button><button class="secondary" id="tabMine">Mis marcadores</button><button class="secondary" id="tabHistory">Historial</button><button class="secondary" id="tabRules">Reglas</button>
-</nav>
-<div id="feedback" class="small warn"></div>
-<section id="viewPredict"><p class="small">Usuario: <b id="currentUserLabel"></b></p><button class="secondary" onclick="logout()">Cerrar sesión</button><div id="matches"></div></section>
-<section id="viewMine" style="display:none"><h2>Mis marcadores</h2><div id="myPredictions" class="small"></div></section>
-<section id="viewHistory" style="display:none"><h2>Historial</h2><div id="historyPanel" class="small"></div></section>
-<section id="viewRules" style="display:none">
-<h2>Reglas</h2>
-<p><span class="pill">5 pts</span> Marcador exacto.</p>
-<p><span class="pill">3 pts</span> Ganador o empate correcto.</p>
-<p><span class="pill">0 pts</span> Cualquier otro resultado.</p>
-<p class="small"><b>Desempate:</b> puntos, marcadores exactos, predicciones registradas y orden alfabético.</p>
-</section>
-</article>
-<aside class="card">
-<h2>🏆 Tabla</h2><div class="groupSelect" id="groupButtons"></div><div id="leaderboard" class="small"></div><div id="summaryStats" class="summaryBox"></div>
-<div class="notice">Solo puedes ver los participantes de tu grupo.</div><div id="connectionStatus" class="small warn"></div>
-<button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button>
-<div class="admin"><h2>Panel admin</h2><p class="small">Visible solo para el correo admin autorizado.</p><div id="adminPanel"></div></div>
-</aside>
-</section>
+<main class="wrap">
+  <section id="authCard" class="card">
+    <h2>Ingreso</h2>
+    <p class="small">Regístrate una vez. Firebase guarda la contraseña de forma segura; la app no la ve.</p>
+    <div id="authMsg" class="small warn" role="status"></div>
+    <label for="displayName">Nombre visible</label>
+    <input id="displayName" maxlength="35" autocomplete="name" placeholder="Ej: Sebastián">
+    <label for="email">Correo</label>
+    <input id="email" type="email" autocomplete="email" placeholder="correo@ejemplo.com">
+    <label for="password">Contraseña</label>
+    <input id="password" type="password" minlength="6" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+    <br><br>
+    <button onclick="login()">Ingresar</button>
+    <button class="secondary" onclick="registerUser()">Registrarme</button>
+    <p class="small"><a href="#" onclick="resetPassword();return false;">🔑 ¿Olvidaste tu contraseña?</a><br>Escribe tu correo y te enviaremos el enlace de recuperación.</p>
+  </section>
+
+  <section id="app" class="grid hidden">
+    <article class="card">
+      <nav class="tabs">
+        <button id="tabPredict">Predicción</button>
+        <button class="secondary" id="tabMine">Mis marcadores</button>
+        <button class="secondary" id="tabHistory">Historial</button>
+        <button class="secondary" id="tabRules">Reglas</button>
+      </nav>
+
+      <div id="feedback" class="small warn" role="status"></div>
+
+      <section id="viewPredict">
+        <p class="small">Usuario: <b id="currentUserLabel"></b></p>
+        <button class="secondary" onclick="logout()">Cerrar sesión</button>
+        <div id="matches"></div>
+      </section>
+
+      <section id="viewMine" style="display:none">
+        <h2>Mis marcadores</h2>
+        <div id="myPredictions" class="small"></div>
+      </section>
+
+      <section id="viewHistory" style="display:none">
+        <h2>Historial</h2>
+        <p class="small">Los usuarios normales solo ven el historial de su grupo.</p>
+        <div id="historyPanel" class="small"></div>
+      </section>
+
+      <section id="viewRules" style="display:none">
+        <h2>Reglas</h2>
+        <p><span class="pill">5 pts</span> Marcador exacto.</p>
+        <p><span class="pill">3 pts</span> Ganador o empate correcto.</p>
+        <p><span class="pill">0 pts</span> Cualquier otro resultado.</p>
+        <p class="small"><b>Desempate:</b> puntos, marcadores exactos, predicciones registradas y orden alfabético.</p>
+      </section>
+    </article>
+
+    <aside class="card">
+      <h2>🏆 Tabla</h2>
+      <div id="leaderboard" class="small"></div>
+      <div id="summaryStats"></div>
+      <div class="notice">Solo puedes ver los participantes de tu grupo.</div>
+      <div id="connectionStatus" class="small warn"></div>
+      <button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button>
+
+      <div class="admin">
+        <h2>Panel admin</h2>
+        <p class="small">Visible solo para el correo admin autorizado.</p>
+        <div id="adminPanel"></div>
+      </div>
+    </aside>
+  </section>
 </main>
 
 <script type="module">
 const firebaseConfig={apiKey:"AIzaSyCMDmhgiznR2m4R4RA68OSjpI6XBO9A_zk",authDomain:"golbd-d1aec.firebaseapp.com",databaseURL:"https://golbd-d1aec-default-rtdb.firebaseio.com",projectId:"golbd-d1aec",storageBucket:"golbd-d1aec.firebasestorage.app",messagingSenderId:"953286115242",appId:"1:953286115242:web:c207860ca2f546c05475d3"};
-const ADMIN_EMAILS=["juansebastianmoralesvilla@gmail.com"]; const MAX_SCORE=20;
+const ADMIN_EMAILS=["juansebastianmoralesvilla@gmail.com"];
+const MAX_SCORE=20;
+
 const defaultMatches=[
 {id:"COL-UZB-2026-06-17",home:"Uzbekistán",away:"Colombia",homeFlag:"🇺🇿",awayFlag:"🇨🇴",competition:"Grupo K",date:"17 jun 2026 - 9:00 p.m. Colombia",lock:"2026-06-17T21:00:00-05:00",closed:false},
 {id:"COL-COD-2026-06-23",home:"Colombia",away:"RD Congo",homeFlag:"🇨🇴",awayFlag:"🇨🇩",competition:"Grupo K",date:"23 jun 2026 - 9:00 p.m. Colombia",lock:"2026-06-23T21:00:00-05:00",closed:false},
-{id:"COL-POR-2026-06-27",home:"Colombia",away:"Portugal",homeFlag:"🇨🇴",awayFlag:"🇵🇹",competition:"Grupo K",date:"27 jun 2026 - 6:30 p.m. Colombia",lock:"2026-06-27T18:30:00-05:00",closed:false}];
-let auth,db,currentUser=null,unsubscribeData=null,state={predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}},matches=[...defaultMatches];
-let selectedGroup="Todos";
+{id:"COL-POR-2026-06-27",home:"Colombia",away:"Portugal",homeFlag:"🇨🇴",awayFlag:"🇵🇹",competition:"Grupo K",date:"27 jun 2026 - 6:30 p.m. Colombia",lock:"2026-06-27T18:30:00-05:00",closed:false}
+];
+
+let auth,db,currentUser=null,unsubscribeData=null;
+let state={predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};
+let matches=[...defaultMatches];
+
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const txt=s=>String(s??"").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
 const key=s=>txt(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
 const matchId=(h,a,l)=>(key(h)+"-"+key(a)+"-"+l.slice(0,10)).toUpperCase();
+const msg=(m,t="ok")=>feedback.innerHTML=`<span class="${t}">${esc(m)}</span>`;
+const authMsg=(m,t="ok")=>authMsgEl.innerHTML=`<span class="${t}">${esc(m)}</span>`;
+
 function flagFor(team){
  const t=key(team);
- if(t.includes("colombia"))return "🇨🇴";
- if(t.includes("uzbek"))return "🇺🇿";
- if(t.includes("portugal"))return "🇵🇹";
- if(t.includes("congo"))return "🇨🇩";
- if(t.includes("argentina"))return "🇦🇷";
- if(t.includes("brasil")||t.includes("brazil"))return "🇧🇷";
- if(t.includes("inglaterra")||t.includes("england"))return "🏴";
- if(t.includes("croacia")||t.includes("croatia"))return "🇭🇷";
- return "🏳️";
+ if(t.includes("colombia"))return"🇨🇴"; if(t.includes("uzbek"))return"🇺🇿"; if(t.includes("portugal"))return"🇵🇹";
+ if(t.includes("congo"))return"🇨🇩"; if(t.includes("argentina"))return"🇦🇷"; if(t.includes("brasil")||t.includes("brazil"))return"🇧🇷";
+ if(t.includes("croacia")||t.includes("croatia"))return"🇭🇷"; if(t.includes("panama"))return"🇵🇦"; if(t.includes("ghana"))return"🇬🇭";
+ return"🏳️";
 }
-const msg=(m,t="ok")=>document.getElementById("feedback").innerHTML=`<span class="${t}">${esc(m)}</span>`;
-const authMsg=(m,t="ok")=>document.getElementById("authMsg").innerHTML=`<span class="${t}">${esc(m)}</span>`;
-function rt(a,b){return a===b?"D":a>b?"H":"A"}
-function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;return 0}
-function validScore(v){if(v==="")return"Completa ambos goles.";let n=Number(v);if(!Number.isInteger(n))return"Los goles deben ser enteros.";if(n<0||n>MAX_SCORE)return`Los goles deben estar entre 0 y ${MAX_SCORE}.`;return null}
 function isAdmin(){return currentUser && ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase())}
 function currentUserGroup(){return state.users?.[currentUser?.uid]?.group||"Sin asignar"}
-function visiblePlayerEntries(){const e=Object.entries(state.predictions||{});if(isAdmin())return e;const g=currentUserGroup();return e.filter(([uid])=>(state.users?.[uid]?.group||"Sin asignar")===g)}
+function visiblePlayerEntries(){
+ const entries=Object.entries(state.predictions||{});
+ if(isAdmin())return entries;
+ const group=currentUserGroup();
+ return entries.filter(([uid])=>(state.users?.[uid]?.group||"Sin asignar")===group);
+}
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
 function getGroupValue(groupName){const g=Object.values(state.groups||{}).find(x=>x.name===groupName);return Number(g?.value||0)}
+function rt(a,b){return a===b?"D":a>b?"H":"A"}
+function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;return 0}
+function exact(data){return matches.reduce((s,m)=>s+(pts(data[m.id],state.results?.[m.id])===5?1:0),0)}
+function isAutoClosed(m){return m.lock && new Date()>=new Date(m.lock)}
+function isLocked(m){return m.closed===true || isAutoClosed(m)}
+function validScore(v){if(v==="")return"Completa ambos goles.";let n=Number(v);if(!Number.isInteger(n))return"Los goles deben ser enteros.";if(n<0||n>MAX_SCORE)return`Los goles deben estar entre 0 y ${MAX_SCORE}.`;return null}
 function rebuild(){matches=[...defaultMatches.map(m=>({...m,...(state.baseMatchesStatus?.[m.id]||{})})),...Object.values(state.extraMatches||{})].sort((a,b)=>new Date(a.lock)-new Date(b.lock))}
+
 async function init(){
-const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
-const {getDatabase,ref,onValue,set,remove}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
-const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
-window.fb={ref,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};
-const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
-onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");currentUserLabel.textContent=(user.displayName||user.email)+(ADMIN_EMAILS.includes((user.email||"").toLowerCase())?" · 👑 ADMIN":"");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
+ const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
+ const {getDatabase,ref,onValue,set,remove}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
+ const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
+ window.fb={ref,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail,onValue};
+ const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
+ onAuthStateChanged(auth,user=>{
+   currentUser=user;
+   if(user){
+     authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");
+     currentUserLabel.textContent=(user.displayName||user.email)+(ADMIN_EMAILS.includes((user.email||"").toLowerCase())?" · 👑 ADMIN":"");
+     listenData();
+   }else{
+     if(typeof unsubscribeData==="function")unsubscribeData();
+     authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden");
+   }
+ });
 }
-function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue?null:null;import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js").then(({onValue})=>{unsubscribeData=onValue(fb.ref(db,"/quiniela_colombia"),snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')})}
-window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
-window.login=async()=>{let email=document.getElementById("email").value.trim(),pass=password.value;if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");try{let c=await fb.signInWithEmailAndPassword(auth,email,pass);await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email);authMsg("Ingreso correcto ✅")}catch(e){authMsg(authError(e),"bad")}}
+
+function listenData(){
+ if(typeof unsubscribeData==="function")unsubscribeData();
+ unsubscribeData=fb.onValue(fb.ref(db,"/quiniela_colombia"),snap=>{
+   state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};
+   rebuild();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>';
+ },e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>');
+}
+
+window.registerUser=async()=>{
+ let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;
+ if(name.length<2)return authMsg("Nombre inválido","bad");
+ if(!email.includes("@"))return authMsg("Correo inválido","bad");
+ if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");
+ try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅. Espera activación del admin.")}
+ catch(e){authMsg(authError(e),"bad")}
+}
+window.login=async()=>{
+ let email=document.getElementById("email").value.trim(),pass=password.value;
+ if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");
+ try{let c=await fb.signInWithEmailAndPassword(auth,email,pass);await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email);authMsg("Ingreso correcto ✅")}
+ catch(e){authMsg(authError(e),"bad")}
+}
 window.resetPassword=async()=>{
  let email=document.getElementById("email").value.trim();
  if(!email||!email.includes("@"))return authMsg("Escribe tu correo válido primero.","bad");
- try{
-   await fb.sendPasswordResetEmail(auth,email);
-   authMsg("✅ Te enviamos un correo para restablecer tu contraseña. Revisa también Spam.","ok");
- }catch(e){
-   authMsg(authError(e),"bad");
- }
+ try{await fb.sendPasswordResetEmail(auth,email);authMsg("✅ Te enviamos un correo para restablecer tu contraseña. Revisa también Spam.","ok")}
+ catch(e){authMsg(authError(e),"bad")}
 }
 window.logout=()=>fb.signOut(auth);
-function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado. Usa Ingresar.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("weak-password"))return"Contraseña débil.";if(c.includes("invalid-email"))return"Correo inválido.";return e.message||"Error"}
+function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado. Usa Ingresar.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("weak-password"))return"Contraseña débil.";if(c.includes("invalid-email"))return"Correo inválido.";if(c.includes("configuration-not-found"))return"Falta habilitar Authentication > Email/Password en Firebase.";return e.message||"Error"}
+
 async function saveUser(uid,name,email){
- let group=document.getElementById("poolGroup")?.value||state.users?.[uid]?.group||"Grupo 1";
- await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{name:txt(name),email:String(email).slice(0,80),group,active:state.users?.[uid]?.active!==false,updatedAt:Date.now()})
+ const emailLower=String(email||"").toLowerCase(),admin=ADMIN_EMAILS.includes(emailLower),existing=state.users?.[uid]||{};
+ await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{name:txt(name),email:String(email||"").slice(0,80),group:existing.group||(admin?"Administradores":"Sin asignar"),active:admin?true:(existing.active===true),role:admin?"admin":(existing.role||"user"),updatedAt:Date.now()});
 }
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
 const score=(id,v,d,l)=>`<input id="${id}" aria-label="${esc(l)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${esc(v??"")}" ${d?"disabled":""}>`;
-function renderMatches(){let uid=currentUser?.uid;
-let userInfo=state.users?.[uid]||{};
-if(userInfo.active===false && !isAdmin()){
- matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>Tu usuario ya fue creado, pero el administrador debe activarte y asignarte un grupo antes de que puedas registrar marcadores.</div>`;
- return;
+
+function renderMatches(){
+ let uid=currentUser?.uid,u=state.users?.[uid]||{};
+ if(u.active===false && !isAdmin()){
+   matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>Tu usuario ya fue creado, pero el admin debe activarte y asignarte un grupo.</div>`;return;
+ }
+ matchesDiv.innerHTML=matches.map(m=>{
+   let p=state.predictions?.[uid]?.[m.id]||{},locked=isLocked(m);
+   return`<form class="match" onsubmit="return false">
+   <span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span>
+   <div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div>
+   <div class="date">${esc(m.date)} · ${locked?`<span class="statusClosed">🔴 ${m.closed?'Cerrado por admin':'Cerrado automático'}</span>`:'<span class="statusOpen">🟢 Abierto</span>'}</div>
+   <div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,locked,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,locked,"Goles "+m.away)}<label>${esc(m.away)}</label></div>
+   <button type="button" ${locked?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`;
+ }).join("");
 }
-matchesDiv.innerHTML=matches.map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},closed=m.closed===true;return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${closed?`<span class="statusClosed">🔴 ${m.closed?'Cerrado por admin':'Cerrado automático'}</span>`:'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,closed,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,closed,"Goles "+m.away)}<label>${esc(m.away)}</label></div><button type="button" ${closed?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
-window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Tu usuario está pendiente de activación por el admin.","bad");if(isLocked(m))return msg(m.closed?"Partido cerrado por admin":"Partido cerrado automáticamente por fecha/hora","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
-function exact(data){return matches.reduce((s,m)=>s+(pts(data[m.id],state.results?.[m.id])===5?1:0),0)}
-function renderGroupButtons(){
- let groups=["Todos",...new Set(Object.values(state.users||{}).map(u=>u.group||"Grupo 1"))];
- groupButtons.innerHTML=groups.map(g=>`<button class="${selectedGroup===g?"active":"secondary"}" onclick="setGroup('${esc(g)}')">${g==="Todos"?"Todos":(g==="Sin asignar"?"Sin asignar":"Polla "+esc(g))}</button>`).join("");
+window.savePrediction=async id=>{
+ let m=matches.find(x=>x.id===id); if(!m)return msg("Partido no encontrado","bad");
+ if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Tu usuario está pendiente de activación por el admin.","bad");
+ if(isLocked(m))return msg(m.closed?"Partido cerrado por admin":"Partido cerrado automáticamente por fecha/hora","bad");
+ let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a); if(err)return msg(err,"bad");
+ await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});
+ await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);
+ msg("Marcador guardado ✅");
 }
-window.setGroup=(g)=>{selectedGroup=g;renderLeaderboard();renderGroupButtons();};
+
 function renderLeaderboard(){
-let entries=visiblePlayerEntries();
-let rows=entries.map(([uid,data])=>{
- let name=state.users?.[uid]?.name||data.name||"Usuario";
- let group=state.users?.[uid]?.group||"Sin asignar";
- let total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0);
- let completed=matches.filter(m=>data[m.id]).length;
- let ex=exact(data);
- return{name,total,completed,ex,group};
-}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
-
-let title=isAdmin()?"Ranking general":`Tu grupo: ${esc(currentUserGroup())}`;
-leaderboard.innerHTML=`<div class="notice"><b>${title}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Aún no hay participantes en tu grupo.");
-
-let groupName=currentUserGroup();
-let groupValue=isAdmin()?0:getGroupValue(groupName);
-let bag=groupValue*entries.length;
-summaryStats.innerHTML=`<div class="dashGrid">
- <div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div>
- <div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div>
- <div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div>
- <div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Partidos abiertos</span></div>
-</div>`;
+ let entries=visiblePlayerEntries();
+ let rows=entries.map(([uid,data])=>{let u=state.users?.[uid]||{},name=u.name||data.name||"Usuario",group=u.group||"Sin asignar",total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0),completed=matches.filter(m=>data[m.id]).length,ex=exact(data);return{name,total,completed,ex,group}}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
+ let title=isAdmin()?"Ranking general":`Tu grupo: ${esc(currentUserGroup())}`;
+ leaderboard.innerHTML=`<div class="notice"><b>${title}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Aún no hay participantes en tu grupo.");
+ let groupName=currentUserGroup(),groupValue=isAdmin()?0:getGroupValue(groupName),bag=groupValue*entries.length;
+ summaryStats.innerHTML=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Partidos abiertos</span></div></div>`;
 }
-function renderMine(){let d=state.predictions?.[currentUser?.uid];myPredictions.innerHTML=d?matches.map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
+function renderMine(){
+ let d=state.predictions?.[currentUser?.uid];
+ myPredictions.innerHTML=d?matches.map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores.";
+}
 function renderHistory(){
-let players=visiblePlayerEntries();
-historyPanel.innerHTML=players.length?players.map(([uid,data])=>{
- let u=state.users?.[uid]||{};
- return `<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(u.group||"Sin asignar")}</span></h3>${matches.map(m=>{
-  let p=data[m.id],r=state.results?.[m.id],when=p?.updatedAt?new Date(p.updatedAt).toLocaleString("es-CO"):"";
-  return `<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}${when?" · "+esc(when):""}</span></span><span class="pill">${pts(p,r)} pts</span></div>`;
- }).join("")}</section>`;
-}).join(""):"Aún no hay marcadores en tu grupo.";
+ let players=visiblePlayerEntries();
+ historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{};return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(u.group||"Sin asignar")}</span></h3>${matches.map(m=>{let p=data[m.id],r=state.results?.[m.id],when=p?.updatedAt?new Date(p.updatedAt).toLocaleString("es-CO"):"";return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}${when?" · "+esc(when):""}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")}</section>`}).join(""):"Aún no hay marcadores en tu grupo.";
 }
+
 function renderAdmin(){
- if(!isAdmin())return;
- document.body.classList.add("admin-on");
-
- const totalUsers=Object.keys(state.users||{}).length;
- const totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
+ if(!isAdmin())return; document.body.classList.add("admin-on");
+ const totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
  const groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];
-
- const dashboard=`<div class="dashGrid">
-   <div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div>
-   <div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div>
-   <div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div>
-   <div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(Object.values(state.users||{}).reduce((s,u)=>s+getGroupValue(u.group||"Sin asignar"),0))}</b><br><span class="small">Recaudado estimado</span></div>
- </div>`;
-
- const groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`
-   <tr>
-    <td><input id="gname-${gid}" value="${esc(g.name||'')}" maxlength="35"></td>
-    <td><input id="gval-${gid}" type="number" inputmode="numeric" min="0" value="${Number(g.value||0)}"></td>
-    <td>${Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===(g.name||"")).length}</td>
-    <td>
-      <button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button>
-      <button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button>
-    </td>
-   </tr>`).join("");
-
- const groupAdmin=`<div class="match adminSection">
-   <h3>👥 Grupos</h3>
-   <p class="small">Crea o edita grupos. El valor se usa solo como referencia interna del grupo.</p>
-   <label>Nombre del nuevo grupo</label>
-   <input id="newGroupName" placeholder="Ej: Oficina Carvajal">
-   <label>Valor por participante</label>
-   <input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000">
-   <button type="button" onclick="addGroup()">Crear grupo</button>
-   <br><br>
-   <table class="groupTable">
-    <thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead>
-    <tbody>${groupRows||"<tr><td colspan='4'>Aún no hay grupos creados.</td></tr>"}</tbody>
-   </table>
- </div>`;
-
- const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{
-   const opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Sin asignar")===g?"selected":""}>${esc(g)}</option>`).join("");
-   const p=state.predictions?.[uid]||{};
-   const total=matches.reduce((s,m)=>s+pts(p[m.id],state.results?.[m.id]),0);
-   const status=u.active===false?"Pendiente/Inactivo":"Activo";
-   return `<tr>
-     <td>${esc(u.name||"Usuario")}</td>
-     <td>${esc(u.email||"")}</td>
-     <td><select id="grp-${uid}" style="background:#09182b;color:white;border-radius:10px;padding:7px">${opts}</select></td>
-     <td>${total} pts</td>
-     <td>${status}</td>
-     <td>
-       <button class="miniBtn" onclick="changeUserGroup('${uid}')">Guardar grupo</button>
-       <button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button>
-     </td>
-   </tr>`;
- }).join("");
-
- const usersAdmin=`<div class="match adminSection">
-   <h3>🙋 Participantes</h3>
-   <p class="small">Los usuarios se registran sin grupo. Aquí los activas y les asignas grupo.</p>
-   <table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table>
- </div>`;
-
- const addMatchForm=`<form class="match" onsubmit="return false">
-   <h3>➕ Agregar partido</h3>
-   <div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div>
-   <label>Fecha visible</label><input id="newDateText">
-   <label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local">
-   <button type="button" onclick="addMatch()">Agregar</button>
- </form>`;
-
- const matchAdmin=matches.map(m=>{
-   let r=state.results?.[m.id]||{},extra=state.extraMatches?.[m.id];
-   return `<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><br>
-   <span class="small">${isLocked(m)?(m.closed?"🔴 Cerrado por admin":"🔴 Cerrado automático"):"🟢 Abierto"}</span><br>
-   <button type="button" class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>
-   ${extra?` <button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}
-   <div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado "+m.home)}
-   <span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado "+m.away)}<label>${esc(m.away)}</label></div>
-   <button type="button" onclick="saveResult('${esc(m.id)}')">Guardar resultado</button></form>`;
- }).join("");
-
+ const dashboard=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(Object.values(state.users||{}).reduce((s,u)=>s+getGroupValue(u.group||"Sin asignar"),0))}</b><br><span class="small">Recaudado estimado</span></div></div>`;
+ const groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name||'')}" maxlength="35"></td><td><input id="gval-${gid}" type="number" inputmode="numeric" min="0" value="${Number(g.value||0)}"></td><td>${Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===(g.name||"")).length}</td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
+ const groupAdmin=`<div class="match"><h3>👥 Grupos</h3><label>Nombre del nuevo grupo</label><input id="newGroupName" placeholder="Ej: Oficina Carvajal"><label>Valor por participante</label><input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000"><button type="button" onclick="addGroup()">Crear grupo</button><br><br><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Aún no hay grupos creados.</td></tr>"}</tbody></table></div></div>`;
+ const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{const opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Sin asignar")===g?"selected":""}>${esc(g)}</option>`).join("");const p=state.predictions?.[uid]||{},total=matches.reduce((s,m)=>s+pts(p[m.id],state.results?.[m.id]),0);return`<tr><td>${esc(u.name||"Usuario")}</td><td>${esc(u.email||"")}</td><td><select id="grp-${uid}">${opts}</select></td><td>${total} pts</td><td>${u.active===false?"Pendiente/Inactivo":"Activo"}</td><td><button class="miniBtn" onclick="changeUserGroup('${uid}')">Guardar grupo</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button></td></tr>`}).join("");
+ const usersAdmin=`<div class="match"><h3>🙋 Participantes</h3><p class="small">Los usuarios se registran sin grupo. Aquí los activas y les asignas grupo.</p><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div></div>`;
+ const addMatchForm=`<form class="match" onsubmit="return false"><h3>➕ Agregar partido</h3><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local"><button type="button" onclick="addMatch()">Agregar</button></form>`;
+ const matchAdmin=matches.map(m=>{let r=state.results?.[m.id]||{},extra=state.extraMatches?.[m.id];return`<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">${isLocked(m)?(m.closed?"🔴 Cerrado por admin":"🔴 Cerrado automático"):"🟢 Abierto"}</span><br><button type="button" class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>${extra?` <button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}<div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado "+m.home)}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado "+m.away)}<label>${esc(m.away)}</label></div><button type="button" onclick="saveResult('${esc(m.id)}')">Guardar resultado</button></form>`}).join("");
  adminPanel.innerHTML=dashboard+groupAdmin+usersAdmin+addMatchForm+matchAdmin;
 }
-window.addGroup=async()=>{
- let name=txt(newGroupName.value);
- let value=Number(document.getElementById("newGroupValue")?.value||0);
- if(name.length<2)return msg("Nombre de grupo inválido","bad");
- if(!Number.isFinite(value)||value<0)return msg("Valor inválido","bad");
- let id=key(name).toUpperCase();
- if(state.groups?.[id])return msg("Ese grupo ya existe","bad");
- await save(`groups/${id}`,{id,name,value,createdAt:Date.now(),updatedAt:Date.now()});
- msg("Grupo creado ✅");
-}
 
-window.updateGroup=async(gid)=>{
- if(!isAdmin())return msg("Solo admin","bad");
- const oldGroup=state.groups?.[gid];
- if(!oldGroup)return msg("Grupo no encontrado","bad");
- const newName=txt(document.getElementById("gname-"+gid).value);
- const newValue=Number(document.getElementById("gval-"+gid).value||0);
- if(newName.length<2)return msg("Nombre de grupo inválido","bad");
- if(!Number.isFinite(newValue)||newValue<0)return msg("Valor inválido","bad");
-
- await save(`groups/${gid}/name`,newName);
- await save(`groups/${gid}/value`,newValue);
- await save(`groups/${gid}/updatedAt`,Date.now());
-
- // Si se cambia el nombre del grupo, actualiza los usuarios que estaban en ese grupo.
- const oldName=oldGroup.name;
- if(oldName && oldName!==newName){
-   const usersToMove=Object.entries(state.users||{}).filter(([uid,u])=>(u.group||"Sin asignar")===oldName);
-   for(const [uid] of usersToMove){
-     await save(`users/${uid}/group`,newName);
-   }
- }
- msg("Grupo actualizado ✅");
-}
-
-window.deleteGroup=async(gid)=>{
- if(!isAdmin())return msg("Solo admin","bad");
- const g=state.groups?.[gid];
- if(!g)return msg("Grupo no encontrado","bad");
- const count=Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===g.name).length;
- if(count>0){
-   return msg("No puedes eliminar un grupo con usuarios. Primero muévelos a otro grupo.","bad");
- }
- if(!confirm("¿Eliminar este grupo?"))return;
- await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));
- msg("Grupo eliminado ✅");
-}
-window.changeUserGroup=async(uid)=>{
- if(!isAdmin())return msg("Solo admin","bad");
- let group=document.getElementById("grp-"+uid).value;
- await save(`users/${uid}/group`,group);
- msg("Grupo actualizado ✅");
-}
-window.toggleUserActive=async(uid)=>{
- if(!isAdmin())return msg("Solo admin","bad");
- let active=state.users?.[uid]?.active===true;
- await save(`users/${uid}/active`,!active);
- msg(active?"Usuario desactivado":"Usuario activado ✅");
-}
-window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim().slice(0,60),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa todos los datos","bad");if(key(h)===key(a))return msg("Los equipos no pueden ser iguales","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Eliminatoria / Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
+window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(name.length<2)return msg("Nombre de grupo inválido","bad");if(!Number.isFinite(value)||value<0)return msg("Valor inválido","bad");let id=key(name).toUpperCase();if(state.groups?.[id])return msg("Ese grupo ya existe","bad");await save(`groups/${id}`,{id,name,value,createdAt:Date.now(),updatedAt:Date.now()});msg("Grupo creado ✅")}
+window.updateGroup=async gid=>{let old=state.groups?.[gid];if(!old)return msg("Grupo no encontrado","bad");let newName=txt(document.getElementById("gname-"+gid).value),newValue=Number(document.getElementById("gval-"+gid).value||0);if(newName.length<2)return msg("Nombre de grupo inválido","bad");if(!Number.isFinite(newValue)||newValue<0)return msg("Valor inválido","bad");await save(`groups/${gid}/name`,newName);await save(`groups/${gid}/value`,newValue);await save(`groups/${gid}/updatedAt`,Date.now());if(old.name&&old.name!==newName){for(const [uid,u] of Object.entries(state.users||{})){if((u.group||"Sin asignar")===old.name)await save(`users/${uid}/group`,newName)}}msg("Grupo actualizado ✅")}
+window.deleteGroup=async gid=>{let g=state.groups?.[gid];if(!g)return msg("Grupo no encontrado","bad");let count=Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===g.name).length;if(count>0)return msg("No puedes eliminar un grupo con usuarios. Muévelos primero.","bad");if(confirm("¿Eliminar este grupo?")){await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));msg("Grupo eliminado ✅")}}
+window.changeUserGroup=async uid=>{let group=document.getElementById("grp-"+uid).value;await save(`users/${uid}/group`,group);msg("Grupo actualizado ✅")}
+window.toggleUserActive=async uid=>{let active=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!active);msg(active?"Usuario desactivado":"Usuario activado ✅")}
+window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim().slice(0,60),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa todos los datos","bad");if(key(h)===key(a))return msg("Los equipos no pueden ser iguales","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
 window.deleteExtraMatch=async id=>{if(confirm("¿Eliminar partido?"))await fb.remove(fb.ref(db,"/quiniela_colombia/extraMatches/"+id))}
 window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed);msg(!m.closed?"Partido cerrado 🔒":"Partido reabierto 🟢")}
 window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
@@ -340,26 +308,17 @@ window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=
 window.exportExcel=()=>{
  const rows=[["Grupo","Participante","Correo","Partido","Predicción Local","Predicción Visitante","Resultado Local","Resultado Visitante","Puntos","Estado"]];
  const entries=isAdmin()?Object.entries(state.predictions||{}):visiblePlayerEntries();
- entries.forEach(([uid,data])=>{
-   const u=state.users?.[uid]||{};
-   matches.forEach(m=>{
-     const p=data[m.id]||{}, r=state.results?.[m.id]||{};
-     rows.push([u.group||"Sin asignar",u.name||data.name||"Usuario",u.email||"",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r),isLocked(m)?"Cerrado":"Abierto"]);
-   });
- });
- const htmlTable=`<html><head><meta charset="utf-8"></head><body><table border="1">${rows.map(row=>`<tr>${row.map(cell=>`<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</table></body></html>`;
- const blob=new Blob([htmlTable],{type:"application/vnd.ms-excel;charset=utf-8"});
- const a=document.createElement("a");
- a.href=URL.createObjectURL(blob);
- a.download="polla_colombia.xls";
- a.click();
- URL.revokeObjectURL(a.href);
+ entries.forEach(([uid,data])=>{const u=state.users?.[uid]||{};matches.forEach(m=>{const p=data[m.id]||{},r=state.results?.[m.id]||{};rows.push([u.group||"Sin asignar",u.name||data.name||"Usuario",u.email||"",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r),isLocked(m)?"Cerrado":"Abierto"])})});
+ const table=`<html><head><meta charset="utf-8"></head><body><table border="1">${rows.map(row=>`<tr>${row.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table></body></html>`;
+ const blob=new Blob([table],{type:"application/vnd.ms-excel;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="polla_colombia.xls";a.click();URL.revokeObjectURL(a.href);
 }
 
 function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin()}
 tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
 function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
-const matchesDiv=document.getElementById("matches");init();
-setInterval(()=>{ if(currentUser) renderAll(); }, 60000);
+const authMsgEl=document.getElementById("authMsg"),matchesDiv=document.getElementById("matches");
+init();
+setInterval(()=>{if(currentUser)renderAll()},60000);
 </script>
-</body></html>
+</body>
+</html>
