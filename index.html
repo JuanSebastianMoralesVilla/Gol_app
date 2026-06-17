@@ -21,7 +21,7 @@
     .grid{display:grid;grid-template-columns:1.18fr .82fr;gap:16px}
     @media(max-width:900px){.grid{grid-template-columns:1fr}}
     .card{background:rgba(16,36,61,.92);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px #0007}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .tabs,.adminTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
     button{border:0;border-radius:14px;padding:11px 14px;font-weight:850;cursor:pointer;background:var(--yellow);color:#07111f}
     button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}
     button.danger{background:var(--red);color:#111}
@@ -83,40 +83,60 @@
 
   <section id="app" class="grid hidden">
     <article class="card">
-      <nav class="tabs">
-        <button id="tabPredict">Predicción</button>
-        <button class="secondary" id="tabMine">Mis marcadores</button>
-        <button class="secondary" id="tabHistory">Historial</button>
-        <button class="secondary" id="tabRules">Reglas</button>
-      </nav>
+      <div id="userMode">
+        <nav class="tabs">
+          <button id="tabPredict">Predicción</button>
+          <button class="secondary" id="tabMine">Mis marcadores</button>
+          <button class="secondary" id="tabHistory">Historial</button>
+          <button class="secondary" id="tabRules">Reglas</button>
+        </nav>
 
-      <div id="feedback" class="small warn" role="status"></div>
+        <div id="feedback" class="small warn" role="status"></div>
 
-      <section id="viewPredict">
-        <p class="small">Usuario: <b id="currentUserLabel"></b></p>
+        <section id="viewPredict">
+          <p class="small">Usuario: <b id="currentUserLabel"></b></p>
+          <button class="secondary" onclick="logout()">Cerrar sesión</button>
+          <div id="matches"></div>
+        </section>
+
+        <section id="viewMine" style="display:none">
+          <h2>Mis marcadores</h2>
+          <div id="myPredictions" class="small"></div>
+        </section>
+
+        <section id="viewHistory" style="display:none">
+          <h2>Historial</h2>
+          <p class="small">Los usuarios normales solo ven el historial de su grupo.</p>
+          <div id="historyPanel" class="small"></div>
+        </section>
+
+        <section id="viewRules" style="display:none">
+          <h2>Reglas</h2>
+          <p><span class="pill">5 pts</span> Marcador exacto.</p>
+          <p><span class="pill">3 pts</span> Ganador o empate correcto.</p>
+          <p><span class="pill">0 pts</span> Cualquier otro resultado.</p>
+          <p class="small"><b>Desempate:</b> puntos, marcadores exactos, predicciones registradas y orden alfabético.</p>
+        </section>
+      </div>
+
+      <div id="adminMode" class="hidden">
+        <nav class="adminTabs">
+          <button id="admDash">📊 Dashboard</button>
+          <button class="secondary" id="admUsers">👥 Usuarios</button>
+          <button class="secondary" id="admGroups">🏆 Grupos</button>
+          <button class="secondary" id="admMatches">⚽ Partidos</button>
+          <button class="secondary" id="admResults">📈 Resultados</button>
+        </nav>
+        <p class="small">Administrador: <b id="adminUserLabel"></b></p>
         <button class="secondary" onclick="logout()">Cerrar sesión</button>
-        <div id="matches"></div>
-      </section>
-
-      <section id="viewMine" style="display:none">
-        <h2>Mis marcadores</h2>
-        <div id="myPredictions" class="small"></div>
-      </section>
-
-      <section id="viewHistory" style="display:none">
-        <h2>Historial</h2>
-        <p class="small">Los usuarios normales solo ven el historial de su grupo.</p>
-        <div id="historyPanel" class="small"></div>
-      </section>
-
-      <section id="viewRules" style="display:none">
-        <h2>Reglas</h2>
-        <p><span class="pill">5 pts</span> Marcador exacto.</p>
-        <p><span class="pill">3 pts</span> Ganador o empate correcto.</p>
-        <p><span class="pill">0 pts</span> Cualquier otro resultado.</p>
-        <p class="small"><b>Desempate:</b> puntos, marcadores exactos, predicciones registradas y orden alfabético.</p>
-      </section>
-    </article>
+        <button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button>
+        <div id="adminFeedback" class="small warn"></div>
+        <section id="adminDashView"></section>
+        <section id="adminUsersView" style="display:none"></section>
+        <section id="adminGroupsView" style="display:none"></section>
+        <section id="adminMatchesView" style="display:none"></section>
+        <section id="adminResultsView" style="display:none"></section>
+      </div>    </article>
 
     <aside class="card">
       <h2>🏆 Tabla</h2>
@@ -125,12 +145,6 @@
       <div class="notice">Solo puedes ver los participantes de tu grupo.</div>
       <div id="connectionStatus" class="small warn"></div>
       <button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button>
-
-      <div class="admin">
-        <h2>Panel admin</h2>
-        <p class="small">Visible solo para el correo admin autorizado.</p>
-        <div id="adminPanel"></div>
-      </div>
     </aside>
   </section>
 </main>
@@ -154,7 +168,11 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&
 const txt=s=>String(s??"").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
 const key=s=>txt(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
 const matchId=(h,a,l)=>(key(h)+"-"+key(a)+"-"+l.slice(0,10)).toUpperCase();
-const msg=(m,t="ok")=>feedback.innerHTML=`<span class="${t}">${esc(m)}</span>`;
+const msg=(m,t="ok")=>{
+ const html=`<span class="${t}">${esc(m)}</span>`;
+ if(document.getElementById("feedback")) feedback.innerHTML=html;
+ if(document.getElementById("adminFeedback")) adminFeedback.innerHTML=html;
+}
 const authMsg=(m,t="ok")=>authMsgEl.innerHTML=`<span class="${t}">${esc(m)}</span>`;
 
 function flagFor(team){
@@ -192,7 +210,15 @@ async function init(){
    currentUser=user;
    if(user){
      authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");
-     currentUserLabel.textContent=(user.displayName||user.email)+(ADMIN_EMAILS.includes((user.email||"").toLowerCase())?" · 👑 ADMIN":"");
+     if(isAdmin()){
+       userMode.classList.add("hidden");
+       adminMode.classList.remove("hidden");
+       adminUserLabel.textContent=user.displayName||user.email;
+     }else{
+       adminMode.classList.add("hidden");
+       userMode.classList.remove("hidden");
+       currentUserLabel.textContent=user.displayName||user.email;
+     }
      listenData();
    }else{
      if(typeof unsubscribeData==="function")unsubscribeData();
@@ -282,19 +308,54 @@ function renderHistory(){
 }
 
 function renderAdmin(){
- if(!isAdmin())return; document.body.classList.add("admin-on");
- const totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
+ if(!isAdmin())return;
+ document.body.classList.add("admin-on");
+
+ const totalUsers=Object.keys(state.users||{}).length;
+ const totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
  const groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];
- const dashboard=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(Object.values(state.users||{}).reduce((s,u)=>s+getGroupValue(u.group||"Sin asignar"),0))}</b><br><span class="small">Recaudado estimado</span></div></div>`;
+ const recaudo=Object.values(state.users||{}).filter(u=>u.active!==false).reduce((s,u)=>s+getGroupValue(u.group||"Sin asignar"),0);
+ const pending=Object.values(state.users||{}).filter(u=>u.active===false).length;
+
+ adminDashView.innerHTML=`<h2>📊 Dashboard admin</h2>
+ <div class="dashGrid">
+  <div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div>
+  <div class="dashCard"><span class="icon">⏳</span><b>${pending}</b><br><span class="small">Pendientes</span></div>
+  <div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div>
+  <div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(recaudo)}</b><br><span class="small">Recaudo</span></div>
+  <div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div>
+  <div class="dashCard"><span class="icon">🟢</span><b>${matches.filter(m=>!isLocked(m)).length}</b><br><span class="small">Abiertos</span></div>
+  <div class="dashCard"><span class="icon">🔒</span><b>${matches.filter(m=>isLocked(m)).length}</b><br><span class="small">Cerrados</span></div>
+  <div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div>
+ </div>
+ ${renderGroupSummaryTable()}`;
+
+ const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{
+   const opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Sin asignar")===g?"selected":""}>${esc(g)}</option>`).join("");
+   const p=state.predictions?.[uid]||{}, total=matches.reduce((s,m)=>s+pts(p[m.id],state.results?.[m.id]),0);
+   return `<tr><td>${esc(u.name||"Usuario")}</td><td>${esc(u.email||"")}</td><td><select id="grp-${uid}">${opts}</select></td><td>${total} pts</td><td>${u.active===false?"Pendiente/Inactivo":"Activo"}</td><td><button class="miniBtn" onclick="changeUserGroup('${uid}')">Guardar grupo</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button></td></tr>`;
+ }).join("");
+ adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><p class="small">Activa usuarios y asígnalos a un grupo. Los pendientes no pueden pronosticar.</p><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div>`;
+
  const groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name||'')}" maxlength="35"></td><td><input id="gval-${gid}" type="number" inputmode="numeric" min="0" value="${Number(g.value||0)}"></td><td>${Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===(g.name||"")).length}</td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
- const groupAdmin=`<div class="match"><h3>👥 Grupos</h3><label>Nombre del nuevo grupo</label><input id="newGroupName" placeholder="Ej: Oficina Carvajal"><label>Valor por participante</label><input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000"><button type="button" onclick="addGroup()">Crear grupo</button><br><br><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Aún no hay grupos creados.</td></tr>"}</tbody></table></div></div>`;
- const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{const opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Sin asignar")===g?"selected":""}>${esc(g)}</option>`).join("");const p=state.predictions?.[uid]||{},total=matches.reduce((s,m)=>s+pts(p[m.id],state.results?.[m.id]),0);return`<tr><td>${esc(u.name||"Usuario")}</td><td>${esc(u.email||"")}</td><td><select id="grp-${uid}">${opts}</select></td><td>${total} pts</td><td>${u.active===false?"Pendiente/Inactivo":"Activo"}</td><td><button class="miniBtn" onclick="changeUserGroup('${uid}')">Guardar grupo</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button></td></tr>`}).join("");
- const usersAdmin=`<div class="match"><h3>🙋 Participantes</h3><p class="small">Los usuarios se registran sin grupo. Aquí los activas y les asignas grupo.</p><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Correo</th><th>Grupo</th><th>Puntos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${usersRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div></div>`;
- const addMatchForm=`<form class="match" onsubmit="return false"><h3>➕ Agregar partido</h3><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local"><button type="button" onclick="addMatch()">Agregar</button></form>`;
- const matchAdmin=matches.map(m=>{let r=state.results?.[m.id]||{},extra=state.extraMatches?.[m.id];return`<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">${isLocked(m)?(m.closed?"🔴 Cerrado por admin":"🔴 Cerrado automático"):"🟢 Abierto"}</span><br><button type="button" class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>${extra?` <button type="button" class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}<div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado "+m.home)}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado "+m.away)}<label>${esc(m.away)}</label></div><button type="button" onclick="saveResult('${esc(m.id)}')">Guardar resultado</button></form>`}).join("");
- adminPanel.innerHTML=dashboard+groupAdmin+usersAdmin+addMatchForm+matchAdmin;
+ adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><div class="match"><label>Nombre del nuevo grupo</label><input id="newGroupName" placeholder="Ej: Oficina Carvajal"><label>Valor por participante</label><input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000"><button type="button" onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Aún no hay grupos creados.</td></tr>"}</tbody></table></div>`;
+
+ const addMatchForm=`<form class="match" onsubmit="return false"><h3>➕ Agregar partido</h3><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText" placeholder="Ej: 2 jul 2026 - 7:00 p.m. Colombia"><label>Fecha/hora de cierre automático</label><input id="newLock" type="datetime-local"><button type="button" onclick="addMatch()">Agregar partido</button></form>`;
+ const matchRows=matches.map(m=>`<div class="match"><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">${isLocked(m)?(m.closed?"🔴 Cerrado por admin":"🔴 Cerrado automático"):"🟢 Abierto"} · ${esc(m.date)}</span><br><button class="miniBtn ${m.closed?"secondary":"danger"}" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button>${state.extraMatches?.[m.id]?` <button class="danger miniBtn" onclick="deleteExtraMatch('${esc(m.id)}')">Eliminar</button>`:""}</div>`).join("");
+ adminMatchesView.innerHTML=`<h2>⚽ Partidos</h2>${addMatchForm}${matchRows}`;
+
+ const resultRows=matches.map(m=>{const r=state.results?.[m.id]||{};return `<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado "+m.home)}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado "+m.away)}<label>${esc(m.away)}</label></div><button type="button" onclick="saveResult('${esc(m.id)}')">Guardar resultado</button></form>`}).join("");
+ adminResultsView.innerHTML=`<h2>📈 Resultados oficiales</h2>${resultRows}`;
 }
 
+function renderGroupSummaryTable(){
+ const rows=Object.entries(state.groups||{}).map(([gid,g])=>{
+  const users=Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===g.name && u.active!==false).length;
+  const bolsa=users*Number(g.value||0);
+  return `<tr><td>${esc(g.name)}</td><td>$${formatMoney(g.value||0)}</td><td>${users}</td><td>$${formatMoney(bolsa)}</td></tr>`;
+ }).join("");
+ return `<div class="match"><h3>Resumen por grupos</h3><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios activos</th><th>Bolsa</th></tr></thead><tbody>${rows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div></div>`;
+}
 window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(name.length<2)return msg("Nombre de grupo inválido","bad");if(!Number.isFinite(value)||value<0)return msg("Valor inválido","bad");let id=key(name).toUpperCase();if(state.groups?.[id])return msg("Ese grupo ya existe","bad");await save(`groups/${id}`,{id,name,value,createdAt:Date.now(),updatedAt:Date.now()});msg("Grupo creado ✅")}
 window.updateGroup=async gid=>{let old=state.groups?.[gid];if(!old)return msg("Grupo no encontrado","bad");let newName=txt(document.getElementById("gname-"+gid).value),newValue=Number(document.getElementById("gval-"+gid).value||0);if(newName.length<2)return msg("Nombre de grupo inválido","bad");if(!Number.isFinite(newValue)||newValue<0)return msg("Valor inválido","bad");await save(`groups/${gid}/name`,newName);await save(`groups/${gid}/value`,newValue);await save(`groups/${gid}/updatedAt`,Date.now());if(old.name&&old.name!==newName){for(const [uid,u] of Object.entries(state.users||{})){if((u.group||"Sin asignar")===old.name)await save(`users/${uid}/group`,newName)}}msg("Grupo actualizado ✅")}
 window.deleteGroup=async gid=>{let g=state.groups?.[gid];if(!g)return msg("Grupo no encontrado","bad");let count=Object.values(state.users||{}).filter(u=>(u.group||"Sin asignar")===g.name).length;if(count>0)return msg("No puedes eliminar un grupo con usuarios. Muévelos primero.","bad");if(confirm("¿Eliminar este grupo?")){await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));msg("Grupo eliminado ✅")}}
@@ -313,8 +374,15 @@ window.exportExcel=()=>{
  const blob=new Blob([table],{type:"application/vnd.ms-excel;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="polla_colombia.xls";a.click();URL.revokeObjectURL(a.href);
 }
 
-function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin()}
+
+function showAdminSection(name){
+ const map={Dash:adminDashView,Users:adminUsersView,Groups:adminGroupsView,Matches:adminMatchesView,Results:adminResultsView};
+ for(const [k,el] of Object.entries(map)) el.style.display=k===name?"block":"none";
+}
+
+function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin(); if(isAdmin()) showAdminSection('Dash')}
 tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
+admDash.onclick=()=>showAdminSection("Dash");admUsers.onclick=()=>showAdminSection("Users");admGroups.onclick=()=>showAdminSection("Groups");admMatches.onclick=()=>showAdminSection("Matches");admResults.onclick=()=>showAdminSection("Results");
 function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
 const authMsgEl=document.getElementById("authMsg"),matchesDiv=document.getElementById("matches");
 init();
