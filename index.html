@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Polla Colombia con Login</title>
+<title>Polla Colombia</title>
 <style>
 :root{--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;--red:#ff6b6b;--ok:#7dffb1;--border:rgba(255,255,255,.16)}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
@@ -31,7 +31,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 </style>
 </head>
 <body>
-<header><h1>Polla Selección Colombia</h1><p>Cada participante entra con correo y contraseña.</p></header>
+<header><h1>Polla Selección Colombia</h1><p>Cada participante ve solo su grupo y su ranking.</p></header>
 <main class="wrap">
 <section id="authCard" class="card">
 <h2>Ingreso</h2><p class="small">Regístrate una vez. Firebase guarda la contraseña de forma segura; la app no la ve.</p>
@@ -51,11 +51,17 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.match{b
 <section id="viewPredict"><p class="small">Usuario: <b id="currentUserLabel"></b></p><button class="secondary" onclick="logout()">Cerrar sesión</button><div id="matches"></div></section>
 <section id="viewMine" style="display:none"><h2>Mis marcadores</h2><div id="myPredictions" class="small"></div></section>
 <section id="viewHistory" style="display:none"><h2>Historial</h2><div id="historyPanel" class="small"></div></section>
-<section id="viewRules" style="display:none"><h2>Reglas</h2><p><span class="pill">5 pts</span> Marcador exacto.</p><p><span class="pill">3 pts</span> Ganador o empate.</p><p><span class="pill">1 pt</span> Diferencia de gol si no acertó ganador.</p><p class="small">Desempate: puntos, exactos, predicciones registradas y orden alfabético.</p></section>
+<section id="viewRules" style="display:none">
+<h2>Reglas</h2>
+<p><span class="pill">5 pts</span> Marcador exacto.</p>
+<p><span class="pill">3 pts</span> Ganador o empate correcto.</p>
+<p><span class="pill">0 pts</span> Cualquier otro resultado.</p>
+<p class="small"><b>Desempate:</b> puntos, marcadores exactos, predicciones registradas y orden alfabético.</p>
+</section>
 </article>
 <aside class="card">
 <h2>🏆 Tabla</h2><div class="groupSelect" id="groupButtons"></div><div id="leaderboard" class="small"></div><div id="summaryStats" class="summaryBox"></div>
-<div class="notice">Los marcadores quedan amarrados al usuario autenticado.</div><div id="connectionStatus" class="small warn"></div>
+<div class="notice">Solo puedes ver los participantes de tu grupo.</div><div id="connectionStatus" class="small warn"></div>
 <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
 <div class="admin"><h2>Panel admin</h2><p class="small">Visible solo para el correo admin autorizado.</p><div id="adminPanel"></div></div>
 </aside>
@@ -90,9 +96,13 @@ function flagFor(team){
 const msg=(m,t="ok")=>document.getElementById("feedback").innerHTML=`<span class="${t}">${esc(m)}</span>`;
 const authMsg=(m,t="ok")=>document.getElementById("authMsg").innerHTML=`<span class="${t}">${esc(m)}</span>`;
 function rt(a,b){return a===b?"D":a>b?"H":"A"}
-function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;if(ph-pa===rh-ra)return 1;return 0}
+function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;return 0}
 function validScore(v){if(v==="")return"Completa ambos goles.";let n=Number(v);if(!Number.isInteger(n))return"Los goles deben ser enteros.";if(n<0||n>MAX_SCORE)return`Los goles deben estar entre 0 y ${MAX_SCORE}.`;return null}
 function isAdmin(){return currentUser && ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase())}
+function currentUserGroup(){return state.users?.[currentUser?.uid]?.group||"Sin asignar"}
+function visiblePlayerEntries(){const e=Object.entries(state.predictions||{});if(isAdmin())return e;const g=currentUserGroup();return e.filter(([uid])=>(state.users?.[uid]?.group||"Sin asignar")===g)}
+function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
+function getGroupValue(groupName){const g=Object.values(state.groups||{}).find(x=>x.name===groupName);return Number(g?.value||0)}
 function rebuild(){matches=[...defaultMatches.map(m=>({...m,...(state.baseMatchesStatus?.[m.id]||{})})),...Object.values(state.extraMatches||{})].sort((a,b)=>new Date(a.lock)-new Date(b.lock))}
 async function init(){
 const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
@@ -127,16 +137,43 @@ function renderGroupButtons(){
  groupButtons.innerHTML=groups.map(g=>`<button class="${selectedGroup===g?"active":"secondary"}" onclick="setGroup('${esc(g)}')">${g==="Todos"?"Todos":(g==="Sin asignar"?"Sin asignar":"Polla "+esc(g))}</button>`).join("");
 }
 window.setGroup=(g)=>{selectedGroup=g;renderLeaderboard();renderGroupButtons();};
-function renderLeaderboard(){renderGroupButtons();let rows=Object.entries(state.predictions||{}).filter(([uid])=>selectedGroup==="Todos"||(state.users?.[uid]?.group||"Grupo 1")===selectedGroup).map(([uid,data])=>{let name=state.users?.[uid]?.name||data.name||"Usuario",total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0),completed=matches.filter(m=>data[m.id]).length,ex=exact(data);return{name,total,completed,ex,group:state.users?.[uid]?.group||"Grupo 1"}}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));leaderboard.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Aún no hay participantes.";summaryStats.innerHTML=`<div class="summaryItem"><b>${rows.length}</b><br><span class="small">Participantes</span></div><div class="summaryItem"><b>${matches.filter(m=>!m.closed).length}</b><br><span class="small">Abiertos</span></div><div class="summaryItem"><b>${matches.filter(m=>m.closed).length}</b><br><span class="small">Cerrados</span></div>`}
+function renderLeaderboard(){
+let entries=visiblePlayerEntries();
+let rows=entries.map(([uid,data])=>{
+ let name=state.users?.[uid]?.name||data.name||"Usuario";
+ let group=state.users?.[uid]?.group||"Sin asignar";
+ let total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0);
+ let completed=matches.filter(m=>data[m.id]).length;
+ let ex=exact(data);
+ return{name,total,completed,ex,group};
+}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
+
+let title=isAdmin()?"Ranking general":`Tu grupo: ${esc(currentUserGroup())}`;
+leaderboard.innerHTML=`<div class="notice"><b>${title}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Aún no hay participantes en tu grupo.");
+
+let groupName=currentUserGroup();
+let groupValue=isAdmin()?0:getGroupValue(groupName);
+let bag=groupValue*entries.length;
+summaryStats.innerHTML=`<div class="summaryItem"><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="summaryItem"><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor</span></div><div class="summaryItem"><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div>`;
+}
 function renderMine(){let d=state.predictions?.[currentUser?.uid];myPredictions.innerHTML=d?matches.map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
-function renderHistory(){let players=Object.entries(state.predictions||{});historyPanel.innerHTML=players.length?players.map(([uid,data])=>`<section class="match"><h3>👤 ${esc(state.users?.[uid]?.name||data.name||"Usuario")} <span class="pill">${esc(state.users?.[uid]?.group||"Grupo 1")}</span></h3>${matches.map(m=>{let p=data[m.id],r=state.results?.[m.id],when=p?.updatedAt?new Date(p.updatedAt).toLocaleString("es-CO"):"";return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}${when?" · "+esc(when):""}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")}</section>`).join(""):"Aún no hay marcadores."}
+function renderHistory(){
+let players=visiblePlayerEntries();
+historyPanel.innerHTML=players.length?players.map(([uid,data])=>{
+ let u=state.users?.[uid]||{};
+ return `<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(u.group||"Sin asignar")}</span></h3>${matches.map(m=>{
+  let p=data[m.id],r=state.results?.[m.id],when=p?.updatedAt?new Date(p.updatedAt).toLocaleString("es-CO"):"";
+  return `<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}${when?" · "+esc(when):""}</span></span><span class="pill">${pts(p,r)} pts</span></div>`;
+ }).join("")}</section>`;
+}).join(""):"Aún no hay marcadores en tu grupo.";
+}
 function renderAdmin(){
  if(!isAdmin())return;
  document.body.classList.add("admin-on");
 
  const totalUsers=Object.keys(state.users||{}).length;
  const totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);
- const groups=[...new Set(["Grupo 1","Grupo 2","Grupo 3",...Object.values(state.users||{}).map(u=>u.group||"Sin asignar"),...Object.values(state.groups||{}).map(g=>g.name)].filter(Boolean))];
+ const groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];
 
  const dashboard=`<div class="summaryBox">
    <div class="summaryItem"><b>${totalUsers}</b><br><span class="small">Usuarios</span></div>
@@ -146,9 +183,7 @@ function renderAdmin(){
 
  const groupAdmin=`<div class="match adminSection">
    <h3>👥 Crear grupo</h3>
-   <label>Nombre del nuevo grupo</label>
-   <input id="newGroupName" placeholder="Ej: Oficina Carvajal">
-   <button type="button" onclick="addGroup()">Crear grupo</button>
+   <label>Nombre del nuevo grupo</label><input id="newGroupName" placeholder="Ej: Oficina Carvajal"><label>Valor por participante</label><input id="newGroupValue" type="number" inputmode="numeric" min="0" placeholder="Ej: 20000"><button type="button" onclick="addGroup()">Crear grupo</button>
  </div>`;
 
  const usersRows=Object.entries(state.users||{}).map(([uid,u])=>{
@@ -198,9 +233,11 @@ function renderAdmin(){
 }
 window.addGroup=async()=>{
  let name=txt(newGroupName.value);
+ let value=Number(document.getElementById("newGroupValue")?.value||0);
  if(name.length<2)return msg("Nombre de grupo inválido","bad");
+ if(!Number.isFinite(value)||value<0)return msg("Valor inválido","bad");
  let id=key(name).toUpperCase();
- await save(`groups/${id}`,{id,name,createdAt:Date.now()});
+ await save(`groups/${id}`,{id,name,value,createdAt:Date.now()});
  msg("Grupo creado ✅");
 }
 window.changeUserGroup=async(uid)=>{
