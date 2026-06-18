@@ -147,27 +147,29 @@ function currentUserGroup(){
  return selectedUserGroup;
 }
 function visiblePlayerEntries(){
- const pred=state.predictions||{};
- const users=state.users||{};
- const uids=new Set([...Object.keys(users),...Object.keys(pred)]);
- if(isAdmin())return [...uids].map(uid=>[uid,pred[uid]||{}]);
+ const e=Object.entries(state.predictions||{});
+ if(isAdmin())return e;
  const g=currentUserGroup();
- return [...uids].filter(uid=>userGroups(users[uid]).includes(g)).map(uid=>[uid,pred[uid]||{}]);
+ return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(g));
 }
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
 function groupKey(g){return key(g||"Sin asignar").toUpperCase()||"SIN_ASIGNAR"}
 function userPredictions(uid, groupName){
  const data=state.predictions?.[uid]||{};
  const gk=groupKey(groupName);
- if(data.groups){
-   return data.groups[gk]||{};
- }
- // Compatibilidad: los pronósticos viejos directos solo cuentan para el grupo principal antiguo.
+
+ // Nuevo formato: predicciones independientes por grupo
+ if(data.groups && data.groups[gk]) return data.groups[gk];
+
+ // Compatibilidad con predicciones antiguas:
+ // solo cuentan para el grupo principal antiguo del usuario.
  const u=state.users?.[uid]||{};
  const legacyGroup=u.group||"Sin asignar";
- if(String(groupName||"Sin asignar")===String(legacyGroup)){
+ if(!data.groups && String(groupName||"Sin asignar")===String(legacyGroup)){
    return data;
  }
+
+ // Si el usuario fue agregado a un grupo nuevo, empieza en 0
  return {};
 }
 function predictionPath(uid, groupName, matchId){
@@ -187,20 +189,21 @@ function allGroupNames(){
  return [...new Set([...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))].sort();
 }
 function adminRankingEntries(){
- const pred=state.predictions||{};
- const users=state.users||{};
- let uids=new Set([...Object.keys(users),...Object.keys(pred)]);
- if(selectedAdminRankingGroup==="Todos"){
-   return [...uids].map(uid=>[uid,pred[uid]||{}]);
- }
- return [...uids]
-   .filter(uid=>userGroups(users[uid]).includes(selectedAdminRankingGroup))
-   .map(uid=>[uid,pred[uid]||{}]);
+ const e=Object.entries(state.predictions||{});
+ if(selectedAdminRankingGroup==="Todos")return e;
+ return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(selectedAdminRankingGroup));
+}
+window.changeAdminRankingGroup=(group)=>{
+ selectedAdminRankingGroup=group;
+ localStorage.setItem("selectedAdminRankingGroup",selectedAdminRankingGroup);
+ renderLeaderboard();
+ renderAdmin();
+ if(isAdmin()) showAdminSection(selectedAdminView||"Dash");
 }
 function renderAdminRankingFilter(){
  if(!isAdmin())return "";
  const groups=allGroupNames();
- return `<div class="filterBox"><label>Filtrar clasificación admin</label><p class="small">Cada grupo tiene predicciones independientes.</p><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`;
+ return `<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`;
 }
 function teamNamesForFilter(){
  const names=new Set(["Todos"]);
