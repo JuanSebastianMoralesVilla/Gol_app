@@ -236,9 +236,9 @@ function teamName(sel,custom){const v=document.getElementById(sel).value;return 
 
 async function init(){
  const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
- const {getDatabase,ref,onValue,set,remove}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
+ const {getDatabase,ref,onValue,set,remove,get}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
  const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
- window.fb={ref,onValue,set,remove,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};
+ window.fb={ref,onValue,set,remove,get,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};
  const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
  onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
 }
@@ -259,6 +259,13 @@ async function ensureLoggedUserRecord(){
   paid:false,
   updatedAt:Date.now()
  });
+}
+async function forceRefreshData(){
+ try{
+  const snap=await fb.get(fb.ref(db,"/quiniela_colombia"));
+  state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};
+  rebuild();switchMode();renderAll();
+ }catch(e){console.warn(e)}
 }
 function switchMode(){if(isAdmin()){userMode.classList.add("hidden");adminMode.classList.remove("hidden");adminUserLabel.textContent=currentUser.displayName||currentUser.email}else{adminMode.classList.add("hidden");userMode.classList.remove("hidden");currentUserLabel.textContent=currentUser.displayName||currentUser.email}}
 
@@ -325,7 +332,7 @@ function renderAdminRankingMini(){
  return `<div class="match"><h3>🏆 Clasificación ${selectedAdminRankingGroup==="Todos"?"general":esc(selectedAdminRankingGroup)}</h3>${renderAdminRankingFilter()}${rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.groups)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes"}</div>`;
 }
 function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.length-1}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
-let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" value="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr>
+let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" data-group="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr>
 <td data-label="Usuario" class="userNameCell"><b>${esc(u.name||"Usuario")}</b><span>${esc(u.email||"")}</span></td>
 <td data-label="Grupos"><div class="groupChips">${checks}</div></td>
 <td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td>
@@ -342,7 +349,7 @@ adminResultsView.innerHTML=`<h2>📈 Resultados</h2>`+matches.map(m=>{let r=stat
 window.activateAllUsers=async()=>{
  if(!confirm("¿Activar todos los usuarios pendientes?"))return;
  for(const uid of Object.keys(state.users||{})) await save(`users/${uid}/active`,true);
- msg("Todos los usuarios fueron activados ✅");
+ msg("Todos los usuarios fueron activados ✅"); await forceRefreshData();
 }
 window.assignGroupToAll=async()=>{
  const groups=[...new Set(Object.values(state.groups||{}).map(g=>g.name).filter(Boolean))];
@@ -354,19 +361,21 @@ window.assignGroupToAll=async()=>{
    const current=userGroups(state.users[uid]).filter(g=>g!=="Sin asignar");
    await setUserGroupsLegacyAware(uid,[...current,group]);
  }
- msg("Grupo asignado a todos ✅");
+ msg("Grupo asignado a todos ✅"); await forceRefreshData();
 }
-window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅")}
-window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅")}
+window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅"); await forceRefreshData()}
+window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅"); await forceRefreshData()}
 window.deleteGroup=async gid=>{if(confirm("¿Eliminar grupo?"))await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid))}
 window.saveUserAdmin=async uid=>{
- await save(`users/${uid}/group`,document.getElementById("grp-"+uid).value);
- await save(`users/${uid}/role`,document.getElementById("role-"+uid).value);
- await save(`users/${uid}/paid`,document.getElementById("paid-"+uid).value==="true");
+ const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group);
+ await setUserGroupsLegacyAware(uid,selected.length?selected:["Sin asignar"]);
+ const roleEl=document.getElementById("role-"+uid); if(roleEl) await save(`users/${uid}/role`,roleEl.value);
+ const paidEl=document.getElementById("paid-"+uid); if(paidEl) await save(`users/${uid}/paid`,paidEl.value==="true");
  msg("Usuario actualizado ✅");
+ await forceRefreshData();
 }
 window.toggleUserActive=async uid=>{let a=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!a);msg(a?"Desactivado":"Activado ✅")}
-window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eliminarte","bad");if(confirm("¿Eliminar usuario y pronósticos?")){await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));msg("Usuario eliminado ✅")}}
+window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eliminarte","bad");if(confirm("¿Eliminar usuario y pronósticos?")){await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));msg("Usuario eliminado ✅"); await forceRefreshData()}}
 window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim(),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa datos","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
 window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed)}
 window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
