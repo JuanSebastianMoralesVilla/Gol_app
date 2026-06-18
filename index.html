@@ -36,6 +36,29 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}a{color:
 .quickBtns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .quickBtns button{padding:8px 10px;font-size:12px}
 .userNameCell b{display:block}.userNameCell span{color:var(--muted);font-size:12px}
+
+@media(max-width:700px){
+  header{padding:18px 14px}
+  h1{font-size:38px;line-height:1.05}
+  header p{font-size:16px;margin-top:10px}
+  .wrap{padding:0 10px 32px}
+  .card{padding:14px;border-radius:20px}
+  .tabs{gap:8px}
+  .tabs button{flex:1 1 calc(50% - 8px);font-size:16px;padding:12px 10px}
+  .grid{gap:12px}
+  .leader{display:grid;grid-template-columns:1fr auto;align-items:center}
+  .dashGrid{grid-template-columns:1fr 1fr!important;gap:8px}
+  .dashCard{padding:12px 8px}
+  .adminTable thead{display:none}
+  .adminTable,.adminTable tbody,.adminTable tr,.adminTable td{display:block;width:100%}
+  .adminTable tr{background:#ffffff0a;border:1px solid #fff2;border-radius:16px;margin:10px 0;padding:10px}
+  .adminTable td{border:0!important;background:transparent!important;padding:7px!important}
+  .adminTable td:first-child,.adminTable td:last-child{border-radius:0!important}
+  .adminTable td::before{content:attr(data-label);display:block;color:var(--muted);font-size:12px;margin-bottom:4px;font-weight:700}
+  .adminTable select,.adminTable button{width:100%;margin:4px 0}
+  .quickBtns button{flex:1 1 45%}
+}
+
 </style>
 </head>
 <body>
@@ -114,13 +137,37 @@ async function init(){
  const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
  onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
 }
-function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue(fb.ref(db,"/quiniela_colombia"),snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();switchMode();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')}
+function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue(fb.ref(db,"/quiniela_colombia"),async snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};await ensureLoggedUserRecord();rebuild();switchMode();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')}
+
+async function ensureLoggedUserRecord(){
+ if(!currentUser)return;
+ const existing=state.users?.[currentUser.uid];
+ const email=(currentUser.email||"").toLowerCase();
+ const initialAdmin=ADMIN_EMAILS.includes(email);
+ if(existing)return;
+ await fb.set(fb.ref(db,`/quiniela_colombia/users/${currentUser.uid}`),{
+  name:currentUser.displayName||currentUser.email,
+  email:currentUser.email||"",
+  group:initialAdmin?"Administradores":"Sin asignar",
+  active:initialAdmin?true:false,
+  role:initialAdmin?"admin":"user",
+  paid:false,
+  updatedAt:Date.now()
+ });
+}
 function switchMode(){if(isAdmin()){userMode.classList.add("hidden");adminMode.classList.remove("hidden");adminUserLabel.textContent=currentUser.displayName||currentUser.email}else{adminMode.classList.add("hidden");userMode.classList.remove("hidden");currentUserLabel.textContent=currentUser.displayName||currentUser.email}}
 
 async function saveUser(uid,name,email){const mail=String(email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(mail),ex=state.users?.[uid]||{};await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{name:txt(name),email:String(email||"").slice(0,80),group:ex.group||(initialAdmin?"Administradores":"Sin asignar"),active:initialAdmin?true:(ex.active===true),role:ex.role||(initialAdmin?"admin":"user"),paid:ex.paid===true,updatedAt:Date.now()})}
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
 window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
-window.login=async()=>{let email=document.getElementById("email").value.trim(),pass=password.value;if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");try{let c=await fb.signInWithEmailAndPassword(auth,email,pass);await saveUser(c.user.uid,c.user.displayName||txt(displayName.value)||email,email);authMsg("Ingreso correcto ✅")}catch(e){authMsg(authError(e),"bad")}}
+window.login=async()=>{
+ let email=document.getElementById("email").value.trim(),pass=password.value;
+ if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");
+ try{
+   await fb.signInWithEmailAndPassword(auth,email,pass);
+   authMsg("Ingreso correcto ✅");
+ }catch(e){authMsg(authError(e),"bad")}
+}
 window.resetPassword=async()=>{let email=document.getElementById("email").value.trim();if(!email.includes("@"))return authMsg("Escribe tu correo válido primero.","bad");try{await fb.sendPasswordResetEmail(auth,email);authMsg("Correo de recuperación enviado ✅")}catch(e){authMsg(authError(e),"bad")}}
 window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("configuration-not-found"))return"Activa Authentication > Email/Password en Firebase.";return e.message||"Error"}
@@ -146,12 +193,12 @@ function renderHistory(){let players=visiblePlayerEntries();historyPanel.innerHT
 
 function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.length-1}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
 let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let opts=groups.map(g=>`<option value="${esc(g)}" ${(u.group||"Sin asignar")===g?"selected":""}>${esc(g)}</option>`).join(""),roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr>
-<td class="userNameCell"><b>${esc(u.name||"Usuario")}</b><span>${esc(u.email||"")}</span></td>
-<td><select id="grp-${uid}">${opts}</select></td>
-<td><select id="role-${uid}">${roleOpts}</select></td>
-<td><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><br><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td>
-<td>${u.active===false?"Pendiente":"Activo"}</td>
-<td><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button><button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td>
+<td data-label="Usuario" class="userNameCell"><b>${esc(u.name||"Usuario")}</b><span>${esc(u.email||"")}</span></td>
+<td data-label="Grupo"><select id="grp-${uid}">${opts}</select></td>
+<td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td>
+<td data-label="Pago"><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td>
+<td data-label="Estado">${u.active===false?"Pendiente":"Activo"}</td>
+<td data-label="Acción"><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button><button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td>
 </tr>`}).join("");
 adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Grupo</th><th>Rol</th><th>Pago</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${userRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div>`;
 let groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name)}"></td><td><input id="gval-${gid}" type="number" value="${Number(g.value||0)}"></td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
