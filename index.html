@@ -85,7 +85,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}a{color:
 <div id="userMode">
 <nav class="tabs"><button id="tabPredict">Predicción</button><button class="secondary" id="tabMine">Mis marcadores</button><button class="secondary" id="tabHistory">Historial</button><button class="secondary" id="tabRules">Reglas</button></nav>
 <div id="feedback" class="small warn"></div>
-<section id="viewPredict"><p class="small">Usuario: <b id="currentUserLabel"></b></p><button class="secondary" onclick="logout()">Cerrar sesión</button><div id="matches"></div></section>
+<section id="viewPredict"><p class="small">Usuario: <b id="currentUserLabel"></b></p><p class="small">Grupos asignados: <b id="assignedGroupsLabel"></b></p><button class="secondary" onclick="logout()">Cerrar sesión</button><div id="matches"></div></section>
 <section id="viewMine" style="display:none"><h2>Mis marcadores</h2><div id="myPredictions" class="small"></div></section>
 <section id="viewHistory" style="display:none"><h2>Historial</h2><div id="historyPanel" class="small"></div></section>
 <section id="viewRules" style="display:none"><h2>Reglas</h2><p><span class="pill">5 pts</span> Marcador exacto.</p><p><span class="pill">3 pts</span> Ganador o empate correcto.</p><p><span class="pill">0 pts</span> Cualquier otro resultado.</p></section>
@@ -115,6 +115,7 @@ let auth,db,currentUser=null,unsubscribeData=null,state={predictions:{},results:
 let selectedUserGroup=localStorage.getItem('selectedUserGroup')||'';
 let selectedTeamFilter=localStorage.getItem('selectedTeamFilter')||'Todos';
 let selectedAdminRankingGroup=localStorage.getItem('selectedAdminRankingGroup')||'Todos';
+let selectedAdminView=localStorage.getItem('selectedAdminView')||'Dash';
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const txt=s=>String(s??"").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
 const key=s=>txt(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
@@ -146,6 +147,35 @@ function visiblePlayerEntries(){
  return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(g));
 }
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
+function groupKey(g){return key(g||"Sin asignar").toUpperCase()||"SIN_ASIGNAR"}
+function userPredictions(uid, groupName){
+ const data=state.predictions?.[uid]||{};
+ const gk=groupKey(groupName);
+ if(data.groups && data.groups[gk]) return data.groups[gk];
+ // Compatibilidad con pronósticos viejos guardados directo por partido
+ return data;
+}
+function totalPointsForGroups(uid, groups){
+ const data=state.predictions?.[uid]||{};
+ return groups.reduce((acc,g)=>{
+  const pd=userPredictions(uid,g);
+  return acc+matches.reduce((s,m)=>s+pts(pd[m.id],state.results?.[m.id]),0);
+ },0);
+}
+function completedForGroups(uid, groups){
+ return groups.reduce((acc,g)=>acc+matches.filter(m=>userPredictions(uid,g)[m.id]).length,0);
+}
+function exactForGroups(uid, groups){
+ return groups.reduce((acc,g)=>acc+exact(userPredictions(uid,g)),0);
+}
+function predictionPath(uid, groupName, matchId){
+ return `predictions/${uid}/groups/${groupKey(groupName)}/${matchId}`;
+}
+function userDisplayNameFromPrediction(uid, groupName){
+ const u=state.users?.[uid]||{};
+ const data=state.predictions?.[uid]||{};
+ return u.name||data.name||"Usuario";
+}
 function getGroupValue(g){
  const t=String(g||"").trim().toLowerCase();
  const row=Object.values(state.groups||{}).find(x=>String(x.name||"").trim().toLowerCase()===t);
@@ -236,7 +266,8 @@ window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("configuration-not-found"))return"Activa Authentication > Email/Password en Firebase.";return e.message||"Error"}
 
 const score=(id,v,d,l)=>`<input id="${id}" aria-label="${esc(l)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${esc(v??"")}" ${d?"disabled":""}>`;
-function renderMatches(){let uid=currentUser?.uid,u=state.users?.[uid]||{};if(u.active===false&&!isAdmin()){matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>El admin debe activarte y asignarte grupo.</div>`;return}matchesDiv.innerHTML=renderUserFilters()+visibleMatches().map(m=>{let p=state.predictions?.[uid]?.[m.id]||{},locked=isLocked(m);return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${locked?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,locked,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,locked,"Goles "+m.away)}<label>${esc(m.away)}</label></div><div class="quickBtns">
+function renderMatches(){
+ if(document.getElementById('assignedGroupsLabel')) assignedGroupsLabel.innerHTML=currentUserGroups().map(g=>`<span class="pill">${esc(g)}</span>`).join(' ')||'<span class="pill">Sin asignar</span>';let uid=currentUser?.uid,u=state.users?.[uid]||{};if(u.active===false&&!isAdmin()){matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>El admin debe activarte y asignarte grupo.</div>`;return}matchesDiv.innerHTML=renderUserFilters()+visibleMatches().map(m=>{let p=userPredictions(uid,currentUserGroup())?.[m.id]||{},locked=isLocked(m);return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${locked?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,locked,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,locked,"Goles "+m.away)}<label>${esc(m.away)}</label></div><div class="quickBtns">
 <button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',1,0)">1-0</button>
 <button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',2,0)">2-0</button>
 <button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',2,1)">2-1</button>
@@ -248,19 +279,35 @@ window.quickPredict=(id,h,a)=>{
  if(ih&&!ih.disabled)ih.value=h;
  if(ia&&!ia.disabled)ia.value=a;
 }
-window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Usuario pendiente","bad");if(isLocked(m))return msg("Partido cerrado","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`predictions/${currentUser.uid}/${id}`,{home:+h,away:+a,updatedAt:Date.now()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
+window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Usuario pendiente","bad");if(isLocked(m))return msg("Partido cerrado","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(predictionPath(currentUser.uid,currentUserGroup(),id),{home:+h,away:+a,updatedAt:Date.now(),group:currentUserGroup()});
+await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅")}
 
-function renderLeaderboard(){let entries=isAdmin()?adminRankingEntries():visiblePlayerEntries(),rows=entries.map(([uid,data])=>{let u=state.users?.[uid]||{},total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0),completed=matches.filter(m=>data[m.id]).length,ex=exact(data);return{name:u.name||data.name||"Usuario",group:isAdmin()?userGroups(u).join(", "):currentUserGroup(),total,completed,ex}}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));leaderboard.innerHTML=renderAdminRankingFilter()+`<div class="notice"><b>${isAdmin()?(selectedAdminRankingGroup==='Todos'?'Ranking general':'Ranking: '+esc(selectedAdminRankingGroup)):"Tu grupo: "+esc(currentUserGroup())}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes.");let groupValue=isAdmin()?(selectedAdminRankingGroup==='Todos'?0:getGroupValue(selectedAdminRankingGroup)):getGroupValue(currentUserGroup()),bag=groupValue*entries.length;summaryStats.innerHTML=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Abiertos</span></div></div>`}
-function renderMine(){let d=state.predictions?.[currentUser?.uid];myPredictions.innerHTML=d?visibleMatches().map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
-function renderHistory(){let players=visiblePlayerEntries();historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{};return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(u.group||"Sin asignar")}</span></h3>${visibleMatches().map(m=>{let p=data[m.id],r=state.results?.[m.id];return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")}</section>`}).join(""):"Sin marcadores."}
-
+function renderLeaderboard(){
+let entries=isAdmin()?adminRankingEntries():visiblePlayerEntries(),rows=entries.map(([uid,data])=>{
+ let u=state.users?.[uid]||{};
+ let groupsForScore=isAdmin()
+   ? (selectedAdminRankingGroup==="Todos" ? userGroups(u).filter(g=>g!=="Sin asignar") : [selectedAdminRankingGroup])
+   : [currentUserGroup()];
+ if(!groupsForScore.length)groupsForScore=["Sin asignar"];
+ let total=totalPointsForGroups(uid,groupsForScore);
+ let completed=completedForGroups(uid,groupsForScore);
+ let ex=exactForGroups(uid,groupsForScore);
+ return {name:u.name||data.name||"Usuario",group:isAdmin()?groupsForScore.join(", "):currentUserGroup(),total,completed,ex};
+}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
+leaderboard.innerHTML=renderAdminRankingFilter()+`<div class="notice"><b>${isAdmin()?(selectedAdminRankingGroup==='Todos'?'Ranking general':'Ranking: '+esc(selectedAdminRankingGroup)):"Tu grupo: "+esc(currentUserGroup())}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes.");
+let groupValue=isAdmin()?(selectedAdminRankingGroup==='Todos'?0:getGroupValue(selectedAdminRankingGroup)):getGroupValue(currentUserGroup()),bag=groupValue*entries.length;summaryStats.innerHTML=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Abiertos</span></div></div>`}
+function renderMine(){let d=userPredictions(currentUser?.uid,currentUserGroup());myPredictions.innerHTML=d?visibleMatches().map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
+function renderHistory(){
+let players=isAdmin()?adminRankingEntries():visiblePlayerEntries();
+let groupForView=isAdmin()?selectedAdminRankingGroup:currentUserGroup();
+historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{};let groupsForView=isAdmin()&&groupForView==="Todos"?userGroups(u).filter(g=>g!=="Sin asignar"):[groupForView];return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(groupsForView.join(", ")||"Sin asignar")}</span></h3>${groupsForView.map(g=>`<div class="notice"><b>${esc(g)}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,g)[m.id],r=state.results?.[m.id];return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")).join("")}</section>`}).join(""):"Sin marcadores."}
 function renderAdminRankingMini(){
  const entries=adminRankingEntries();
  const rows=entries.map(([uid,data])=>{
   let u=state.users?.[uid]||{};
-  let total=matches.reduce((s,m)=>s+pts(data[m.id],state.results?.[m.id]),0);
-  let ex=exact(data);
-  let completed=matches.filter(m=>data[m.id]).length;
+  let predData=userPredictions(uid,selectedAdminRankingGroup);let total=matches.reduce((s,m)=>s+pts(predData[m.id],state.results?.[m.id]),0);
+  let ex=exact(predData);
+  let completed=matches.filter(m=>predData[m.id]).length;
   return {name:u.name||data.name||"Usuario",groups:userGroups(u).join(", "),total,ex,completed};
  }).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
  return `<div class="match"><h3>🏆 Clasificación ${selectedAdminRankingGroup==="Todos"?"general":esc(selectedAdminRankingGroup)}</h3>${renderAdminRankingFilter()}${rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.groups)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes"}</div>`;
@@ -311,10 +358,24 @@ window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eli
 window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim(),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa datos","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
 window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed)}
 window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
-window.exportExcel=()=>{let rows=[["Grupo","Participante","Correo","Pagó","Partido","Pred Local","Pred Visit","Res Local","Res Visit","Puntos"]];(isAdmin()?Object.entries(state.predictions||{}):visiblePlayerEntries()).forEach(([uid,d])=>matches.forEach(m=>{let u=state.users?.[uid]||{},p=d[m.id]||{},r=state.results?.[m.id]||{};rows.push([u.group||"",u.name||"",u.email||"",u.paid===true?"Sí":"No",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)])}));let table=`<html><meta charset="utf-8"><table border=1>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;let b=new Blob([table],{type:"application/vnd.ms-excel"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="polla_colombia.xls";a.click()}
-
-function showAdminSection(n){for(const [k,el] of Object.entries({Dash:adminDashView,Users:adminUsersView,Groups:adminGroupsView,Matches:adminMatchesView,Results:adminResultsView}))el.style.display=k===n?"block":"none"}
-function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin();if(isAdmin())showAdminSection("Dash")}
+window.exportExcel=()=>{
+let rows=[["Grupo","Participante","Correo","Pagó","Partido","Pred Local","Pred Visit","Res Local","Res Visit","Puntos"]];
+const entries=isAdmin()?Object.entries(state.predictions||{}):visiblePlayerEntries();
+entries.forEach(([uid,d])=>{
+ let u=state.users?.[uid]||{};
+ let groups=isAdmin()?userGroups(u).filter(g=>g!=="Sin asignar"):[currentUserGroup()];
+ if(!groups.length)groups=["Sin asignar"];
+ groups.forEach(g=>{
+  visibleMatches().forEach(m=>{
+   let p=userPredictions(uid,g)[m.id]||{},r=state.results?.[m.id]||{};
+   rows.push([g,u.name||"",u.email||"",u.paid===true?"Sí":"No",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)]);
+  });
+ });
+});
+let table=`<html><meta charset="utf-8"><table border=1>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;
+let b=new Blob([table],{type:"application/vnd.ms-excel"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="polla_colombia.xls";a.click()}
+function showAdminSection(n){selectedAdminView=n;localStorage.setItem("selectedAdminView",n);for(const [k,el] of Object.entries({Dash:adminDashView,Users:adminUsersView,Groups:adminGroupsView,Matches:adminMatchesView,Results:adminResultsView}))el.style.display=k===n?"block":"none"}
+function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin();if(isAdmin())showAdminSection(selectedAdminView)}
 tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
 admDash.onclick=()=>showAdminSection("Dash");admUsers.onclick=()=>showAdminSection("Users");admGroups.onclick=()=>showAdminSection("Groups");admMatches.onclick=()=>showAdminSection("Matches");admResults.onclick=()=>showAdminSection("Results");
 function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
