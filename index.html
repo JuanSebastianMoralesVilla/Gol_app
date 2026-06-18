@@ -147,32 +147,28 @@ function currentUserGroup(){
  return selectedUserGroup;
 }
 function visiblePlayerEntries(){
- const e=Object.entries(state.predictions||{});
- if(isAdmin())return e;
+ const pred=state.predictions||{};
+ const users=state.users||{};
+ const uids=new Set([...Object.keys(users),...Object.keys(pred)]);
+ if(isAdmin())return [...uids].map(uid=>[uid,pred[uid]||{}]);
  const g=currentUserGroup();
- return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(g));
+ return [...uids].filter(uid=>userGroups(users[uid]).includes(g)).map(uid=>[uid,pred[uid]||{}]);
 }
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
 function groupKey(g){return key(g||"Sin asignar").toUpperCase()||"SIN_ASIGNAR"}
 function userPredictions(uid, groupName){
  const data=state.predictions?.[uid]||{};
  const gk=groupKey(groupName);
- if(data.groups && data.groups[gk]) return data.groups[gk];
- // Compatibilidad con pronósticos viejos guardados directo por partido
- return data;
-}
-function totalPointsForGroups(uid, groups){
- const data=state.predictions?.[uid]||{};
- return groups.reduce((acc,g)=>{
-  const pd=userPredictions(uid,g);
-  return acc+matches.reduce((s,m)=>s+pts(pd[m.id],state.results?.[m.id]),0);
- },0);
-}
-function completedForGroups(uid, groups){
- return groups.reduce((acc,g)=>acc+matches.filter(m=>userPredictions(uid,g)[m.id]).length,0);
-}
-function exactForGroups(uid, groups){
- return groups.reduce((acc,g)=>acc+exact(userPredictions(uid,g)),0);
+ if(data.groups){
+   return data.groups[gk]||{};
+ }
+ // Compatibilidad: los pronósticos viejos directos solo cuentan para el grupo principal antiguo.
+ const u=state.users?.[uid]||{};
+ const legacyGroup=u.group||"Sin asignar";
+ if(String(groupName||"Sin asignar")===String(legacyGroup)){
+   return data;
+ }
+ return {};
 }
 function predictionPath(uid, groupName, matchId){
  return `predictions/${uid}/groups/${groupKey(groupName)}/${matchId}`;
@@ -191,14 +187,20 @@ function allGroupNames(){
  return [...new Set([...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))].sort();
 }
 function adminRankingEntries(){
- const e=Object.entries(state.predictions||{});
- if(selectedAdminRankingGroup==="Todos")return e;
- return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(selectedAdminRankingGroup));
+ const pred=state.predictions||{};
+ const users=state.users||{};
+ let uids=new Set([...Object.keys(users),...Object.keys(pred)]);
+ if(selectedAdminRankingGroup==="Todos"){
+   return [...uids].map(uid=>[uid,pred[uid]||{}]);
+ }
+ return [...uids]
+   .filter(uid=>userGroups(users[uid]).includes(selectedAdminRankingGroup))
+   .map(uid=>[uid,pred[uid]||{}]);
 }
 function renderAdminRankingFilter(){
  if(!isAdmin())return "";
  const groups=allGroupNames();
- return `<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="selectedAdminRankingGroup=this.value;localStorage.setItem('selectedAdminRankingGroup',selectedAdminRankingGroup);renderAll();"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`;
+ return `<div class="filterBox"><label>Filtrar clasificación admin</label><p class="small">Cada grupo tiene predicciones independientes.</p><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`;
 }
 function teamNamesForFilter(){
  const names=new Set(["Todos"]);
