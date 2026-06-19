@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>⚽ GOL 2026</title>
+<title>GOL 2026</title>
 <style>
 :root{--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;--red:#ff6b6b;--ok:#7dffb1;--border:rgba(255,255,255,.16)}
 *{box-sizing:border-box}
@@ -136,79 +136,106 @@ a{color:var(--yellow);font-weight:800}
 }
 
 
+
+/* === LOGIN GOL 2026 - limpio y futbolero === */
 .posterLogin{
-  max-width:430px!important;
-  min-height:860px;
+  max-width:460px!important;
+  min-height:760px;
   margin:0 auto 36px!important;
   padding:0!important;
-  border-radius:30px!important;
+  border-radius:34px!important;
   overflow:hidden;
   border:1px solid rgba(255,255,255,.22);
   box-shadow:0 30px 80px #000c;
   background:
-    radial-gradient(circle at 20% 10%,rgba(255,212,59,.34),transparent 28%),
-    radial-gradient(circle at 85% 18%,rgba(47,128,237,.42),transparent 30%),
-    linear-gradient(165deg,#07111f 0%,#092147 48%,#07111f 100%);
+    radial-gradient(circle at 50% 8%, rgba(255,212,59,.34), transparent 18%),
+    radial-gradient(circle at 18% 25%, rgba(47,128,237,.42), transparent 24%),
+    radial-gradient(circle at 82% 28%, rgba(255,72,72,.28), transparent 22%),
+    linear-gradient(180deg,#061427 0%,#09213a 42%,#043016 100%);
+  position:relative;
+}
+.posterLogin::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.24;
+  background:
+    linear-gradient(90deg, transparent 49.5%, rgba(255,255,255,.55) 50%, transparent 50.5%),
+    radial-gradient(circle at 50% 72%, transparent 0 78px, rgba(255,255,255,.45) 80px, transparent 83px),
+    linear-gradient(0deg, transparent 49.4%, rgba(255,255,255,.34) 50%, transparent 50.6%);
+  background-size:100% 100%,100% 100%,100% 160px;
+}
+.posterLogin::after{
+  content:"⚽";
+  position:absolute;
+  right:28px;
+  bottom:32px;
+  font-size:86px;
+  opacity:.18;
+  filter:drop-shadow(0 14px 20px #000);
 }
 .posterOverlay{
-  min-height:860px;
-  padding:42px 32px 34px;
+  min-height:760px;
+  padding:38px 30px 32px;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  background:linear-gradient(180deg,rgba(0,9,23,.05),rgba(0,9,23,.20) 42%,rgba(0,9,23,.10));
+  background:linear-gradient(180deg,rgba(0,9,23,.08),rgba(0,9,23,.38) 44%,rgba(0,9,23,.18));
+  position:relative;
+  z-index:1;
 }
 .posterTitle{
   text-align:center;
-  margin-bottom:26px;
+  margin-bottom:24px;
   text-shadow:0 8px 18px #000;
-}
-.posterCup{
-  font-size:44px;
-  margin-bottom:6px;
 }
 .posterTitle h2{
   margin:0;
-  font-size:34px;
+  font-size:42px;
   line-height:1;
   text-transform:uppercase;
-  letter-spacing:.5px;
+  letter-spacing:1px;
+}
+.posterTitle h2::before{
+  content:"⚽ ";
 }
 .posterTitle p{
   color:#ffd43b;
   font-weight:900;
-  margin:10px 0 0;
-  text-transform:uppercase;
-  font-size:14px;
+  margin:12px auto 0;
+  text-transform:none;
+  font-size:15px;
+  max-width:310px;
 }
 .posterForm{
-  background:rgba(0,15,31,.76);
-  border:1px solid rgba(255,212,59,.62);
-  box-shadow:0 0 32px rgba(255,212,59,.28), inset 0 1px 0 rgba(255,255,255,.10);
-  backdrop-filter:blur(8px);
+  background:rgba(3,12,24,.90);
+  border:1px solid rgba(255,212,59,.50);
+  box-shadow:0 0 32px rgba(255,212,59,.18), inset 0 1px 0 rgba(255,255,255,.10);
+  backdrop-filter:blur(18px);
   border-radius:28px;
   padding:24px;
 }
 .posterForm label{
   color:#fff;
   font-weight:850;
-  font-size:16px;
+  font-size:15px;
   margin-top:14px;
 }
 .posterForm input{
   height:56px;
   border-radius:17px;
-  border:1px solid rgba(255,255,255,.28);
+  border:1px solid rgba(255,255,255,.25);
   background:rgba(0,9,23,.82);
   color:white;
   font-size:17px;
 }
-.posterPassword{
-  position:relative;
+.posterForm input:focus{
+  border-color:#ffd43b;
+  box-shadow:0 0 0 4px rgba(255,212,59,.15);
+  outline:none;
 }
-.posterPassword input{
-  padding-right:88px;
-}
+.posterPassword{position:relative}
+.posterPassword input{padding-right:88px}
 .posterPassword button{
   position:absolute;
   right:9px;
@@ -224,10 +251,12 @@ a{color:var(--yellow);font-weight:800}
   margin-top:14px;
   border-radius:17px;
   font-size:18px;
+  font-weight:900;
+  letter-spacing:.3px;
 }
 .posterMainBtn{
-  background:linear-gradient(90deg,#ffd43b,#ffbd00);
-  box-shadow:0 15px 34px rgba(255,212,59,.28);
+  background:linear-gradient(90deg,#ffcc00,#ffd43b);
+  box-shadow:0 15px 34px rgba(255,212,59,.25);
 }
 .posterSecondaryBtn{
   background:rgba(0,9,23,.78)!important;
@@ -247,29 +276,22 @@ a{color:var(--yellow);font-weight:800}
   border-radius:14px;
   background:rgba(0,0,0,.25);
 }
-.posterSafe{
-  margin-top:14px;
-  text-align:center;
-  color:#fff;
-  font-weight:700;
-}
 @media(max-width:520px){
   .posterLogin{max-width:100%!important;min-height:100svh;border-radius:0!important;margin:0!important}
   .posterOverlay{min-height:100svh;padding:28px 22px}
-  .posterTitle h2{font-size:30px}
+  .posterTitle h2{font-size:36px}
 }
 
 </style>
 </head>
 <body>
-<header><h1>⚽ GOL 2026</h1><p>Cada participante ve sus grupos, ranking y pronósticos por grupo.</p></header>
+<header><h1>⚽ GOL 2026</h1><p>Predice resultados • Compite con tus amigos • Lidera tu ranking</p></header>
 <main class="wrap">
 <section id="authCard" class="posterLogin">
   <div class="posterOverlay">
     <div class="posterTitle">
-      <div class="posterCup">🏆</div>
-      <h2>⚽ GOL 2026</h2>
-      <p>Registra tus marcadores y compite por el ranking</p>
+      <h2>GOL 2026</h2>
+      <p>Predice resultados • Compite con amigos</p>
     </div>
 
     <div class="posterForm">
@@ -298,7 +320,6 @@ a{color:var(--yellow);font-weight:800}
       <button id="cancelRegisterBtn" class="posterSecondaryBtn hidden" onclick="showLogin()">Cancelar</button>
 
       <a class="posterRecover" href="#" onclick="resetPassword();return false;">🔑 Recuperar contraseña</a>
-      <div class="posterSafe">🛡️ Firebase protege tu clave.</div>
     </div>
   </div>
 </section>
