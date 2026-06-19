@@ -1,74 +1,72 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Polla Selección Colombia</title>
 <style>
 :root{--card:#10243d;--muted:#c7d6e6;--text:#f7fbff;--yellow:#ffd43b;--red:#ff6b6b;--ok:#7dffb1;--border:rgba(255,255,255,.16)}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
-header{text-align:center;padding:26px 16px}h1{margin:0;font-size:clamp(30px,6vw,58px)}p,.small{color:var(--muted)}
-.wrap{max-width:1180px;margin:auto;padding:0 16px 48px}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}@media(max-width:900px){.grid{grid-template-columns:1fr}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#07111f,#0b1627 60%,#09111f);color:var(--text)}
+header{text-align:center;padding:26px 16px}
+h1{margin:0;font-size:clamp(30px,6vw,58px)}
+p,.small{color:var(--muted)}
+.wrap{max-width:1180px;margin:auto;padding:0 16px 48px}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
 .card{background:rgba(16,36,61,.92);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 18px 45px #0007}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}button{border:0;border-radius:14px;padding:11px 14px;font-weight:850;cursor:pointer;background:var(--yellow);color:#07111f}
-button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}button.danger{background:var(--red);color:#111}button:disabled{opacity:.55}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button{border:0;border-radius:14px;padding:11px 14px;font-weight:850;cursor:pointer;background:var(--yellow);color:#07111f}
+button.secondary{background:#1a3a60;color:var(--text);border:1px solid var(--border)}
+button.danger{background:var(--red);color:#111}
+button:disabled{opacity:.55}
 input,select{width:100%;border:1px solid var(--border);background:#09182b;color:var(--text);border-radius:14px;padding:12px;font-size:16px}
-label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}a{color:var(--yellow);font-weight:800}.hidden{display:none!important}
-.notice{background:#2f80ed24;border:1px solid #2f80ed55;border-radius:16px;padding:12px;margin:12px 0}.pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+a{color:var(--yellow);font-weight:800}
+.hidden{display:none!important}
+.notice{background:#2f80ed24;border:1px solid #2f80ed55;border-radius:16px;padding:12px;margin:12px 0}
+.pendingBox{background:#ffd43b1c;border:1px solid #ffd43b88;border-radius:16px;padding:12px;margin:12px 0;color:#ffe899}
 .ok{color:var(--ok)}.bad{color:#ffaaa5}.warn{color:var(--yellow)}
-.match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:#ffffff0a}.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-size:18px;font-weight:850}
-.teamBox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}.flag{font-size:44px}.vsBadge{background:var(--yellow);color:#07111f;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900}
+.match{border:1px solid var(--border);border-radius:18px;padding:14px;margin:12px 0;background:#ffffff0a}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font-size:18px;font-weight:850}
+.teamBox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.flag{font-size:44px}.vsBadge{background:var(--yellow);color:#07111f;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900}
 .groupBadge{display:inline-block;margin:2px 0 10px;border-radius:999px;padding:5px 10px;background:#2f80ed33;border:1px solid #2f80ed77;color:#d8e8ff;font-size:12px;font-weight:850}
 .date{color:var(--muted);font-size:13px;margin-top:8px}.statusOpen{color:var(--ok);font-weight:850}.statusClosed{color:#ffaaa5;font-weight:850}
-.scorebox{display:grid;grid-template-columns:1fr 76px 20px 76px 1fr;align-items:end;gap:8px;margin-top:12px}.scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
-@media(max-width:560px){.scorebox{grid-template-columns:1fr 64px 16px 64px 1fr;font-size:13px}.flag{font-size:36px}}
-.leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid #fff2}.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850;background:#ffd43b29;color:var(--yellow)}
-.dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.dashCard{background:linear-gradient(180deg,#ffffff12,#ffffff08);border:1px solid #ffffff22;border-radius:18px;padding:14px;text-align:center}
-.dashCard .icon{font-size:26px;display:block;margin-bottom:5px}.dashCard b{font-size:22px}@media(max-width:760px){.dashGrid{grid-template-columns:repeat(2,1fr)}}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:640px){.two{grid-template-columns:1fr}}.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
+.scorebox{display:grid;grid-template-columns:1fr 76px 20px 76px 1fr;align-items:end;gap:8px;margin-top:12px}
+.scorebox span{text-align:center;color:var(--muted);padding-bottom:12px}
+.leader,.historyRow{display:flex;justify-content:space-between;gap:10px;padding:12px 10px;border-bottom:1px solid #fff2}
+.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850;background:#ffd43b29;color:var(--yellow)}
+.dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.dashCard{background:linear-gradient(180deg,#ffffff12,#ffffff08);border:1px solid #ffffff22;border-radius:18px;padding:14px;text-align:center}
+.dashCard .icon{font-size:26px;display:block;margin-bottom:5px}.dashCard b{font-size:22px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.miniBtn{padding:8px 10px;font-size:12px;margin:4px 4px 0 0}
+.tableWrap{overflow:auto}
 .adminTable,.groupTable{width:100%;border-collapse:separate;border-spacing:0 10px;font-size:13px}
 .adminTable th,.groupTable th{padding:8px;text-align:left;color:var(--muted)}
 .adminTable td,.groupTable td{background:#ffffff0a;border-top:1px solid #fff2;border-bottom:1px solid #fff2;padding:10px;text-align:left;vertical-align:middle}
 .adminTable td:first-child,.groupTable td:first-child{border-left:1px solid #fff2;border-radius:14px 0 0 14px}
 .adminTable td:last-child,.groupTable td:last-child{border-right:1px solid #fff2;border-radius:0 14px 14px 0}
-.tableWrap{overflow:auto}
-.payBadge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850}
-.payYes{background:#7dffb129;color:#7dffb1}.payNo{background:#ff6b6b29;color:#ffaaa5}
-.quickBtns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.quickBtns button{padding:8px 10px;font-size:12px}
-.userNameCell b{display:block}.userNameCell span{color:var(--muted);font-size:12px}
-
-@media(max-width:700px){
-  header{padding:18px 14px}
-  h1{font-size:38px;line-height:1.05}
-  header p{font-size:16px;margin-top:10px}
-  .wrap{padding:0 10px 32px}
-  .card{padding:14px;border-radius:20px}
-  .tabs{gap:8px}
-  .tabs button{flex:1 1 calc(50% - 8px);font-size:16px;padding:12px 10px}
-  .grid{gap:12px}
-  .leader{display:grid;grid-template-columns:1fr auto;align-items:center}
-  .dashGrid{grid-template-columns:1fr 1fr!important;gap:8px}
-  .dashCard{padding:12px 8px}
-  .adminTable thead{display:none}
-  .adminTable,.adminTable tbody,.adminTable tr,.adminTable td{display:block;width:100%}
-  .adminTable tr{background:#ffffff0a;border:1px solid #fff2;border-radius:16px;margin:10px 0;padding:10px}
-  .adminTable td{border:0!important;background:transparent!important;padding:7px!important}
-  .adminTable td:first-child,.adminTable td:last-child{border-radius:0!important}
-  .adminTable td::before{content:attr(data-label);display:block;color:var(--muted);font-size:12px;margin-bottom:4px;font-weight:700}
-  .adminTable select,.adminTable button{width:100%;margin:4px 0}
-  .quickBtns button{flex:1 1 45%}
-}
-
-
 .groupChips{display:flex;gap:6px;flex-wrap:wrap}
 .groupChip{display:inline-flex;align-items:center;gap:4px;background:#1a3a60;border:1px solid #ffffff22;border-radius:999px;padding:5px 9px;font-size:12px}
+.payBadge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850}
+.payYes{background:#7dffb129;color:#7dffb1}.payNo{background:#ff6b6b29;color:#ffaaa5}
+.quickBtns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.quickBtns button{padding:8px 10px;font-size:12px}
 .filterBox{background:#ffffff0a;border:1px solid #ffffff22;border-radius:16px;padding:12px;margin:12px 0}
-.filterBox select{margin-top:6px}
+@media(max-width:700px){
+ header{padding:18px 14px}h1{font-size:38px;line-height:1.05}.wrap{padding:0 10px 32px}.card{padding:14px;border-radius:20px}
+ .tabs button{flex:1 1 calc(50% - 8px);font-size:16px;padding:12px 10px}.dashGrid{grid-template-columns:1fr 1fr!important}
+ .adminTable thead{display:none}.adminTable,.adminTable tbody,.adminTable tr,.adminTable td{display:block;width:100%}
+ .adminTable tr{background:#ffffff0a;border:1px solid #fff2;border-radius:16px;margin:10px 0;padding:10px}
+ .adminTable td{border:0!important;background:transparent!important;padding:7px!important}
+ .adminTable td::before{content:attr(data-label);display:block;color:var(--muted);font-size:12px;margin-bottom:4px;font-weight:700}
+ .adminTable select,.adminTable button{width:100%;margin:4px 0}.quickBtns button{flex:1 1 45%}.two{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-<header><h1>Polla Selección Colombia</h1><p>Cada participante ve solo su grupo y su ranking.</p></header>
-
+<header><h1>Polla Selección Colombia</h1><p>Cada participante ve sus grupos, ranking y pronósticos por grupo.</p></header>
 <main class="wrap">
 <section id="authCard" class="card">
 <h2>Ingreso</h2><p class="small">Regístrate una vez. Firebase guarda la contraseña; la app no la ve.</p>
@@ -99,7 +97,7 @@ label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}a{color:
 </div>
 </article>
 
-<aside class="card"><h2>🏆 Tabla</h2><div id="leaderboard" class="small"></div><div id="summaryStats"></div><div class="notice">Solo puedes ver los participantes de tu grupo.</div><div id="connectionStatus" class="small warn"></div><button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button></aside>
+<aside class="card"><h2>🏆 Tabla</h2><div id="leaderboard" class="small"></div><div id="summaryStats"></div><div class="notice">Solo puedes ver los participantes del grupo seleccionado.</div><div id="connectionStatus" class="small warn"></div><button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button></aside>
 </section>
 </main>
 
@@ -109,302 +107,98 @@ const ADMIN_EMAILS=["juansebastianmoralesvilla@gmail.com"],MAX_SCORE=20;
 const defaultMatches=[
 {id:"COL-UZB-2026-06-17",home:"Uzbekistán",away:"Colombia",homeFlag:"🇺🇿",awayFlag:"🇨🇴",competition:"Grupo K",date:"17 jun 2026 - 9:00 p.m. Colombia",lock:"2026-06-17T21:00:00-05:00",closed:false},
 {id:"COL-COD-2026-06-23",home:"Colombia",away:"RD Congo",homeFlag:"🇨🇴",awayFlag:"🇨🇩",competition:"Grupo K",date:"23 jun 2026 - 9:00 p.m. Colombia",lock:"2026-06-23T21:00:00-05:00",closed:false},
-{id:"COL-POR-2026-06-27",home:"Colombia",away:"Portugal",homeFlag:"🇨🇴",awayFlag:"🇵🇹",competition:"Grupo K",date:"27 jun 2026 - 6:30 p.m. Colombia",lock:"2026-06-27T18:30:00-05:00",closed:false}];
-
+{id:"COL-POR-2026-06-27",home:"Colombia",away:"Portugal",homeFlag:"🇨🇴",awayFlag:"🇵🇹",competition:"Grupo K",date:"27 jun 2026 - 6:30 p.m. Colombia",lock:"2026-06-27T18:30:00-05:00",closed:false}
+];
 let auth,db,currentUser=null,unsubscribeData=null,state={predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}},matches=[...defaultMatches];
-let selectedUserGroup=localStorage.getItem('selectedUserGroup')||'';
-let selectedTeamFilter=localStorage.getItem('selectedTeamFilter')||'Todos';
-let selectedAdminRankingGroup=localStorage.getItem('selectedAdminRankingGroup')||'Todos';
-let selectedAdminView=localStorage.getItem('selectedAdminView')||'Dash';
+let selectedUserGroup=localStorage.getItem("selectedUserGroup")||"";
+let selectedTeamFilter=localStorage.getItem("selectedTeamFilter")||"Todos";
+let selectedAdminRankingGroup=localStorage.getItem("selectedAdminRankingGroup")||"Todos";
+let selectedAdminView=localStorage.getItem("selectedAdminView")||"Dash";
+
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const txt=s=>String(s??"").normalize("NFKC").replace(/[<>]/g,"").replace(/\s+/g," ").trim().slice(0,35);
 const key=s=>txt(s).toLowerCase().replace(/[.#$[\]/]/g,"-").replace(/[^a-z0-9áéíóúñü -]/gi,"").slice(0,35);
 const authMsg=(m,t="ok")=>document.getElementById("authMsg").innerHTML=`<span class="${t}">${esc(m)}</span>`;
 function msg(m,t="ok"){const h=`<span class="${t}">${esc(m)}</span>`;let f=document.getElementById("feedback"),a=document.getElementById("adminFeedback");if(f)f.innerHTML=h;if(a)a.innerHTML=h}
 function isAdmin(){return currentUser&&(ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase())||state.users?.[currentUser.uid]?.role==="admin")}
-function userGroups(u){
- if(!u)return [];
- const set=new Set();
- if(u.groups&&typeof u.groups==="object"){
-   Object.keys(u.groups).forEach(g=>{ if(u.groups[g]===true && g) set.add(g); });
- }
- if(u.group && u.group!=="Sin asignar") set.add(u.group);
- if(!set.size) set.add("Sin asignar");
- return [...set];
-}
-function setUserGroupsLegacyAware(uid,groupsArr){
- const clean=[...new Set(groupsArr.filter(Boolean))];
- const obj={}; clean.forEach(g=>obj[g]=true);
- return Promise.all([save(`users/${uid}/groups`,obj),save(`users/${uid}/group`,clean[0]||"Sin asignar")]);
-}
+function userGroups(u){if(!u)return[];const set=new Set();if(u.groups&&typeof u.groups==="object")Object.keys(u.groups).forEach(g=>{if(u.groups[g]===true&&g)set.add(g)});if(u.group&&u.group!=="Sin asignar")set.add(u.group);if(!set.size)set.add("Sin asignar");return[...set]}
+async function setUserGroups(uid,arr){const clean=[...new Set(arr.filter(Boolean))];const obj={};clean.forEach(g=>obj[g]=true);await save(`users/${uid}/groups`,obj);await save(`users/${uid}/group`,clean[0]||"Sin asignar")}
 function currentUserGroups(){return userGroups(state.users?.[currentUser?.uid])}
-function currentUserGroup(){
- const groups=currentUserGroups().filter(g=>g!=="Sin asignar");
- const effectiveGroups=groups.length?groups:["Sin asignar"];
- if(selectedUserGroup && effectiveGroups.includes(selectedUserGroup)) return selectedUserGroup;
- selectedUserGroup=effectiveGroups[0];
- localStorage.setItem("selectedUserGroup",selectedUserGroup);
- return selectedUserGroup;
-}
-function visiblePlayerEntries(){
- const e=Object.entries(state.predictions||{});
- if(isAdmin())return e;
- const g=currentUserGroup();
- return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(g));
-}
+function currentUserGroup(){const groups=currentUserGroups().filter(g=>g!=="Sin asignar");const effective=groups.length?groups:["Sin asignar"];if(selectedUserGroup&&effective.includes(selectedUserGroup))return selectedUserGroup;selectedUserGroup=effective[0];localStorage.setItem("selectedUserGroup",selectedUserGroup);return selectedUserGroup}
+function allGroupNames(){return[...new Set([...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))].sort()}
+function visiblePlayerEntries(){const users=state.users||{},pred=state.predictions||{};const uids=new Set([...Object.keys(users),...Object.keys(pred)]);if(isAdmin())return[...uids].map(uid=>[uid,pred[uid]||{}]);const g=currentUserGroup();return[...uids].filter(uid=>userGroups(users[uid]).includes(g)).map(uid=>[uid,pred[uid]||{}])}
+function adminRankingEntries(){const users=state.users||{},pred=state.predictions||{};const uids=new Set([...Object.keys(users),...Object.keys(pred)]);if(selectedAdminRankingGroup==="Todos")return[...uids].map(uid=>[uid,pred[uid]||{}]);return[...uids].filter(uid=>userGroups(users[uid]).includes(selectedAdminRankingGroup)).map(uid=>[uid,pred[uid]||{}])}
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
+function getGroupValue(g){const t=String(g||"").trim().toLowerCase();const row=Object.values(state.groups||{}).find(x=>String(x.name||"").trim().toLowerCase()===t);return Number(row?.value||0)}
 function groupKey(g){return key(g||"Sin asignar").toUpperCase()||"SIN_ASIGNAR"}
-function userPredictions(uid, groupName){
- const data=state.predictions?.[uid]||{};
- const gk=groupKey(groupName);
-
- // Nuevo formato: predicciones independientes por grupo
- if(data.groups && data.groups[gk]) return data.groups[gk];
-
- // Compatibilidad con predicciones antiguas:
- // solo cuentan para el grupo principal antiguo del usuario.
- const u=state.users?.[uid]||{};
- const legacyGroup=u.group||"Sin asignar";
- if(!data.groups && String(groupName||"Sin asignar")===String(legacyGroup)){
-   return data;
- }
-
- // Si el usuario fue agregado a un grupo nuevo, empieza en 0
- return {};
-}
-function predictionPath(uid, groupName, matchId){
- return `predictions/${uid}/groups/${groupKey(groupName)}/${matchId}`;
-}
-function userDisplayNameFromPrediction(uid, groupName){
- const u=state.users?.[uid]||{};
- const data=state.predictions?.[uid]||{};
- return u.name||data.name||"Usuario";
-}
-function getGroupValue(g){
- const t=String(g||"").trim().toLowerCase();
- const row=Object.values(state.groups||{}).find(x=>String(x.name||"").trim().toLowerCase()===t);
- return Number(row?.value||0);
-}
-function allGroupNames(){
- return [...new Set([...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))].sort();
-}
-function adminRankingEntries(){
- const e=Object.entries(state.predictions||{});
- if(selectedAdminRankingGroup==="Todos")return e;
- return e.filter(([uid])=>userGroups(state.users?.[uid]).includes(selectedAdminRankingGroup));
-}
-window.changeAdminRankingGroup=(group)=>{
- selectedAdminRankingGroup=group;
- localStorage.setItem("selectedAdminRankingGroup",selectedAdminRankingGroup);
- renderLeaderboard();
- renderAdmin();
- if(isAdmin()) showAdminSection(selectedAdminView||"Dash");
-}
-function renderAdminRankingFilter(){
- if(!isAdmin())return "";
- const groups=allGroupNames();
- return `<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`;
-}
-function teamNamesForFilter(){
- const names=new Set(["Todos"]);
- matches.forEach(m=>{names.add(m.home);names.add(m.away)});
- return [...names].sort((a,b)=>a==="Todos"?-1:b==="Todos"?1:a.localeCompare(b));
-}
-function visibleMatches(){
- if(selectedTeamFilter==="Todos")return matches;
- return matches.filter(m=>m.home===selectedTeamFilter||m.away===selectedTeamFilter);
-}
-function renderUserFilters(){
- const groups=currentUserGroups().filter(g=>g!=="Sin asignar");
- const effectiveGroups=groups.length?groups:["Sin asignar"];
- const groupHtml=`<div class="filterBox"><label>Grupo para pronosticar</label><select id="userGroupFilter" onchange="changeActiveGroup(this.value)">${effectiveGroups.map(g=>`<option value="${esc(g)}" ${currentUserGroup()===g?"selected":""}>${esc(g)}</option>`).join("")}</select><p class="small">El marcador se guarda independiente para el grupo seleccionado.</p></div>`;
- const teams=teamNamesForFilter();
- const teamHtml=`<div class="filterBox"><label>Filtrar partidos</label><select id="teamFilter" onchange="selectedTeamFilter=this.value;localStorage.setItem('selectedTeamFilter',selectedTeamFilter);renderAll();">${teams.map(t=>`<option value="${esc(t)}" ${selectedTeamFilter===t?"selected":""}>${t==="Todos"?"Todos los partidos":esc(t)}</option>`).join("")}</select></div>`;
- return groupHtml+teamHtml;
-}
-window.changeActiveGroup=(group)=>{
- selectedUserGroup=group;
- localStorage.setItem("selectedUserGroup",selectedUserGroup);
- msg("Ahora estás pronosticando en el grupo: "+group,"ok");
- renderAll();
-}
-function rt(a,b){return a===b?"D":a>b?"H":"A"}function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;return 0}
+function userPredictions(uid,groupName){const data=state.predictions?.[uid]||{},gk=groupKey(groupName);if(data.groups&&data.groups[gk])return data.groups[gk];const u=state.users?.[uid]||{},legacy=u.group||"Sin asignar";if(!data.groups&&String(groupName||"Sin asignar")===String(legacy))return data;return{}}
+function predictionPath(uid,groupName,matchId){return`predictions/${uid}/groups/${groupKey(groupName)}/${matchId}`}
+function flagFor(team){const t=key(team);if(t.includes("colombia"))return"🇨🇴";if(t.includes("uzbek"))return"🇺🇿";if(t.includes("portugal"))return"🇵🇹";if(t.includes("congo"))return"🇨🇩";if(t.includes("argentina"))return"🇦🇷";if(t.includes("brasil"))return"🇧🇷";return"🏳️"}
+function rt(a,b){return a===b?"D":a>b?"H":"A"}
+function pts(p,r){if(!p||!r||r.home===""||r.away==="")return 0;let ph=+p.home,pa=+p.away,rh=+r.home,ra=+r.away;if(ph===rh&&pa===ra)return 5;if(rt(ph,pa)===rt(rh,ra))return 3;return 0}
 function exact(d){return matches.reduce((s,m)=>s+(pts(d[m.id],state.results?.[m.id])===5?1:0),0)}
+function totalPoints(uid,groups){return groups.reduce((acc,g)=>acc+matches.reduce((s,m)=>s+pts(userPredictions(uid,g)[m.id],state.results?.[m.id]),0),0)}
+function completedCount(uid,groups){return groups.reduce((acc,g)=>acc+matches.filter(m=>userPredictions(uid,g)[m.id]).length,0)}
+function exactCount(uid,groups){return groups.reduce((acc,g)=>acc+exact(userPredictions(uid,g)),0)}
 function isLocked(m){return m.closed===true||(m.lock&&new Date()>=new Date(m.lock))}
 function validScore(v){if(v==="")return"Completa ambos goles.";let n=Number(v);if(!Number.isInteger(n))return"Los goles deben ser enteros.";if(n<0||n>MAX_SCORE)return`Los goles deben estar entre 0 y ${MAX_SCORE}.`;return null}
 function rebuild(){matches=[...defaultMatches.map(m=>({...m,...(state.baseMatchesStatus?.[m.id]||{})})),...Object.values(state.extraMatches||{})].sort((a,b)=>new Date(a.lock)-new Date(b.lock))}
 const matchId=(h,a,l)=>(key(h)+"-"+key(a)+"-"+l.slice(0,10)).toUpperCase();
-function visibleDateFromInput(v){if(!v)return"";let d=new Date(v);return d.toLocaleString("es-CO",{day:"numeric",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"})+" Colombia"}
-const teamList=["Colombia","Uzbekistán","Portugal","RD Congo","Argentina","Brasil","Inglaterra","Croacia","Panamá","Ghana","Otro"];
-function teamOptions(sel=""){return teamList.map(x=>`<option value="${esc(x)}" ${x===sel?"selected":""}>${esc(x)}</option>`).join("")}
-function teamName(sel,custom){const v=document.getElementById(sel).value;return v==="Otro"?txt(document.getElementById(custom).value):v}
+function teamNamesForFilter(){const names=new Set(["Todos"]);matches.forEach(m=>{names.add(m.home);names.add(m.away)});return[...names].sort((a,b)=>a==="Todos"?-1:b==="Todos"?1:a.localeCompare(b))}
+function visibleMatches(){return selectedTeamFilter==="Todos"?matches:matches.filter(m=>m.home===selectedTeamFilter||m.away===selectedTeamFilter)}
+function renderUserFilters(){const groups=currentUserGroups().filter(g=>g!=="Sin asignar"),effective=groups.length?groups:["Sin asignar"];const ghtml=`<div class="filterBox"><label>Grupo para pronosticar</label><select onchange="changeActiveGroup(this.value)">${effective.map(g=>`<option value="${esc(g)}" ${currentUserGroup()===g?"selected":""}>${esc(g)}</option>`).join("")}</select><p class="small">El marcador se guarda independiente para el grupo seleccionado.</p></div>`;const teams=teamNamesForFilter();const thtml=`<div class="filterBox"><label>Filtrar partidos</label><select onchange="selectedTeamFilter=this.value;localStorage.setItem('selectedTeamFilter',selectedTeamFilter);renderAll();">${teams.map(t=>`<option value="${esc(t)}" ${selectedTeamFilter===t?"selected":""}>${t==="Todos"?"Todos los partidos":esc(t)}</option>`).join("")}</select></div>`;return ghtml+thtml}
+window.changeActiveGroup=g=>{selectedUserGroup=g;localStorage.setItem("selectedUserGroup",g);msg("Ahora estás pronosticando en: "+g);renderAll()}
+function renderAdminRankingFilter(){if(!isAdmin())return"";const groups=allGroupNames();return`<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`}
+window.changeAdminRankingGroup=g=>{selectedAdminRankingGroup=g;localStorage.setItem("selectedAdminRankingGroup",g);renderLeaderboard();renderAdmin();showAdminSection(selectedAdminView)}
 
-async function init(){
- const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");
- const {getDatabase,ref,onValue,set,remove,get}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");
- const {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
- window.fb={ref,onValue,set,remove,get,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};
- const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);
- onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}});
-}
+async function init(){const{initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");const{getDatabase,ref,onValue,set,remove,get}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");const{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");window.fb={ref,onValue,set,remove,get,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}})}
 function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue(fb.ref(db,"/quiniela_colombia"),async snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};await ensureLoggedUserRecord();rebuild();switchMode();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')}
-
-async function ensureLoggedUserRecord(){
- if(!currentUser)return;
- const existing=state.users?.[currentUser.uid];
- const email=(currentUser.email||"").toLowerCase();
- const initialAdmin=ADMIN_EMAILS.includes(email);
- if(existing)return;
- await fb.set(fb.ref(db,`/quiniela_colombia/users/${currentUser.uid}`),{
-  name:currentUser.displayName||currentUser.email,
-  email:currentUser.email||"",
-  group:initialAdmin?"Administradores":"Sin asignar",
-  active:initialAdmin?true:false,
-  role:initialAdmin?"admin":"user",
-  paid:false,
-  updatedAt:Date.now()
- });
-}
-async function forceRefreshData(){
- try{
-  const snap=await fb.get(fb.ref(db,"/quiniela_colombia"));
-  state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};
-  rebuild();switchMode();renderAll();
- }catch(e){console.warn(e)}
-}
+async function ensureLoggedUserRecord(){if(!currentUser)return;const existing=state.users?.[currentUser.uid],email=(currentUser.email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(email);if(existing)return;await fb.set(fb.ref(db,`/quiniela_colombia/users/${currentUser.uid}`),{name:currentUser.displayName||currentUser.email,email:currentUser.email||"",group:initialAdmin?"Administradores":"Sin asignar",groups:initialAdmin?{Administradores:true}:{},active:initialAdmin?true:false,role:initialAdmin?"admin":"user",paid:false,updatedAt:Date.now()})}
+async function forceRefreshData(){const snap=await fb.get(fb.ref(db,"/quiniela_colombia"));state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();switchMode();renderAll()}
 function switchMode(){if(isAdmin()){userMode.classList.add("hidden");adminMode.classList.remove("hidden");adminUserLabel.textContent=currentUser.displayName||currentUser.email}else{adminMode.classList.add("hidden");userMode.classList.remove("hidden");currentUserLabel.textContent=currentUser.displayName||currentUser.email}}
-
-async function saveUser(uid,name,email){const mail=String(email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(mail),ex=state.users?.[uid]||{};await fb.set(fb.ref(db,`/quiniela_colombia/users/${uid}`),{name:txt(name),email:String(email||"").slice(0,80),group:ex.group||(initialAdmin?"Administradores":"Sin asignar"),active:initialAdmin?true:(ex.active===true),role:ex.role||(initialAdmin?"admin":"user"),paid:ex.paid===true,updatedAt:Date.now()})}
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
-window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});await saveUser(c.user.uid,name,email);authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
-window.login=async()=>{
- let email=document.getElementById("email").value.trim(),pass=password.value;
- if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");
- try{
-   await fb.signInWithEmailAndPassword(auth,email,pass);
-   authMsg("Ingreso correcto ✅");
- }catch(e){authMsg(authError(e),"bad")}
-}
+window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
+window.login=async()=>{let email=document.getElementById("email").value.trim(),pass=password.value;if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");try{await fb.signInWithEmailAndPassword(auth,email,pass);authMsg("Ingreso correcto ✅")}catch(e){authMsg(authError(e),"bad")}}
 window.resetPassword=async()=>{let email=document.getElementById("email").value.trim();if(!email.includes("@"))return authMsg("Escribe tu correo válido primero.","bad");try{await fb.sendPasswordResetEmail(auth,email);authMsg("Correo de recuperación enviado ✅")}catch(e){authMsg(authError(e),"bad")}}
 window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("configuration-not-found"))return"Activa Authentication > Email/Password en Firebase.";return e.message||"Error"}
 
 const score=(id,v,d,l)=>`<input id="${id}" aria-label="${esc(l)}" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="${MAX_SCORE}" step="1" value="${esc(v??"")}" ${d?"disabled":""}>`;
-function renderMatches(){
- if(document.getElementById('assignedGroupsLabel')) assignedGroupsLabel.innerHTML=currentUserGroups().map(g=>`<span class="pill">${esc(g)}</span>`).join(' ')||'<span class="pill">Sin asignar</span>';let uid=currentUser?.uid,u=state.users?.[uid]||{};if(u.active===false&&!isAdmin()){matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>El admin debe activarte y asignarte grupo.</div>`;return}matchesDiv.innerHTML=renderUserFilters()+`<div class="notice"><b>Pronosticando para: ${esc(currentUserGroup())}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,currentUserGroup())?.[m.id]||{},locked=isLocked(m);return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${locked?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,locked,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,locked,"Goles "+m.away)}<label>${esc(m.away)}</label></div><div class="quickBtns">
-<button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',1,0)">1-0</button>
-<button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',2,0)">2-0</button>
-<button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',2,1)">2-1</button>
-<button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',1,1)">1-1</button>
-</div><button type="button" ${locked?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
-window.quickPredict=(id,h,a)=>{
- const ih=document.getElementById(`p-${id}-h`);
- const ia=document.getElementById(`p-${id}-a`);
- if(ih&&!ih.disabled)ih.value=h;
- if(ia&&!ia.disabled)ia.value=a;
-}
-window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Usuario pendiente","bad");if(isLocked(m))return msg("Partido cerrado","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(predictionPath(currentUser.uid,currentUserGroup(),id),{home:+h,away:+a,updatedAt:Date.now(),group:currentUserGroup()});
-await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅ en grupo: "+currentUserGroup())}
+function renderMatches(){if(assignedGroupsLabel)assignedGroupsLabel.innerHTML=currentUserGroups().map(g=>`<span class="pill">${esc(g)}</span>`).join(" ")||'<span class="pill">Sin asignar</span>';let uid=currentUser?.uid,u=state.users?.[uid]||{};if(u.active===false&&!isAdmin()){matchesDiv.innerHTML=`<div class="pendingBox"><b>⏳ Registro pendiente</b><br>El admin debe activarte y asignarte grupo.</div>`;return}matchesDiv.innerHTML=renderUserFilters()+`<div class="notice"><b>Pronosticando para: ${esc(currentUserGroup())}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,currentUserGroup())[m.id]||{},locked=isLocked(m);return`<form class="match" onsubmit="return false"><span class="groupBadge">${esc(m.competition||"Partido Colombia")}</span><div class="teams"><div class="teamBox"><span class="flag">${esc(m.homeFlag||flagFor(m.home))}</span><span>${esc(m.home)}</span></div><span class="vsBadge">VS</span><div class="teamBox"><span class="flag">${esc(m.awayFlag||flagFor(m.away))}</span><span>${esc(m.away)}</span></div></div><div class="date">${esc(m.date)} · ${locked?'<span class="statusClosed">🔴 Cerrado</span>':'<span class="statusOpen">🟢 Abierto</span>'}</div><div class="scorebox"><label>${esc(m.home)}</label>${score("p-"+m.id+"-h",p.home,locked,"Goles "+m.home)}<span>-</span>${score("p-"+m.id+"-a",p.away,locked,"Goles "+m.away)}<label>${esc(m.away)}</label></div><div class="quickBtns"><button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',1,0)">1-0</button><button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',2,0)">2-0</button><button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',2,1)">2-1</button><button type="button" class="secondary" ${locked?"disabled":""} onclick="quickPredict('${esc(m.id)}',1,1)">1-1</button></div><button type="button" ${locked?"disabled":""} onclick="savePrediction('${esc(m.id)}')">Guardar marcador</button></form>`}).join("")}
+window.quickPredict=(id,h,a)=>{let ih=document.getElementById(`p-${id}-h`),ia=document.getElementById(`p-${id}-a`);if(ih&&!ih.disabled)ih.value=h;if(ia&&!ia.disabled)ia.value=a}
+window.savePrediction=async id=>{let m=matches.find(x=>x.id===id);if(!m)return msg("Partido no encontrado","bad");if(state.users?.[currentUser.uid]?.active===false&&!isAdmin())return msg("Usuario pendiente","bad");if(isLocked(m))return msg("Partido cerrado","bad");let h=document.getElementById(`p-${id}-h`).value,a=document.getElementById(`p-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(predictionPath(currentUser.uid,currentUserGroup(),id),{home:+h,away:+a,updatedAt:Date.now(),group:currentUserGroup()});await save(`predictions/${currentUser.uid}/name`,currentUser.displayName||currentUser.email);msg("Marcador guardado ✅ en grupo: "+currentUserGroup())}
 
-function renderLeaderboard(){
-let entries=isAdmin()?adminRankingEntries():visiblePlayerEntries(),rows=entries.map(([uid,data])=>{
- let u=state.users?.[uid]||{};
- let groupsForScore=isAdmin()
-   ? (selectedAdminRankingGroup==="Todos" ? userGroups(u).filter(g=>g!=="Sin asignar") : [selectedAdminRankingGroup])
-   : [currentUserGroup()];
- if(!groupsForScore.length)groupsForScore=["Sin asignar"];
- let total=totalPointsForGroups(uid,groupsForScore);
- let completed=completedForGroups(uid,groupsForScore);
- let ex=exactForGroups(uid,groupsForScore);
- return {name:u.name||data.name||"Usuario",group:isAdmin()?groupsForScore.join(", "):currentUserGroup(),total,completed,ex};
-}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
-leaderboard.innerHTML=renderAdminRankingFilter()+`<div class="notice"><b>${isAdmin()?(selectedAdminRankingGroup==='Todos'?'Ranking general':'Ranking: '+esc(selectedAdminRankingGroup)):"Tu grupo: "+esc(currentUserGroup())}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes.");
-let groupValue=isAdmin()?(selectedAdminRankingGroup==='Todos'?0:getGroupValue(selectedAdminRankingGroup)):getGroupValue(currentUserGroup()),bag=groupValue*entries.length;summaryStats.innerHTML=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Abiertos</span></div></div>`}
-function renderMine(){let d=userPredictions(currentUser?.uid,currentUserGroup());myPredictions.innerHTML=d?visibleMatches().map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
-function renderHistory(){
-let players=isAdmin()?adminRankingEntries():visiblePlayerEntries();
-let groupForView=isAdmin()?selectedAdminRankingGroup:currentUserGroup();
-historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{};let groupsForView=isAdmin()&&groupForView==="Todos"?userGroups(u).filter(g=>g!=="Sin asignar"):[groupForView];return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(groupsForView.join(", ")||"Sin asignar")}</span></h3>${groupsForView.map(g=>`<div class="notice"><b>${esc(g)}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,g)[m.id],r=state.results?.[m.id];return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")).join("")}</section>`}).join(""):"Sin marcadores."}
-function renderAdminRankingMini(){
- const entries=adminRankingEntries();
- const rows=entries.map(([uid,data])=>{
-  let u=state.users?.[uid]||{};
-  let predData=userPredictions(uid,selectedAdminRankingGroup);let total=matches.reduce((s,m)=>s+pts(predData[m.id],state.results?.[m.id]),0);
-  let ex=exact(predData);
-  let completed=matches.filter(m=>predData[m.id]).length;
-  return {name:u.name||data.name||"Usuario",groups:userGroups(u).join(", "),total,ex,completed};
- }).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));
- return `<div class="match"><h3>🏆 Clasificación ${selectedAdminRankingGroup==="Todos"?"general":esc(selectedAdminRankingGroup)}</h3>${renderAdminRankingFilter()}${rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.groups)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes"}</div>`;
-}
-function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).map(u=>u.group||"Sin asignar")].filter(Boolean))];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.length-1}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">📊</span><b>${totalPred}</b><br><span class="small">Predicciones</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
-let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" data-group="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr>
-<td data-label="Usuario" class="userNameCell"><b>${esc(u.name||"Usuario")}</b><span>${esc(u.email||"")}</span></td>
-<td data-label="Grupos"><div class="groupChips">${checks}</div></td>
-<td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td>
-<td data-label="Pago"><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td>
-<td data-label="Estado">${u.active===false?"Pendiente":"Activo"}</td>
-<td data-label="Acción"><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button><button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td>
-</tr>`}).join("");
+function renderLeaderboard(){let entries=isAdmin()?adminRankingEntries():visiblePlayerEntries(),rows=entries.map(([uid,data])=>{let u=state.users?.[uid]||{},groups=isAdmin()?(selectedAdminRankingGroup==="Todos"?userGroups(u).filter(g=>g!=="Sin asignar"):[selectedAdminRankingGroup]):[currentUserGroup()];if(!groups.length)groups=["Sin asignar"];return{name:u.name||data.name||"Usuario",group:isAdmin()?groups.join(", "):currentUserGroup(),total:totalPoints(uid,groups),completed:completedCount(uid,groups),ex:exactCount(uid,groups)}}).sort((a,b)=>b.total-a.total||b.ex-a.ex||b.completed-a.completed||a.name.localeCompare(b.name));leaderboard.innerHTML=renderAdminRankingFilter()+`<div class="notice"><b>${isAdmin()?(selectedAdminRankingGroup==="Todos"?"Ranking general":"Ranking: "+esc(selectedAdminRankingGroup)):"Tu grupo: "+esc(currentUserGroup())}</b></div>`+(rows.length?rows.map((r,i)=>`<div class="leader"><b>${i+1}. ${esc(r.name)}</b><span><span class="pill">${r.total} pts</span><br><span class="small">${esc(r.group)} · Exactos: ${r.ex} · ${r.completed}/${matches.length}</span></span></div>`).join(""):"Sin participantes.");let groupValue=isAdmin()?(selectedAdminRankingGroup==="Todos"?0:getGroupValue(selectedAdminRankingGroup)):getGroupValue(currentUserGroup()),bag=groupValue*entries.length;summaryStats.innerHTML=`<div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${entries.length}</b><br><span class="small">Participantes</span></div><div class="dashCard"><span class="icon">💵</span><b>$${formatMoney(groupValue)}</b><br><span class="small">Valor grupo</span></div><div class="dashCard"><span class="icon">💰</span><b>$${formatMoney(bag)}</b><br><span class="small">Bolsa grupo</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.filter(m=>!isLocked(m)).length}/${matches.length}</b><br><span class="small">Abiertos</span></div></div>`}
+function renderMine(){let d=userPredictions(currentUser?.uid,currentUserGroup());myPredictions.innerHTML=d?visibleMatches().map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Grupo: ${esc(currentUserGroup())} · Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
+function renderHistory(){let players=isAdmin()?adminRankingEntries():visiblePlayerEntries(),g=isAdmin()?selectedAdminRankingGroup:currentUserGroup();historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{},groups=isAdmin()&&g==="Todos"?userGroups(u).filter(x=>x!=="Sin asignar"):[g];return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(groups.join(", ")||"Sin asignar")}</span></h3>${groups.map(gr=>`<div class="notice"><b>${esc(gr)}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,gr)[m.id],r=state.results?.[m.id];return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")).join("")}</section>`}).join(""):"Sin marcadores."}
+
+function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
+let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" data-group="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr><td data-label="Usuario"><b>${esc(u.name||"Usuario")}</b><br><span class="small">${esc(u.email||"")}</span></td><td data-label="Grupos"><div class="groupChips">${checks}</div></td><td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td><td data-label="Pago"><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td><td data-label="Estado">${u.active===false?"Pendiente":"Activo"}</td><td data-label="Acción"><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button><button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td></tr>`}).join("");
 adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><button class="secondary" onclick="activateAllUsers()">Activar todos</button> <button class="secondary" onclick="assignGroupToAll()">Asignar grupo a todos</button><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Grupos</th><th>Rol</th><th>Pago</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${userRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div>`;
-let groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name)}"></td><td><input id="gval-${gid}" type="number" value="${Number(g.value||0)}"></td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
-adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><div class="match"><label>Nuevo grupo</label><input id="newGroupName"><label>Valor</label><input id="newGroupValue" type="number"><button onclick="addGroup()">Crear grupo</button></div><table class="groupTable"><tbody>${groupRows}</tbody></table>`;
+let groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name)}"></td><td><input id="gval-${gid}" type="number" value="${Number(g.value||0)}"></td><td>${Object.values(state.users||{}).filter(u=>userGroups(u).includes(g.name)).length}</td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
+adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><div class="match"><label>Nuevo grupo</label><input id="newGroupName"><label>Valor</label><input id="newGroupValue" type="number"><button onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div>`;
 adminMatchesView.innerHTML=`<h2>⚽ Partidos</h2><form class="match" onsubmit="return false"><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Cierre</label><input id="newLock" type="datetime-local"><button onclick="addMatch()">Agregar partido</button></form>`+matches.map(m=>`<div class="match"><b>${esc(m.home)} vs ${esc(m.away)}</b><br>${isLocked(m)?"🔴 Cerrado":"🟢 Abierto"}<br><button class="miniBtn" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button></div>`).join("");
 adminResultsView.innerHTML=`<h2>📈 Resultados</h2>`+matches.map(m=>{let r=state.results?.[m.id]||{};return`<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado")}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado")}<label>${esc(m.away)}</label></div><button onclick="saveResult('${esc(m.id)}')">Guardar</button></form>`}).join("")}
 
-window.activateAllUsers=async()=>{
- if(!confirm("¿Activar todos los usuarios pendientes?"))return;
- for(const uid of Object.keys(state.users||{})) await save(`users/${uid}/active`,true);
- msg("Todos los usuarios fueron activados ✅"); await forceRefreshData();
-}
-window.assignGroupToAll=async()=>{
- const groups=[...new Set(Object.values(state.groups||{}).map(g=>g.name).filter(Boolean))];
- if(!groups.length)return msg("Primero crea un grupo","bad");
- const group=prompt("Nombre exacto del grupo para agregar a todos:\n"+groups.join("\n"));
- if(!group||!groups.includes(group))return msg("Grupo no válido","bad");
- if(!confirm("¿Agregar este grupo a todos los usuarios?"))return;
- for(const uid of Object.keys(state.users||{})){
-   const current=userGroups(state.users[uid]).filter(g=>g!=="Sin asignar");
-   await setUserGroupsLegacyAware(uid,[...current,group]);
- }
- msg("Grupo asignado a todos ✅"); await forceRefreshData();
-}
-window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅"); await forceRefreshData()}
-window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅"); await forceRefreshData()}
-window.deleteGroup=async gid=>{if(confirm("¿Eliminar grupo?"))await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid))}
-window.saveUserAdmin=async uid=>{
- const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group);
- await setUserGroupsLegacyAware(uid,selected.length?selected:["Sin asignar"]);
- const roleEl=document.getElementById("role-"+uid); if(roleEl) await save(`users/${uid}/role`,roleEl.value);
- const paidEl=document.getElementById("paid-"+uid); if(paidEl) await save(`users/${uid}/paid`,paidEl.value==="true");
- msg("Usuario actualizado ✅");
- await forceRefreshData();
-}
-window.toggleUserActive=async uid=>{let a=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!a);msg(a?"Desactivado":"Activado ✅")}
-window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eliminarte","bad");if(confirm("¿Eliminar usuario y pronósticos?")){await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));msg("Usuario eliminado ✅"); await forceRefreshData()}}
-window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim(),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa datos","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅")}
-window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed)}
-window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅")}
-window.exportExcel=()=>{
-let rows=[["Grupo","Participante","Correo","Pagó","Partido","Pred Local","Pred Visit","Res Local","Res Visit","Puntos"]];
-const entries=isAdmin()?Object.entries(state.predictions||{}):visiblePlayerEntries();
-entries.forEach(([uid,d])=>{
- let u=state.users?.[uid]||{};
- let groups=isAdmin()?userGroups(u).filter(g=>g!=="Sin asignar"):[currentUserGroup()];
- if(!groups.length)groups=["Sin asignar"];
- groups.forEach(g=>{
-  visibleMatches().forEach(m=>{
-   let p=userPredictions(uid,g)[m.id]||{},r=state.results?.[m.id]||{};
-   rows.push([g,u.name||"",u.email||"",u.paid===true?"Sí":"No",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)]);
-  });
- });
-});
-let table=`<html><meta charset="utf-8"><table border=1>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;
-let b=new Blob([table],{type:"application/vnd.ms-excel"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="polla_colombia.xls";a.click()}
-function showAdminSection(n){selectedAdminView=n;localStorage.setItem("selectedAdminView",n);for(const [k,el] of Object.entries({Dash:adminDashView,Users:adminUsersView,Groups:adminGroupsView,Matches:adminMatchesView,Results:adminResultsView}))el.style.display=k===n?"block":"none"}
+window.saveUserAdmin=async uid=>{const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group);await setUserGroups(uid,selected.length?selected:["Sin asignar"]);let roleEl=document.getElementById("role-"+uid);if(roleEl)await save(`users/${uid}/role`,roleEl.value);let paidEl=document.getElementById("paid-"+uid);if(paidEl)await save(`users/${uid}/paid`,paidEl.value==="true");msg("Usuario actualizado ✅");await forceRefreshData()}
+window.activateAllUsers=async()=>{if(!confirm("¿Activar todos los usuarios pendientes?"))return;for(const uid of Object.keys(state.users||{}))await save(`users/${uid}/active`,true);msg("Todos activados ✅");await forceRefreshData()}
+window.assignGroupToAll=async()=>{const groups=Object.values(state.groups||{}).map(g=>g.name).filter(Boolean);if(!groups.length)return msg("Primero crea un grupo","bad");const group=prompt("Nombre exacto del grupo:\\n"+groups.join("\\n"));if(!group||!groups.includes(group))return msg("Grupo no válido","bad");for(const uid of Object.keys(state.users||{})){const current=userGroups(state.users[uid]).filter(g=>g!=="Sin asignar");await setUserGroups(uid,[...current,group])}msg("Grupo asignado a todos ✅");await forceRefreshData()}
+window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅");await forceRefreshData()}
+window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅");await forceRefreshData()}
+window.deleteGroup=async gid=>{if(confirm("¿Eliminar grupo?")){await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));await forceRefreshData()}}
+window.toggleUserActive=async uid=>{let a=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!a);msg(a?"Desactivado":"Activado ✅");await forceRefreshData()}
+window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eliminarte","bad");if(confirm("¿Eliminar usuario y pronósticos?")){await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));msg("Usuario eliminado ✅");await forceRefreshData()}}
+window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim(),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa datos","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅");await forceRefreshData()}
+window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed);await forceRefreshData()}
+window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅");await forceRefreshData()}
+window.exportExcel=()=>{let rows=[["Grupo","Participante","Correo","Pagó","Partido","Pred Local","Pred Visit","Res Local","Res Visit","Puntos"]];const entries=isAdmin()?Object.entries(state.users||{}).map(([uid])=>[uid,state.predictions?.[uid]||{}]):visiblePlayerEntries();entries.forEach(([uid,d])=>{let u=state.users?.[uid]||{},groups=isAdmin()?userGroups(u).filter(g=>g!=="Sin asignar"):[currentUserGroup()];if(!groups.length)groups=["Sin asignar"];groups.forEach(g=>visibleMatches().forEach(m=>{let p=userPredictions(uid,g)[m.id]||{},r=state.results?.[m.id]||{};rows.push([g,u.name||"",u.email||"",u.paid===true?"Sí":"No",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)])}))});let table=`<html><meta charset="utf-8"><table border=1>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;let b=new Blob([table],{type:"application/vnd.ms-excel"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="polla_colombia.xls";a.click()}
+
+function showAdminSection(n){selectedAdminView=n;localStorage.setItem("selectedAdminView",n);for(const[k,el]of Object.entries({Dash:adminDashView,Users:adminUsersView,Groups:adminGroupsView,Matches:adminMatchesView,Results:adminResultsView}))el.style.display=k===n?"block":"none"}
 function renderAll(){renderMatches();renderLeaderboard();renderMine();renderHistory();renderAdmin();if(isAdmin())showAdminSection(selectedAdminView)}
 tabPredict.onclick=()=>show("Predict");tabMine.onclick=()=>show("Mine");tabHistory.onclick=()=>show("History");tabRules.onclick=()=>show("Rules");
 admDash.onclick=()=>showAdminSection("Dash");admUsers.onclick=()=>showAdminSection("Users");admGroups.onclick=()=>showAdminSection("Groups");admMatches.onclick=()=>showAdminSection("Matches");admResults.onclick=()=>showAdminSection("Results");
 function show(n){for(const v of["Predict","Mine","History","Rules"])document.getElementById("view"+v).style.display=v===n?"block":"none"}
 const matchesDiv=document.getElementById("matches");init();setInterval(()=>{if(currentUser)renderAll()},60000);
 </script>
-</body></html>
+</body>
+</html>
