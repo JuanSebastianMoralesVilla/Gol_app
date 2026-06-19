@@ -64,276 +64,75 @@ a{color:var(--yellow);font-weight:800}
  .adminTable select,.adminTable button{width:100%;margin:4px 0}.quickBtns button{flex:1 1 45%}.two{grid-template-columns:1fr}
 }
 
-.authShell{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
-.heroBox{background:linear-gradient(180deg,#ffffff12,#ffffff06);border:1px solid #ffffff22;border-radius:24px;padding:24px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between}
-.heroLogo{font-size:52px;margin-bottom:12px}
-.heroBox h2{font-size:34px;margin:0 0 10px}
-.heroList{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
-.heroItem{background:#07182dcc;border:1px solid #ffffff1f;border-radius:18px;padding:14px}
-.heroItem b{font-size:22px;display:block}
-.authBox{background:#ffffff0a;border:1px solid #ffffff22;border-radius:24px;padding:24px}
-.authSwitch{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#07182dcc;border:1px solid #ffffff1f;border-radius:18px;padding:6px;margin-bottom:18px}
-.authSwitch button{border-radius:13px;background:transparent;color:var(--text)}
-.authSwitch button.active{background:var(--yellow);color:#07111f}
-.inputHint{font-size:12px;color:var(--muted);margin-top:5px}
-.fullBtn{width:100%;margin-top:14px}
-.passwordWrap{position:relative}
-.passwordWrap button{position:absolute;right:8px;top:8px;padding:8px 10px;border-radius:10px;font-size:12px}
-.authFooter{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
-.statStrip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
-.statMini{background:#ffffff0a;border:1px solid #ffffff22;border-radius:16px;padding:12px;text-align:center}
-.statMini b{font-size:20px;display:block}
-@media(max-width:860px){.authShell{grid-template-columns:1fr}.heroBox{min-height:auto}.heroList,.statStrip{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){.heroList,.statStrip{grid-template-columns:1fr}.authBox,.heroBox{padding:18px}.heroBox h2{font-size:28px}}
-
-
-body::before{
- content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;
- background-image:
- radial-gradient(circle at 10% 20%,#ffd43b 0 2px,transparent 3px),
- radial-gradient(circle at 80% 10%,#ffffff 0 2px,transparent 3px),
- linear-gradient(90deg,transparent 49%,rgba(255,255,255,.10) 50%,transparent 51%),
- linear-gradient(0deg,transparent 49%,rgba(255,255,255,.06) 50%,transparent 51%);
- background-size:120px 120px,160px 160px,100% 140px,180px 100%;
+.simpleLogin{
+  max-width:560px!important;
+  margin:0 auto 44px!important;
+  padding:28px!important;
 }
-header h1::before{content:"🏟️ ";font-size:.75em}
-.card{backdrop-filter:blur(8px)}
-.match{position:relative;overflow:hidden}
-.match::before{
- content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;
- background:radial-gradient(circle,#ffffff22 0 20%,transparent 21% 100%);
+.loginHeader{
+  text-align:center;
+  margin-bottom:20px;
 }
-.tabs button,.adminTabs button{box-shadow:0 8px 16px #0004}
-button:hover{transform:translateY(-1px);filter:brightness(1.04)}
-button{transition:.15s ease}
-.groupBadge{background:linear-gradient(90deg,#ffd43b33,#2f80ed33)}
-.leader:nth-child(2) b::before{content:"🥇 "}
-.leader:nth-child(3) b::before{content:"🥈 "}
-.leader:nth-child(4) b::before{content:"🥉 "}
-.heroBox{background:
- linear-gradient(180deg,#ffffff14,#ffffff07),
- radial-gradient(circle at 15% 20%,#ffd43b33,transparent 25%),
- radial-gradient(circle at 90% 10%,#2f80ed33,transparent 25%)!important}
-.heroLogo{filter:drop-shadow(0 10px 18px #0008)}
-
-
-/* Landing profesional futbolero */
-body{
- background:
-  radial-gradient(circle at 50% -10%,rgba(47,128,237,.35),transparent 28%),
-  radial-gradient(circle at 15% 20%,rgba(255,212,59,.12),transparent 22%),
-  linear-gradient(180deg,#04101d,#071525 55%,#04101d)!important;
+.loginBall{
+  width:76px;height:76px;border-radius:24px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;
+  font-size:42px;
+  background:linear-gradient(135deg,#ffd43b,#2f80ed);
+  box-shadow:0 16px 38px #0008;
 }
-body::after{
- content:"";position:fixed;inset:0;pointer-events:none;opacity:.10;
- background:
-  linear-gradient(90deg,transparent 49.7%,rgba(255,255,255,.35) 50%,transparent 50.3%),
-  radial-gradient(circle at 50% 56%,transparent 0 90px,rgba(255,255,255,.28) 92px,transparent 94px),
-  linear-gradient(0deg,transparent 49.7%,rgba(255,255,255,.20) 50%,transparent 50.3%);
- background-size:100% 100%,100% 100%,100% 180px;
+.simpleLogin h2{
+  margin:0;
+  font-size:32px;
 }
-header{
- padding:34px 16px 20px!important;
- position:relative;
+.simpleLogin p{
+  margin:8px 0 0;
 }
-header h1{
- letter-spacing:-1.5px;
- text-shadow:0 14px 34px #000b;
+.passwordWrapSimple{
+  position:relative;
 }
-header h1::before{content:"🏆 ";font-size:.72em}
-header p{
- max-width:760px;margin:10px auto 0;
- font-size:18px;
+.passwordWrapSimple button{
+  position:absolute;
+  right:8px;
+  top:8px;
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:12px;
 }
-.authShell{
- max-width:1180px;margin:0 auto;
- grid-template-columns:1.05fr .95fr!important;
- align-items:stretch;
+.simpleLogin input{
+  height:54px;
+  font-size:16px;
 }
-#authCard{
- max-width:1220px!important;
- margin:0 auto!important;
- background:
-  linear-gradient(180deg,rgba(16,36,61,.90),rgba(7,17,31,.88)),
-  radial-gradient(circle at 15% 15%,rgba(255,212,59,.18),transparent 28%),
-  radial-gradient(circle at 85% 20%,rgba(47,128,237,.22),transparent 28%)!important;
+.loginActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:18px;
 }
-.heroBox{
- min-height:560px!important;
- border-radius:26px!important;
- background:
-  linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06)),
-  url("data:image/svg+xml,%3Csvg width='900' height='520' viewBox='0 0 900 520' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.18)' stroke-width='3'%3E%3Crect x='60' y='60' width='780' height='400' rx='14'/%3E%3Cline x1='450' y1='60' x2='450' y2='460'/%3E%3Ccircle cx='450' cy='260' r='72'/%3E%3Crect x='60' y='160' width='120' height='200'/%3E%3Crect x='720' y='160' width='120' height='200'/%3E%3C/g%3E%3C/svg%3E");
- background-size:cover;
- position:relative;
- overflow:hidden;
+.loginActions button{
+  height:52px;
 }
-.heroBox::before{
- content:"";position:absolute;inset:0;
- background:radial-gradient(circle at 72% 25%,rgba(255,212,59,.22),transparent 18%),
-            radial-gradient(circle at 25% 75%,rgba(47,128,237,.24),transparent 24%);
- pointer-events:none;
+.loginActions #registerBtn{
+  grid-column:1 / 2;
 }
-.heroBox>*{position:relative;z-index:1}
-.heroLogo{
- width:86px;height:86px;border-radius:24px;
- display:flex;align-items:center;justify-content:center;
- background:linear-gradient(135deg,#ffd43b,#2f80ed);
- box-shadow:0 18px 40px #0008;
- font-size:48px!important;
+.loginFooter{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:18px;
 }
-.heroBox h2{
- font-size:44px!important;
- line-height:1.02!important;
- margin-top:22px!important;
-}
-.heroBox h2::after{
- content:"\\A Marcadores • Grupos • Ranking";white-space:pre;
- display:block;font-size:18px;color:#ffd43b;margin-top:12px;letter-spacing:.3px;
-}
-.heroList{
- grid-template-columns:1fr 1fr!important;
- margin-top:26px!important;
-}
-.heroItem{
- min-height:112px;
- background:rgba(4,16,29,.78)!important;
- border:1px solid rgba(255,255,255,.18)!important;
- box-shadow:0 12px 26px #0005;
-}
-.heroItem b{font-size:22px!important}
-.heroItem:nth-child(1) b::after{content:" mundial";color:#ffd43b}
-.heroItem:nth-child(2) b::after{content:" privados";color:#7dffb1}
-.heroItem:nth-child(3) b::after{content:" por grupo";color:#ffd43b}
-.heroItem:nth-child(4) b::after{content:" admin";color:#7dffb1}
-.heroItem:nth-child(1)::before{content:"🌍";font-size:26px}
-.heroItem:nth-child(2)::before{content:"🏟️";font-size:26px}
-.heroItem:nth-child(3)::before{content:"🎯";font-size:26px}
-.heroItem:nth-child(4)::before{content:"📋";font-size:26px}
-.authBox{
- border-radius:26px!important;
- background:rgba(4,16,29,.72)!important;
- box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 45px #0008;
-}
-.authBox h2::before{content:"🔐 "}
-.authSwitch{
- background:#020b17!important;
- padding:7px!important;
-}
-.authSwitch button.active{
- background:linear-gradient(90deg,#ffd43b,#ffdf64)!important;
-}
-.fullBtn{
- background:linear-gradient(90deg,#ffd43b,#ffdf64)!important;
- box-shadow:0 14px 28px rgba(255,212,59,.18);
-}
-.authFooter a{
- background:rgba(255,212,59,.12);
- border:1px solid rgba(255,212,59,.35);
- padding:10px 12px;border-radius:12px;
-}
-.worldCupRibbon{
- display:inline-flex;align-items:center;gap:8px;
- background:rgba(255,212,59,.14);
- border:1px solid rgba(255,212,59,.36);
- color:#ffe899;border-radius:999px;
- padding:8px 12px;font-weight:850;margin-bottom:12px;
-}
-.featureText{
- margin-top:20px;padding:14px;border-radius:18px;
- background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);
-}
-.featureText b{color:#ffd43b}
-@media(max-width:900px){
- .authShell{grid-template-columns:1fr!important}
- .heroBox{min-height:auto!important}
-}
-@media(max-width:520px){
- header h1{font-size:34px!important}
- .heroBox h2{font-size:34px!important}
- .heroList{grid-template-columns:1fr!important}
-}
-
-
-/* Login limpio y profesional */
-#authCard{
- max-width:1180px!important;
- padding:22px!important;
-}
-.authShell{
- display:grid!important;
- grid-template-columns:minmax(360px, .95fr) minmax(420px, 1.05fr)!important;
- gap:22px!important;
- align-items:stretch!important;
-}
-.heroBox{
- min-height:520px!important;
- padding:34px!important;
- justify-content:center!important;
-}
-.heroList{
- display:grid!important;
- grid-template-columns:1fr!important;
- gap:14px!important;
- margin-top:28px!important;
-}
-.heroItem{
- min-height:auto!important;
- padding:18px 18px!important;
- display:grid;
- grid-template-columns:auto 1fr;
- gap:12px;
- align-items:center;
-}
-.heroItem:nth-child(4){display:none!important}
-.heroItem b{font-size:23px!important}
-.heroItem span{font-size:16px}
-.featureText{
- margin-top:22px!important;
- font-size:16px;
-}
-.authBox{
- padding:34px!important;
- display:flex;
- flex-direction:column;
- justify-content:center;
-}
-.authSwitch{
- margin-bottom:26px!important;
-}
-.authBox h2{
- font-size:34px!important;
- margin:0 0 8px!important;
-}
-.authBox input{
- height:56px;
- font-size:17px;
-}
-.fullBtn{
- height:56px;
- font-size:17px;
-}
-.authFooter{
- margin-top:22px!important;
-}
-.authFooter a{
- text-decoration:none;
-}
-.heroBox h2{
- max-width:520px;
-}
-.heroBox p{
- max-width:560px;
-}
-@media(max-width:980px){
- .authShell{grid-template-columns:1fr!important}
- .heroBox{min-height:auto!important}
+.loginFooter a{
+  background:rgba(255,212,59,.12);
+  border:1px solid rgba(255,212,59,.35);
+  padding:10px 12px;
+  border-radius:12px;
+  text-decoration:none;
 }
 @media(max-width:620px){
- #authCard{padding:14px!important}
- .heroBox,.authBox{padding:22px!important}
- .heroBox h2,.authBox h2{font-size:28px!important}
- .heroItem{grid-template-columns:1fr!important}
+  .simpleLogin{max-width:100%!important;padding:20px!important}
+  .loginActions{grid-template-columns:1fr}
 }
 
 </style>
@@ -341,64 +140,43 @@ header p{
 <body>
 <header><h1>Polla Selección Colombia</h1><p>Cada participante ve sus grupos, ranking y pronósticos por grupo.</p></header>
 <main class="wrap">
-<section id="authCard" class="card">
-<div class="authShell">
-  <div class="heroBox">
-    <div>
-      <div class="worldCupRibbon">🌍 Inspirado en ambiente mundialista</div>
-      <div class="heroLogo">⚽</div>
-      <h2>Polla Mundial 2026</h2>
-      <p>Organiza tu polla, crea grupos privados, agrega partidos personalizados y compite por el mejor marcador.</p>
-      <div class="heroList">
-        <div class="heroItem"><b>🏆 Ranking</b><span class="small">Clasificación independiente para cada polla.</span></div>
-        <div class="heroItem"><b>👥 Multigrupo</b><span class="small">Participa en familia, oficina o amigos con el mismo usuario.</span></div>
-        <div class="heroItem"><b>💰 Bolsa</b><span class="small">Controla valor, pago y bolsa de cada grupo.</span></div>
-        
-      </div>
-    </div>
-<div class="statMini"><b id="publicUsers">-</b><span class="small">Usuarios</span></div>
-      <div class="statMini"><b id="publicMatches">3</b><span class="small">Partidos</span></div>
-    </div>
+<section id="authCard" class="card simpleLogin">
+  <div class="loginHeader">
+    <div class="loginBall">⚽</div>
+    <h2>Polla Selección Colombia</h2>
+    <p>Ingresa para registrar tus marcadores y ver tu ranking.</p>
   </div>
 
-  <div class="authBox">
-    <div class="authSwitch">
-      <button id="loginTabBtn" class="active" type="button" onclick="setAuthMode('login')">Ingresar</button>
-      <button id="registerTabBtn" type="button" onclick="setAuthMode('register')">Registrarme</button>
-    </div>
+  <div id="authMsg" class="small warn"></div>
 
-    <h2 id="authTitle">Iniciar sesión</h2>
-    <p id="authSubtitle" class="small">Entra con tu correo y contraseña.</p>
-    <div id="authMsg" class="small warn"></div>
+  <label>Correo</label>
+  <input id="email" type="email" autocomplete="email" placeholder="correo@ejemplo.com">
 
-    <div id="nameBlock" class="hidden">
-      <label>Nombre visible</label>
-      <input id="displayName" maxlength="35" autocomplete="name" placeholder="Ej: Juan Sebastián">
-      <div class="inputHint">Este nombre aparecerá en el ranking.</div>
-    </div>
-
-    <label>Correo</label>
-    <input id="email" type="email" autocomplete="email" placeholder="correo@ejemplo.com">
-
-    <label>Contraseña</label>
-    <div class="passwordWrap">
-      <input id="password" type="password" minlength="6" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
-      <button type="button" class="secondary" onclick="togglePassword()">Ver</button>
-    </div>
-
-    <div id="confirmBlock" class="hidden">
-      <label>Confirmar contraseña</label>
-      <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Repite la contraseña">
-    </div>
-
-    <button id="authMainBtn" class="fullBtn" onclick="login()">Ingresar</button>
-
-    <div class="authFooter">
-      <a href="#" onclick="resetPassword();return false;">🔑 Recuperar contraseña</a>
-      <span class="small">Firebase protege tu clave.</span>
-    </div>
+  <label>Contraseña</label>
+  <div class="passwordWrapSimple">
+    <input id="password" type="password" minlength="6" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+    <button type="button" class="secondary" onclick="togglePassword()">Ver</button>
   </div>
-</div>
+
+  <div id="registerFields" class="hidden">
+    <label>Nombre visible</label>
+    <input id="displayName" maxlength="35" autocomplete="name" placeholder="Ej: Juan Sebastián">
+
+    <label>Confirmar contraseña</label>
+    <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Repite la contraseña">
+  </div>
+
+  <div class="loginActions">
+    <button id="loginBtn" onclick="login()">Ingresar</button>
+    <button id="showRegisterBtn" class="secondary" onclick="showRegister()">Crear cuenta</button>
+    <button id="registerBtn" class="hidden" onclick="registerUser()">Registrarme</button>
+    <button id="cancelRegisterBtn" class="secondary hidden" onclick="showLogin()">Cancelar</button>
+  </div>
+
+  <div class="loginFooter">
+    <a href="#" onclick="resetPassword();return false;">🔑 Recuperar contraseña</a>
+    <span class="small">Firebase protege tu clave.</span>
+  </div>
 </section>
 
 <section id="app"<section id="app" class="grid hidden">
@@ -420,7 +198,7 @@ header p{
 </div>
 </article>
 
-<aside class="card"><h2>🏆 Tabla</h2><div id="leaderboard" class="small"></div><div id="summaryStats"></div><div class="notice">Solo puedes ver los participantes del grupo seleccionado.</div><div id="connectionStatus" class="small warn"></div><button id="asideExportBtn" class="secondary hidden" onclick="exportExcel()">📊 Exportar Excel</button></aside>
+<aside class="card"><h2>🏆 Tabla</h2><div id="leaderboard" class="small"></div><div id="summaryStats"></div><div class="notice">Solo puedes ver los participantes del grupo seleccionado.</div><div id="connectionStatus" class="small warn"></div><button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button></aside>
 </section>
 </main>
 
@@ -446,40 +224,9 @@ function msg(m,t="ok"){const h=`<span class="${t}">${esc(m)}</span>`;let f=docum
 function isAdmin(){return currentUser&&(ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase())||state.users?.[currentUser.uid]?.role==="admin")}
 function userGroups(u){if(!u)return[];const set=new Set();if(u.groups&&typeof u.groups==="object")Object.keys(u.groups).forEach(g=>{if(u.groups[g]===true&&g)set.add(g)});if(u.group&&u.group!=="Sin asignar")set.add(u.group);if(!set.size)set.add("Sin asignar");return[...set]}
 async function setUserGroups(uid,arr){const clean=[...new Set(arr.filter(Boolean))];const obj={};clean.forEach(g=>obj[g]=true);await save(`users/${uid}/groups`,obj);await save(`users/${uid}/group`,clean[0]||"Sin asignar")}
-function currentUserGroups(){
- const valid=validGroupNames();
- const groups=userGroups(state.users?.[currentUser?.uid]).filter(g=>valid.includes(g));
- return groups.length?groups:["Sin asignar"];
-}
 function currentUserGroups(){return userGroups(state.users?.[currentUser?.uid])}
 function currentUserGroup(){const groups=currentUserGroups().filter(g=>g!=="Sin asignar");const effective=groups.length?groups:["Sin asignar"];if(selectedUserGroup&&effective.includes(selectedUserGroup))return selectedUserGroup;selectedUserGroup=effective[0];localStorage.setItem("selectedUserGroup",selectedUserGroup);return selectedUserGroup}
-function validGroupNames(){
- return [...new Set(Object.values(state.groups||{}).map(g=>g.name).filter(Boolean))].sort();
-}
-function cleanUserGroupsForDisplay(groups){
- const valid=validGroupNames();
- return groups.filter(g=>valid.includes(g));
-}
-async function cleanOrphanGroups(){
- const valid=validGroupNames();
- for(const [uid,u] of Object.entries(state.users||{})){
-   const current=userGroups(u).filter(g=>valid.includes(g));
-   const finalGroups=current.length?current:["Sin asignar"];
-   const old=userGroups(u).sort().join("|");
-   const neu=finalGroups.sort().join("|");
-   if(old!==neu){
-     const obj={};
-     finalGroups.filter(g=>g!=="Sin asignar").forEach(g=>obj[g]=true);
-     await save(`users/${uid}/groups`,obj);
-     await save(`users/${uid}/group`,finalGroups[0]||"Sin asignar");
-   }
- }
- msg("Grupos huérfanos limpiados ✅");
- await forceRefreshData();
-}
-function allGroupNames(){
- return [...new Set([...validGroupNames(),"Sin asignar"])].filter(Boolean).sort((a,b)=>a==="Sin asignar"?1:b==="Sin asignar"?-1:a.localeCompare(b));
-}
+function allGroupNames(){return[...new Set([...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))].sort()}
 function visiblePlayerEntries(){const users=state.users||{},pred=state.predictions||{};const uids=new Set([...Object.keys(users),...Object.keys(pred)]);if(isAdmin())return[...uids].map(uid=>[uid,pred[uid]||{}]);const g=currentUserGroup();return[...uids].filter(uid=>userGroups(users[uid]).includes(g)).map(uid=>[uid,pred[uid]||{}])}
 function adminRankingEntries(){const users=state.users||{},pred=state.predictions||{};const uids=new Set([...Object.keys(users),...Object.keys(pred)]);if(selectedAdminRankingGroup==="Todos")return[...uids].map(uid=>[uid,pred[uid]||{}]);return[...uids].filter(uid=>userGroups(users[uid]).includes(selectedAdminRankingGroup)).map(uid=>[uid,pred[uid]||{}])}
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
@@ -509,7 +256,7 @@ function exact(d){return matches.reduce((s,m)=>s+(pts(d[m.id],state.results?.[m.
 function totalPoints(uid,groups){return groups.reduce((acc,g)=>acc+matches.reduce((s,m)=>s+pts(userPredictions(uid,g)[m.id],state.results?.[m.id]),0),0)}
 function completedCount(uid,groups){return groups.reduce((acc,g)=>acc+matches.filter(m=>userPredictions(uid,g)[m.id]).length,0)}
 function exactCount(uid,groups){return groups.reduce((acc,g)=>acc+exact(userPredictions(uid,g)),0)}
-function isLocked(m){return m.closed===true||(!m.forceOpen&&m.lock&&new Date()>=new Date(m.lock))}
+function isLocked(m){return m.closed===true||(m.lock&&new Date()>=new Date(m.lock))}
 function validScore(v){if(v==="")return"Completa ambos goles.";let n=Number(v);if(!Number.isInteger(n))return"Los goles deben ser enteros.";if(n<0||n>MAX_SCORE)return`Los goles deben estar entre 0 y ${MAX_SCORE}.`;return null}
 function rebuild(){matches=[...defaultMatches.map(m=>({...m,...(state.baseMatchesStatus?.[m.id]||{})})),...Object.values(state.extraMatches||{})].sort((a,b)=>new Date(a.lock)-new Date(b.lock))}
 const matchId=(h,a,l)=>(key(h)+"-"+key(a)+"-"+l.slice(0,10)).toUpperCase();
@@ -517,61 +264,44 @@ function teamNamesForFilter(){const names=new Set(["Todos"]);matches.forEach(m=>
 function visibleMatches(){return selectedTeamFilter==="Todos"?matches:matches.filter(m=>m.home===selectedTeamFilter||m.away===selectedTeamFilter)}
 function renderUserFilters(){const groups=currentUserGroups().filter(g=>g!=="Sin asignar"),effective=groups.length?groups:["Sin asignar"];const ghtml=`<div class="filterBox"><label>Grupo para pronosticar</label><select onchange="changeActiveGroup(this.value)">${effective.map(g=>`<option value="${esc(g)}" ${currentUserGroup()===g?"selected":""}>${esc(g)}</option>`).join("")}</select><p class="small">El marcador se guarda independiente para el grupo seleccionado.</p></div>`;const teams=teamNamesForFilter();const thtml=`<div class="filterBox"><label>Filtrar partidos</label><select onchange="selectedTeamFilter=this.value;localStorage.setItem('selectedTeamFilter',selectedTeamFilter);renderAll();">${teams.map(t=>`<option value="${esc(t)}" ${selectedTeamFilter===t?"selected":""}>${t==="Todos"?"Todos los partidos":esc(t)}</option>`).join("")}</select></div>`;return ghtml+thtml}
 window.changeActiveGroup=g=>{selectedUserGroup=g;localStorage.setItem("selectedUserGroup",g);msg("Ahora estás pronosticando en: "+g);renderAll()}
-function renderAdminRankingFilter(){if(!isAdmin())return"";const groups=validGroupNames();if(selectedAdminRankingGroup!=="Todos"&&!groups.includes(selectedAdminRankingGroup)){selectedAdminRankingGroup="Todos";localStorage.setItem("selectedAdminRankingGroup","Todos");}return`<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`}
+function renderAdminRankingFilter(){if(!isAdmin())return"";const groups=allGroupNames();return`<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`}
 window.changeAdminRankingGroup=g=>{selectedAdminRankingGroup=g;localStorage.setItem("selectedAdminRankingGroup",g);renderLeaderboard();renderAdmin();showAdminSection(selectedAdminView)}
 
-async function init(){const{initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");const{getDatabase,ref,onValue,set,remove,get}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");const{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");window.fb={ref,onValue,set,remove,get,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);listenPublicStats();
- onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}})}
-function listenPublicStats(){
- try{
-  fb.onValue(fb.ref(db,"/quiniela_colombia"),snap=>{
-   const s=snap.val()||{};
-   const groups=Object.keys(s.groups||{}).length;
-   const users=Object.keys(s.users||{}).length;
-   const extra=Object.keys(s.extraMatches||{}).length;
-   if(document.getElementById("publicGroups"))publicGroups.textContent=groups;
-   if(document.getElementById("publicUsers"))publicUsers.textContent=users;
-   if(document.getElementById("publicMatches"))publicMatches.textContent=defaultMatches.length+extra;
-  });
- }catch(e){console.warn(e)}
-}
+async function init(){const{initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");const{getDatabase,ref,onValue,set,remove,get}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");const{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");window.fb={ref,onValue,set,remove,get,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}})}
 function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue(fb.ref(db,"/quiniela_colombia"),async snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};await ensureLoggedUserRecord();rebuild();switchMode();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')}
 async function ensureLoggedUserRecord(){if(!currentUser)return;const existing=state.users?.[currentUser.uid],email=(currentUser.email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(email);if(existing)return;await fb.set(fb.ref(db,`/quiniela_colombia/users/${currentUser.uid}`),{name:currentUser.displayName||currentUser.email,email:currentUser.email||"",group:initialAdmin?"Administradores":"Sin asignar",groups:initialAdmin?{Administradores:true}:{},active:initialAdmin?true:false,role:initialAdmin?"admin":"user",paid:false,updatedAt:Date.now()})}
 async function forceRefreshData(){const snap=await fb.get(fb.ref(db,"/quiniela_colombia"));state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();switchMode();renderAll()}
-function switchMode(){
- if(isAdmin()){
-  userMode.classList.add("hidden");
-  adminMode.classList.remove("hidden");
-  adminUserLabel.textContent=currentUser.displayName||currentUser.email;
-  if(document.getElementById("asideExportBtn"))asideExportBtn.classList.remove("hidden");
- }else{
-  adminMode.classList.add("hidden");
-  userMode.classList.remove("hidden");
-  currentUserLabel.textContent=currentUser.displayName||currentUser.email;
-  if(document.getElementById("asideExportBtn"))asideExportBtn.classList.add("hidden");
- }
-}
+function switchMode(){if(isAdmin()){userMode.classList.add("hidden");adminMode.classList.remove("hidden");adminUserLabel.textContent=currentUser.displayName||currentUser.email}else{adminMode.classList.add("hidden");userMode.classList.remove("hidden");currentUserLabel.textContent=currentUser.displayName||currentUser.email}}
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
-let authMode="login";
-window.setAuthMode=(mode)=>{
- authMode=mode;
- const reg=mode==="register";
- loginTabBtn.classList.toggle("active",!reg);
- registerTabBtn.classList.toggle("active",reg);
- nameBlock.classList.toggle("hidden",!reg);
- confirmBlock.classList.toggle("hidden",!reg);
- authTitle.textContent=reg?"Crear cuenta":"Iniciar sesión";
- authSubtitle.textContent=reg?"Crea tu usuario. El admin te asignará grupo.":"Entra con tu correo y contraseña.";
- authMainBtn.textContent=reg?"Crear cuenta":"Ingresar";
- authMainBtn.onclick=reg?registerUser:login;
- password.setAttribute("autocomplete",reg?"new-password":"current-password");
+window.showRegister=()=>{
+ registerFields.classList.remove("hidden");
+ loginBtn.classList.add("hidden");
+ showRegisterBtn.classList.add("hidden");
+ registerBtn.classList.remove("hidden");
+ cancelRegisterBtn.classList.remove("hidden");
+ authMsg("");
+}
+window.showLogin=()=>{
+ registerFields.classList.add("hidden");
+ loginBtn.classList.remove("hidden");
+ showRegisterBtn.classList.remove("hidden");
+ registerBtn.classList.add("hidden");
+ cancelRegisterBtn.classList.add("hidden");
+ authMsg("");
 }
 window.togglePassword=()=>{
  const p=document.getElementById("password");
  p.type=p.type==="password"?"text":"password";
 }
 window.registerUser=async()=>{let name=txt(displayName.value),email=document.getElementById("email").value.trim(),pass=password.value;if(name.length<2)return authMsg("Nombre inválido","bad");if(!email.includes("@"))return authMsg("Correo inválido","bad");if(pass.length<6)return authMsg("Contraseña mínimo 6 caracteres","bad");if(document.getElementById("confirmPassword")&&confirmPassword.value!==pass)return authMsg("Las contraseñas no coinciden","bad");try{let c=await fb.createUserWithEmailAndPassword(auth,email,pass);await fb.updateProfile(c.user,{displayName:name});authMsg("Usuario creado ✅")}catch(e){authMsg(authError(e),"bad")}}
-window.login=async()=>{let email=document.getElementById("email").value.trim(),pass=password.value;if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");try{await fb.signInWithEmailAndPassword(auth,email,pass);authMsg("Ingreso correcto ✅")}catch(e){authMsg(authError(e),"bad")}}
+window.login=async()=>{
+ let email=document.getElementById("email").value.trim(),pass=password.value;
+ if(!email||!pass)return authMsg("Escribe correo y contraseña","bad");
+ try{
+   await fb.signInWithEmailAndPassword(auth,email,pass);
+   authMsg("Ingreso correcto ✅");
+ }catch(e){authMsg(authError(e),"bad")}
+}
 window.resetPassword=async()=>{let email=document.getElementById("email").value.trim();if(!email.includes("@"))return authMsg("Escribe tu correo válido primero.","bad");try{await fb.sendPasswordResetEmail(auth,email);authMsg("Correo de recuperación enviado ✅")}catch(e){authMsg(authError(e),"bad")}}
 window.logout=()=>fb.signOut(auth);
 function authError(e){let c=e.code||"";if(c.includes("email-already-in-use"))return"Correo ya registrado.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Correo o contraseña incorrectos.";if(c.includes("configuration-not-found"))return"Activa Authentication > Email/Password en Firebase.";return e.message||"Error"}
@@ -585,50 +315,44 @@ function renderLeaderboard(){let entries=isAdmin()?adminRankingEntries():visible
 function renderMine(){let d=userPredictions(currentUser?.uid,currentUserGroup());myPredictions.innerHTML=d?visibleMatches().map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Grupo: ${esc(currentUserGroup())} · Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
 function renderHistory(){let players=isAdmin()?adminRankingEntries():visiblePlayerEntries(),g=isAdmin()?selectedAdminRankingGroup:currentUserGroup();historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{},groups=isAdmin()&&g==="Todos"?userGroups(u).filter(x=>x!=="Sin asignar"):[g];return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(groups.join(", ")||"Sin asignar")}</span></h3>${groups.map(gr=>`<div class="notice"><b>${esc(gr)}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,gr)[m.id],r=state.results?.[m.id];return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")).join("")}</section>`}).join(""):"Sin marcadores."}
 
-function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=["Sin asignar",...validGroupNames()];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
-let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" data-group="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr><td data-label="Usuario"><b>${esc(u.name||"Usuario")}</b><br><span class="small">${esc(u.email||"")}</span></td><td data-label="Grupos"><div class="groupChips">${checks}</div></td><td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td><td data-label="Pago"><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td><td data-label="Estado">${u.active===false?"Pendiente":"Activo"}</td><td data-label="Acción"><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button><button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td></tr>`}).join("");
+function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
+let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" data-group="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr><td data-label="Usuario"><b>${esc(u.name||"Usuario")}</b><br><span class="small">${esc(u.email||"")}</span></td><td data-label="Grupos"><div class="groupChips">${checks}</div></td><td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td><td data-label="Pago"><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td><td data-label="Estado">${u.active===false?"Pendiente":"Activo"}</td><td data-label="Acción"><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button>${hasLegacyPredictions(uid)?`<button class="secondary miniBtn" onclick="migrateLegacyPredictions('${uid}')">Migrar antiguos</button>`:""}<button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td></tr>`}).join("");
 adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><p class="small">Si un usuario tiene rol admin, sus pronósticos siguen contando. El rol solo agrega permisos de gestión.</p><button class="secondary" onclick="activateAllUsers()">Activar todos</button> <button class="secondary" onclick="assignGroupToAll()">Asignar grupo a todos</button><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Grupos</th><th>Rol</th><th>Pago</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${userRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div>`;
 let groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name)}"></td><td><input id="gval-${gid}" type="number" value="${Number(g.value||0)}"></td><td>${Object.values(state.users||{}).filter(u=>userGroups(u).includes(g.name)).length}</td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
-adminGroupsView.innerHTML=`<h2>🏆 Grupos de la polla</h2><p class="small">Cada grupo tiene su propio valor, bolsa y clasificación.</p><button class="secondary" onclick="cleanOrphanGroups()">Limpiar grupos borrados de usuarios</button><div class="match"><label>Nuevo grupo</label><input id="newGroupName"><label>Valor</label><input id="newGroupValue" type="number"><button onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div>`;
-adminMatchesView.innerHTML=`<h2>⚽ Partidos</h2><form class="match" onsubmit="return false"><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Cierre</label><input id="newLock" type="datetime-local"><button onclick="addMatch()">Agregar partido</button></form>`+matches.map(m=>`<div class="match"><b>${esc(m.home)} vs ${esc(m.away)}</b><br>${isLocked(m)?"🔴 Cerrado":(m.forceOpen?"🟢 Reabierto por admin":"🟢 Abierto")}<br><button class="miniBtn" onclick="toggleMatchClosed('${esc(m.id)}')">${isLocked(m)?"Reabrir":"Cerrar"}</button></div>`).join("");
+adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><div class="match"><label>Nuevo grupo</label><input id="newGroupName"><label>Valor</label><input id="newGroupValue" type="number"><button onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div>`;
+adminMatchesView.innerHTML=`<h2>⚽ Partidos</h2><form class="match" onsubmit="return false"><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Cierre</label><input id="newLock" type="datetime-local"><button onclick="addMatch()">Agregar partido</button></form>`+matches.map(m=>`<div class="match"><b>${esc(m.home)} vs ${esc(m.away)}</b><br>${isLocked(m)?"🔴 Cerrado":"🟢 Abierto"}<br><button class="miniBtn" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button></div>`).join("");
 adminResultsView.innerHTML=`<h2>📈 Resultados</h2>`+matches.map(m=>{let r=state.results?.[m.id]||{};return`<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado")}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado")}<label>${esc(m.away)}</label></div><button onclick="saveResult('${esc(m.id)}')">Guardar</button></form>`}).join("")}
 
-window.saveUserAdmin=async uid=>{const valid=validGroupNames();const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group).filter(g=>valid.includes(g));await setUserGroups(uid,selected.length?selected:["Sin asignar"]);let roleEl=document.getElementById("role-"+uid);if(roleEl)await save(`users/${uid}/role`,roleEl.value);let paidEl=document.getElementById("paid-"+uid);if(paidEl)await save(`users/${uid}/paid`,paidEl.value==="true");msg("Usuario actualizado ✅");await forceRefreshData()}
+window.migrateLegacyPredictions=async uid=>{
+ const u=state.users?.[uid]||{};
+ const groups=userGroups(u).filter(g=>g!=="Sin asignar");
+ if(!groups.length)return msg("Primero asigna el usuario a un grupo","bad");
+ let group=groups[0];
+ if(groups.length>1){
+   const chosen=prompt("¿A qué grupo quieres mover los pronósticos antiguos?\n"+groups.join("\n"),groups[0]);
+   if(!chosen||!groups.includes(chosen))return msg("Grupo no válido","bad");
+   group=chosen;
+ }
+ const legacy=legacyDirectPredictions(uid);
+ const ids=Object.keys(legacy);
+ if(!ids.length)return msg("No hay pronósticos antiguos para migrar","bad");
+ if(!confirm(`Se migrarán ${ids.length} pronósticos antiguos al grupo "${group}". ¿Continuar?`))return;
+ for(const id of ids){
+   await save(predictionPath(uid,group,id),{...legacy[id],group,updatedAt:legacy[id].updatedAt||Date.now(),migratedFromLegacy:true});
+ }
+ msg("Pronósticos antiguos migrados ✅");
+ await forceRefreshData();
+}
+window.saveUserAdmin=async uid=>{const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group);await setUserGroups(uid,selected.length?selected:["Sin asignar"]);let roleEl=document.getElementById("role-"+uid);if(roleEl)await save(`users/${uid}/role`,roleEl.value);let paidEl=document.getElementById("paid-"+uid);if(paidEl)await save(`users/${uid}/paid`,paidEl.value==="true");msg("Usuario actualizado ✅");await forceRefreshData()}
 window.activateAllUsers=async()=>{if(!confirm("¿Activar todos los usuarios pendientes?"))return;for(const uid of Object.keys(state.users||{}))await save(`users/${uid}/active`,true);msg("Todos activados ✅");await forceRefreshData()}
 window.assignGroupToAll=async()=>{const groups=Object.values(state.groups||{}).map(g=>g.name).filter(Boolean);if(!groups.length)return msg("Primero crea un grupo","bad");const group=prompt("Nombre exacto del grupo:\\n"+groups.join("\\n"));if(!group||!groups.includes(group))return msg("Grupo no válido","bad");for(const uid of Object.keys(state.users||{})){const current=userGroups(state.users[uid]).filter(g=>g!=="Sin asignar");await setUserGroups(uid,[...current,group])}msg("Grupo asignado a todos ✅");await forceRefreshData()}
-window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅");if(typeof forceRefreshData==="function")await forceRefreshData();await forceRefreshData()}
-window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅");if(typeof forceRefreshData==="function")await forceRefreshData();await forceRefreshData()}
-window.deleteGroup=async gid=>{
- if(confirm("¿Eliminar grupo?")){
-  const groupName=state.groups?.[gid]?.name;
-  await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));
-  if(groupName){
-   for(const [uid,u] of Object.entries(state.users||{})){
-    const remaining=userGroups(u).filter(g=>g!==groupName&&validGroupNames().includes(g));
-    await setUserGroups(uid,remaining.length?remaining:["Sin asignar"]);
-   }
-  }
-  await forceRefreshData();
- }
-}
+window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅");await forceRefreshData()}
+window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅");await forceRefreshData()}
+window.deleteGroup=async gid=>{if(confirm("¿Eliminar grupo?")){await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));await forceRefreshData()}}
 window.toggleUserActive=async uid=>{let a=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!a);msg(a?"Desactivado":"Activado ✅");await forceRefreshData()}
 window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eliminarte","bad");if(confirm("¿Eliminar usuario y pronósticos?")){await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));msg("Usuario eliminado ✅");await forceRefreshData()}}
 window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim(),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa datos","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅");await forceRefreshData()}
-window.toggleMatchClosed=async id=>{
- let m=matches.find(x=>x.id===id);
- if(!m)return msg("Partido no encontrado","bad");
- const basePath=state.extraMatches?.[id]?`extraMatches/${id}`:`baseMatchesStatus/${id}`;
- if(isLocked(m)){
-  await save(`${basePath}/closed`,false);
-  await save(`${basePath}/forceOpen`,true);
-  msg("Partido reabierto ✅");
- }else{
-  await save(`${basePath}/closed`,true);
-  await save(`${basePath}/forceOpen`,false);
-  msg("Partido cerrado 🔒");
- }
- await forceRefreshData();
-}
+window.toggleMatchClosed=async id=>{let m=matches.find(x=>x.id===id);await save((state.extraMatches?.[id]?`extraMatches/${id}/closed`:`baseMatchesStatus/${id}/closed`),!m.closed);await forceRefreshData()}
 window.saveResult=async id=>{let h=document.getElementById(`r-${id}-h`).value,a=document.getElementById(`r-${id}-a`).value,err=validScore(h)||validScore(a);if(err)return msg(err,"bad");await save(`results/${id}`,{home:+h,away:+a,updatedAt:Date.now()});msg("Resultado guardado ✅");await forceRefreshData()}
 window.exportExcel=()=>{let rows=[["Grupo","Participante","Correo","Pagó","Partido","Pred Local","Pred Visit","Res Local","Res Visit","Puntos"]];const entries=isAdmin()?Object.entries(state.users||{}).map(([uid])=>[uid,state.predictions?.[uid]||{}]):visiblePlayerEntries();entries.forEach(([uid,d])=>{let u=state.users?.[uid]||{},groups=isAdmin()?userGroups(u).filter(g=>g!=="Sin asignar"):[currentUserGroup()];if(!groups.length)groups=["Sin asignar"];groups.forEach(g=>visibleMatches().forEach(m=>{let p=userPredictions(uid,g)[m.id]||{},r=state.results?.[m.id]||{};rows.push([g,u.name||"",u.email||"",u.paid===true?"Sí":"No",`${m.home} vs ${m.away}`,p.home??"",p.away??"",r.home??"",r.away??"",pts(p,r)])}))});let table=`<html><meta charset="utf-8"><table border=1>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;let b=new Blob([table],{type:"application/vnd.ms-excel"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="polla_colombia.xls";a.click()}
 
