@@ -135,51 +135,174 @@ a{color:var(--yellow);font-weight:800}
   .loginActions{grid-template-columns:1fr}
 }
 
+
+.posterLogin{
+  max-width:430px!important;
+  min-height:860px;
+  margin:0 auto 36px!important;
+  padding:0!important;
+  border-radius:30px!important;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 30px 80px #000c;
+  background:
+    linear-gradient(180deg,rgba(0,10,25,.10),rgba(0,10,25,.18)),
+    url("./login-bg.png") center/cover no-repeat;
+}
+.posterOverlay{
+  min-height:860px;
+  padding:42px 32px 34px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background:linear-gradient(180deg,rgba(0,9,23,.05),rgba(0,9,23,.20) 42%,rgba(0,9,23,.10));
+}
+.posterTitle{
+  text-align:center;
+  margin-bottom:26px;
+  text-shadow:0 8px 18px #000;
+}
+.posterCup{
+  font-size:44px;
+  margin-bottom:6px;
+}
+.posterTitle h2{
+  margin:0;
+  font-size:34px;
+  line-height:1;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+.posterTitle p{
+  color:#ffd43b;
+  font-weight:900;
+  margin:10px 0 0;
+  text-transform:uppercase;
+  font-size:14px;
+}
+.posterForm{
+  background:rgba(0,15,31,.76);
+  border:1px solid rgba(255,212,59,.62);
+  box-shadow:0 0 32px rgba(255,212,59,.28), inset 0 1px 0 rgba(255,255,255,.10);
+  backdrop-filter:blur(8px);
+  border-radius:28px;
+  padding:24px;
+}
+.posterForm label{
+  color:#fff;
+  font-weight:850;
+  font-size:16px;
+  margin-top:14px;
+}
+.posterForm input{
+  height:56px;
+  border-radius:17px;
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(0,9,23,.82);
+  color:white;
+  font-size:17px;
+}
+.posterPassword{
+  position:relative;
+}
+.posterPassword input{
+  padding-right:88px;
+}
+.posterPassword button{
+  position:absolute;
+  right:9px;
+  top:9px;
+  padding:9px 10px;
+  border-radius:13px;
+  font-size:13px;
+  color:#ffd43b;
+}
+.posterMainBtn,.posterSecondaryBtn{
+  width:100%;
+  height:56px;
+  margin-top:14px;
+  border-radius:17px;
+  font-size:18px;
+}
+.posterMainBtn{
+  background:linear-gradient(90deg,#ffd43b,#ffbd00);
+  box-shadow:0 15px 34px rgba(255,212,59,.28);
+}
+.posterSecondaryBtn{
+  background:rgba(0,9,23,.78)!important;
+  color:#fff!important;
+  border:1px solid #00a2ff!important;
+}
+.posterRecover{
+  display:block;
+  text-align:center;
+  width:fit-content;
+  margin:18px auto 0;
+  color:#ffd43b;
+  text-decoration:none;
+  font-weight:900;
+  padding:10px 14px;
+  border:1px solid rgba(255,212,59,.45);
+  border-radius:14px;
+  background:rgba(0,0,0,.25);
+}
+.posterSafe{
+  margin-top:14px;
+  text-align:center;
+  color:#fff;
+  font-weight:700;
+}
+@media(max-width:520px){
+  .posterLogin{max-width:100%!important;min-height:100svh;border-radius:0!important;margin:0!important}
+  .posterOverlay{min-height:100svh;padding:28px 22px}
+  .posterTitle h2{font-size:30px}
+}
+
 </style>
 </head>
 <body>
 <header><h1>Polla Selección Colombia</h1><p>Cada participante ve sus grupos, ranking y pronósticos por grupo.</p></header>
 <main class="wrap">
-<section id="authCard" class="card simpleLogin">
-  <div class="loginHeader">
-    <div class="loginBall">⚽</div>
-    <h2>Polla Selección Colombia</h2>
-    <p>Ingresa para registrar tus marcadores y ver tu ranking.</p>
-  </div>
+<section id="authCard" class="posterLogin">
+  <div class="posterOverlay">
+    <div class="posterTitle">
+      <div class="posterCup">🏆</div>
+      <h2>Polla Selección Colombia</h2>
+      <p>Registra tus marcadores y compite por el ranking</p>
+    </div>
 
-  <div id="authMsg" class="small warn"></div>
+    <div class="posterForm">
+      <div id="authMsg" class="small warn"></div>
 
-  <label>Correo</label>
-  <input id="email" type="email" autocomplete="email" placeholder="correo@ejemplo.com">
+      <label>✉️ Correo</label>
+      <input id="email" type="email" autocomplete="email" placeholder="correo@ejemplo.com">
 
-  <label>Contraseña</label>
-  <div class="passwordWrapSimple">
-    <input id="password" type="password" minlength="6" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
-    <button type="button" class="secondary" onclick="togglePassword()">Ver</button>
-  </div>
+      <label>🔒 Contraseña</label>
+      <div class="posterPassword">
+        <input id="password" type="password" minlength="6" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+        <button type="button" class="secondary" onclick="togglePassword()">👁 Ver</button>
+      </div>
 
-  <div id="registerFields" class="hidden">
-    <label>Nombre visible</label>
-    <input id="displayName" maxlength="35" autocomplete="name" placeholder="Ej: Juan Sebastián">
+      <div id="registerFields" class="hidden">
+        <label>👤 Nombre visible</label>
+        <input id="displayName" maxlength="35" autocomplete="name" placeholder="Ej: Juan Sebastián">
 
-    <label>Confirmar contraseña</label>
-    <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Repite la contraseña">
-  </div>
+        <label>✅ Confirmar contraseña</label>
+        <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Repite la contraseña">
+      </div>
 
-  <div class="loginActions">
-    <button id="loginBtn" onclick="login()">Ingresar</button>
-    <button id="showRegisterBtn" class="secondary" onclick="showRegister()">Crear cuenta</button>
-    <button id="registerBtn" class="hidden" onclick="registerUser()">Registrarme</button>
-    <button id="cancelRegisterBtn" class="secondary hidden" onclick="showLogin()">Cancelar</button>
-  </div>
+      <button id="loginBtn" class="posterMainBtn" onclick="login()">Ingresar</button>
+      <button id="showRegisterBtn" class="posterSecondaryBtn" onclick="showRegister()">Crear cuenta</button>
+      <button id="registerBtn" class="posterMainBtn hidden" onclick="registerUser()">Registrarme</button>
+      <button id="cancelRegisterBtn" class="posterSecondaryBtn hidden" onclick="showLogin()">Cancelar</button>
 
-  <div class="loginFooter">
-    <a href="#" onclick="resetPassword();return false;">🔑 Recuperar contraseña</a>
-    <span class="small">Firebase protege tu clave.</span>
+      <a class="posterRecover" href="#" onclick="resetPassword();return false;">🔑 Recuperar contraseña</a>
+      <div class="posterSafe">🛡️ Firebase protege tu clave.</div>
+    </div>
   </div>
 </section>
 
-<section id="app"<section id="app" class="grid hidden">
+<section id="app" class="grid hidden">
 <article class="card">
 <div id="userMode">
 <nav class="tabs"><button id="tabPredict">Predicción</button><button class="secondary" id="tabMine">Mis marcadores</button><button class="secondary" id="tabHistory">Historial</button><button class="secondary" id="tabRules">Reglas</button></nav>
@@ -198,7 +321,7 @@ a{color:var(--yellow);font-weight:800}
 </div>
 </article>
 
-<aside class="card"><h2>🏆 Tabla</h2><div id="leaderboard" class="small"></div><div id="summaryStats"></div><div class="notice">Solo puedes ver los participantes del grupo seleccionado.</div><div id="connectionStatus" class="small warn"></div><button class="secondary" onclick="exportExcel()">📊 Exportar Excel</button></aside>
+<aside class="card"><h2>🏆 Tabla</h2><div id="leaderboard" class="small"></div><div id="summaryStats"></div><div class="notice">Solo puedes ver los participantes del grupo seleccionado.</div><div id="connectionStatus" class="small warn"></div><button id="asideExportBtn" class="secondary hidden" onclick="exportExcel()">📊 Exportar Excel</button></aside>
 </section>
 </main>
 
@@ -271,7 +394,19 @@ async function init(){const{initializeApp}=await import("https://www.gstatic.com
 function listenData(){if(typeof unsubscribeData==="function")unsubscribeData();unsubscribeData=fb.onValue(fb.ref(db,"/quiniela_colombia"),async snap=>{state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};await ensureLoggedUserRecord();rebuild();switchMode();renderAll();connectionStatus.innerHTML='<span class="ok">✅ Conectado</span>'},e=>connectionStatus.innerHTML='<span class="bad">❌ '+esc(e.message)+'</span>')}
 async function ensureLoggedUserRecord(){if(!currentUser)return;const existing=state.users?.[currentUser.uid],email=(currentUser.email||"").toLowerCase(),initialAdmin=ADMIN_EMAILS.includes(email);if(existing)return;await fb.set(fb.ref(db,`/quiniela_colombia/users/${currentUser.uid}`),{name:currentUser.displayName||currentUser.email,email:currentUser.email||"",group:initialAdmin?"Administradores":"Sin asignar",groups:initialAdmin?{Administradores:true}:{},active:initialAdmin?true:false,role:initialAdmin?"admin":"user",paid:false,updatedAt:Date.now()})}
 async function forceRefreshData(){const snap=await fb.get(fb.ref(db,"/quiniela_colombia"));state=snap.val()||{predictions:{},results:{},extraMatches:{},baseMatchesStatus:{},users:{},groups:{}};rebuild();switchMode();renderAll()}
-function switchMode(){if(isAdmin()){userMode.classList.add("hidden");adminMode.classList.remove("hidden");adminUserLabel.textContent=currentUser.displayName||currentUser.email}else{adminMode.classList.add("hidden");userMode.classList.remove("hidden");currentUserLabel.textContent=currentUser.displayName||currentUser.email}}
+function switchMode(){
+ if(isAdmin()){
+  userMode.classList.add("hidden");
+  adminMode.classList.remove("hidden");
+  adminUserLabel.textContent=currentUser.displayName||currentUser.email;
+  if(document.getElementById("asideExportBtn"))asideExportBtn.classList.remove("hidden");
+ }else{
+  adminMode.classList.add("hidden");
+  userMode.classList.remove("hidden");
+  currentUserLabel.textContent=currentUser.displayName||currentUser.email;
+  if(document.getElementById("asideExportBtn"))asideExportBtn.classList.add("hidden");
+ }
+}
 async function save(path,val){if(!currentUser)throw Error("Debes iniciar sesión");await fb.set(fb.ref(db,"/quiniela_colombia/"+path),val)}
 window.showRegister=()=>{
  registerFields.classList.remove("hidden");
