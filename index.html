@@ -254,6 +254,88 @@ header p{
  .heroList{grid-template-columns:1fr!important}
 }
 
+
+/* Login limpio y profesional */
+#authCard{
+ max-width:1180px!important;
+ padding:22px!important;
+}
+.authShell{
+ display:grid!important;
+ grid-template-columns:minmax(360px, .95fr) minmax(420px, 1.05fr)!important;
+ gap:22px!important;
+ align-items:stretch!important;
+}
+.heroBox{
+ min-height:520px!important;
+ padding:34px!important;
+ justify-content:center!important;
+}
+.heroList{
+ display:grid!important;
+ grid-template-columns:1fr!important;
+ gap:14px!important;
+ margin-top:28px!important;
+}
+.heroItem{
+ min-height:auto!important;
+ padding:18px 18px!important;
+ display:grid;
+ grid-template-columns:auto 1fr;
+ gap:12px;
+ align-items:center;
+}
+.heroItem:nth-child(4){display:none!important}
+.heroItem b{font-size:23px!important}
+.heroItem span{font-size:16px}
+.featureText{
+ margin-top:22px!important;
+ font-size:16px;
+}
+.authBox{
+ padding:34px!important;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+}
+.authSwitch{
+ margin-bottom:26px!important;
+}
+.authBox h2{
+ font-size:34px!important;
+ margin:0 0 8px!important;
+}
+.authBox input{
+ height:56px;
+ font-size:17px;
+}
+.fullBtn{
+ height:56px;
+ font-size:17px;
+}
+.authFooter{
+ margin-top:22px!important;
+}
+.authFooter a{
+ text-decoration:none;
+}
+.heroBox h2{
+ max-width:520px;
+}
+.heroBox p{
+ max-width:560px;
+}
+@media(max-width:980px){
+ .authShell{grid-template-columns:1fr!important}
+ .heroBox{min-height:auto!important}
+}
+@media(max-width:620px){
+ #authCard{padding:14px!important}
+ .heroBox,.authBox{padding:22px!important}
+ .heroBox h2,.authBox h2{font-size:28px!important}
+ .heroItem{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -266,12 +348,12 @@ header p{
       <div class="worldCupRibbon">🌍 Inspirado en ambiente mundialista</div>
       <div class="heroLogo">⚽</div>
       <h2>Polla Mundial 2026</h2>
-      <p>Vive la emoción del torneo: crea grupos, personaliza partidos, registra marcadores y compite en rankings independientes.</p>
+      <p>Organiza tu polla, crea grupos privados, agrega partidos personalizados y compite por el mejor marcador.</p>
       <div class="heroList">
-        <div class="heroItem"><b>🏆 Ranking</b><span class="small">Tabla privada por cada grupo.</span></div>
-        <div class="heroItem"><b>👥 Multigrupo</b><span class="small">Cada jugador puede participar en varias pollas.</span></div>
-        <div class="heroItem"><b>💰 Bolsa</b><span class="small">Control de valor, pago y bolsa por grupo.</span></div>
-        <div class="heroItem"><b>📊 Excel</b><span class="small">Reportes y resultados para administrar fácil.</span></div>
+        <div class="heroItem"><b>🏆 Ranking</b><span class="small">Clasificación independiente para cada polla.</span></div>
+        <div class="heroItem"><b>👥 Multigrupo</b><span class="small">Participa en familia, oficina o amigos con el mismo usuario.</span></div>
+        <div class="heroItem"><b>💰 Bolsa</b><span class="small">Controla valor, pago y bolsa de cada grupo.</span></div>
+        
       </div>
     </div>
 <div class="statMini"><b id="publicUsers">-</b><span class="small">Usuarios</span></div>
