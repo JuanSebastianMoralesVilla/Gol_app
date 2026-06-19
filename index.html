@@ -224,36 +224,9 @@ function msg(m,t="ok"){const h=`<span class="${t}">${esc(m)}</span>`;let f=docum
 function isAdmin(){return currentUser&&(ADMIN_EMAILS.includes((currentUser.email||"").toLowerCase())||state.users?.[currentUser.uid]?.role==="admin")}
 function userGroups(u){if(!u)return[];const set=new Set();if(u.groups&&typeof u.groups==="object")Object.keys(u.groups).forEach(g=>{if(u.groups[g]===true&&g)set.add(g)});if(u.group&&u.group!=="Sin asignar")set.add(u.group);if(!set.size)set.add("Sin asignar");return[...set]}
 async function setUserGroups(uid,arr){const clean=[...new Set(arr.filter(Boolean))];const obj={};clean.forEach(g=>obj[g]=true);await save(`users/${uid}/groups`,obj);await save(`users/${uid}/group`,clean[0]||"Sin asignar")}
-function currentUserGroups(){
- const valid=validGroupNames();
- const groups=userGroups(state.users?.[currentUser?.uid]).filter(g=>valid.includes(g));
- return groups.length?groups:["Sin asignar"];
-}
 function currentUserGroups(){return userGroups(state.users?.[currentUser?.uid])}
 function currentUserGroup(){const groups=currentUserGroups().filter(g=>g!=="Sin asignar");const effective=groups.length?groups:["Sin asignar"];if(selectedUserGroup&&effective.includes(selectedUserGroup))return selectedUserGroup;selectedUserGroup=effective[0];localStorage.setItem("selectedUserGroup",selectedUserGroup);return selectedUserGroup}
-function validGroupNames(){
- return [...new Set(Object.values(state.groups||{}).map(g=>g.name).filter(Boolean))].sort();
-}
-async function cleanOrphanGroups(){
- const valid=validGroupNames();
- for(const [uid,u] of Object.entries(state.users||{})){
-   const current=userGroups(u).filter(g=>valid.includes(g));
-   const finalGroups=current.length?current:["Sin asignar"];
-   const old=userGroups(u).sort().join("|");
-   const neu=finalGroups.sort().join("|");
-   if(old!==neu){
-     const obj={};
-     finalGroups.filter(g=>g!=="Sin asignar").forEach(g=>obj[g]=true);
-     await save(`users/${uid}/groups`,obj);
-     await save(`users/${uid}/group`,finalGroups[0]||"Sin asignar");
-   }
- }
- msg("Grupos borrados limpiados ✅");
- await forceRefreshData();
-}
-function allGroupNames(){
- return [...new Set([...validGroupNames(),"Sin asignar"])].filter(Boolean).sort((a,b)=>a==="Sin asignar"?1:b==="Sin asignar"?-1:a.localeCompare(b));
-}
+function allGroupNames(){return[...new Set([...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))].sort()}
 function visiblePlayerEntries(){const users=state.users||{},pred=state.predictions||{};const uids=new Set([...Object.keys(users),...Object.keys(pred)]);if(isAdmin())return[...uids].map(uid=>[uid,pred[uid]||{}]);const g=currentUserGroup();return[...uids].filter(uid=>userGroups(users[uid]).includes(g)).map(uid=>[uid,pred[uid]||{}])}
 function adminRankingEntries(){const users=state.users||{},pred=state.predictions||{};const uids=new Set([...Object.keys(users),...Object.keys(pred)]);if(selectedAdminRankingGroup==="Todos")return[...uids].map(uid=>[uid,pred[uid]||{}]);return[...uids].filter(uid=>userGroups(users[uid]).includes(selectedAdminRankingGroup)).map(uid=>[uid,pred[uid]||{}])}
 function formatMoney(n){return Number(n||0).toLocaleString("es-CO")}
@@ -291,7 +264,7 @@ function teamNamesForFilter(){const names=new Set(["Todos"]);matches.forEach(m=>
 function visibleMatches(){return selectedTeamFilter==="Todos"?matches:matches.filter(m=>m.home===selectedTeamFilter||m.away===selectedTeamFilter)}
 function renderUserFilters(){const groups=currentUserGroups().filter(g=>g!=="Sin asignar"),effective=groups.length?groups:["Sin asignar"];const ghtml=`<div class="filterBox"><label>Grupo para pronosticar</label><select onchange="changeActiveGroup(this.value)">${effective.map(g=>`<option value="${esc(g)}" ${currentUserGroup()===g?"selected":""}>${esc(g)}</option>`).join("")}</select><p class="small">El marcador se guarda independiente para el grupo seleccionado.</p></div>`;const teams=teamNamesForFilter();const thtml=`<div class="filterBox"><label>Filtrar partidos</label><select onchange="selectedTeamFilter=this.value;localStorage.setItem('selectedTeamFilter',selectedTeamFilter);renderAll();">${teams.map(t=>`<option value="${esc(t)}" ${selectedTeamFilter===t?"selected":""}>${t==="Todos"?"Todos los partidos":esc(t)}</option>`).join("")}</select></div>`;return ghtml+thtml}
 window.changeActiveGroup=g=>{selectedUserGroup=g;localStorage.setItem("selectedUserGroup",g);msg("Ahora estás pronosticando en: "+g);renderAll()}
-function renderAdminRankingFilter(){if(!isAdmin())return"";const groups=validGroupNames();if(selectedAdminRankingGroup!=="Todos"&&!groups.includes(selectedAdminRankingGroup)){selectedAdminRankingGroup="Todos";localStorage.setItem("selectedAdminRankingGroup","Todos");}return`<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`}
+function renderAdminRankingFilter(){if(!isAdmin())return"";const groups=allGroupNames();return`<div class="filterBox"><label>Filtrar clasificación admin</label><select onchange="changeAdminRankingGroup(this.value)"><option value="Todos" ${selectedAdminRankingGroup==="Todos"?"selected":""}>Todos los grupos</option>${groups.map(g=>`<option value="${esc(g)}" ${selectedAdminRankingGroup===g?"selected":""}>${esc(g)}</option>`).join("")}</select></div>`}
 window.changeAdminRankingGroup=g=>{selectedAdminRankingGroup=g;localStorage.setItem("selectedAdminRankingGroup",g);renderLeaderboard();renderAdmin();showAdminSection(selectedAdminView)}
 
 async function init(){const{initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js");const{getDatabase,ref,onValue,set,remove,get}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js");const{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,sendPasswordResetEmail}=await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");window.fb={ref,onValue,set,remove,get,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail};const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);onAuthStateChanged(auth,user=>{currentUser=user;if(user){authCard.classList.add("hidden");document.getElementById("app").classList.remove("hidden");listenData()}else{if(typeof unsubscribeData==="function")unsubscribeData();authCard.classList.remove("hidden");document.getElementById("app").classList.add("hidden")}})}
@@ -342,32 +315,40 @@ function renderLeaderboard(){let entries=isAdmin()?adminRankingEntries():visible
 function renderMine(){let d=userPredictions(currentUser?.uid,currentUserGroup());myPredictions.innerHTML=d?visibleMatches().map(m=>{let p=d[m.id],r=state.results?.[m.id];return`<div class="leader"><span>${esc(m.home)} vs ${esc(m.away)}<br><span class="small">Grupo: ${esc(currentUserGroup())} · Tu marcador: ${p?`${p.home}-${p.away}`:"sin registrar"} · Final: ${r?`${r.home}-${r.away}`:"pendiente"}</span></span><b>${pts(p,r)} pts</b></div>`}).join(""):"Aún no tienes marcadores."}
 function renderHistory(){let players=isAdmin()?adminRankingEntries():visiblePlayerEntries(),g=isAdmin()?selectedAdminRankingGroup:currentUserGroup();historyPanel.innerHTML=players.length?players.map(([uid,data])=>{let u=state.users?.[uid]||{},groups=isAdmin()&&g==="Todos"?userGroups(u).filter(x=>x!=="Sin asignar"):[g];return`<section class="match"><h3>👤 ${esc(u.name||data.name||"Usuario")} <span class="pill">${esc(groups.join(", ")||"Sin asignar")}</span></h3>${groups.map(gr=>`<div class="notice"><b>${esc(gr)}</b></div>`+visibleMatches().map(m=>{let p=userPredictions(uid,gr)[m.id],r=state.results?.[m.id];return`<div class="historyRow"><span><b>${esc(m.home)} vs ${esc(m.away)}</b><br><span class="small">Predicción: ${p?`${p.home}-${p.away}`:"Sin registrar"}</span></span><span class="pill">${pts(p,r)} pts</span></div>`}).join("")).join("")}</section>`}).join(""):"Sin marcadores."}
 
-function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=["Sin asignar",...validGroupNames()];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
+function renderAdmin(){if(!isAdmin())return;let totalUsers=Object.keys(state.users||{}).length,totalPred=Object.values(state.predictions||{}).reduce((s,p)=>s+matches.filter(m=>p[m.id]).length,0);let groups=[...new Set(["Sin asignar",...Object.values(state.groups||{}).map(g=>g.name),...Object.values(state.users||{}).flatMap(u=>userGroups(u))].filter(Boolean))];adminDashView.innerHTML=`<h2>📊 Dashboard</h2><div class="dashGrid"><div class="dashCard"><span class="icon">👥</span><b>${totalUsers}</b><br><span class="small">Usuarios</span></div><div class="dashCard"><span class="icon">✅</span><b>${Object.values(state.users||{}).filter(u=>u.paid===true).length}</b><br><span class="small">Pagados</span></div><div class="dashCard"><span class="icon">🏆</span><b>${groups.filter(g=>g!=="Sin asignar").length}</b><br><span class="small">Grupos</span></div><div class="dashCard"><span class="icon">⚽</span><b>${matches.length}</b><br><span class="small">Partidos</span></div></div>`;
 let userRows=Object.entries(state.users||{}).map(([uid,u])=>{let ug=userGroups(u),checks=groups.filter(g=>g!=="Sin asignar").map(g=>`<label class="groupChip"><input type="checkbox" class="usergroup-check" data-user="${esc(uid)}" data-group="${esc(g)}" ${ug.includes(g)?"checked":""}> ${esc(g)}</label>`).join("");if(!checks)checks='<span class="small">Primero crea grupos</span>';let roleOpts=`<option value="user" ${(u.role||"user")==="user"?"selected":""}>Usuario</option><option value="admin" ${u.role==="admin"?"selected":""}>Admin</option>`;return`<tr><td data-label="Usuario"><b>${esc(u.name||"Usuario")}</b><br><span class="small">${esc(u.email||"")}</span></td><td data-label="Grupos"><div class="groupChips">${checks}</div></td><td data-label="Rol"><select id="role-${uid}">${roleOpts}</select></td><td data-label="Pago"><select id="paid-${uid}"><option value="false" ${u.paid===true?"":"selected"}>No pagó</option><option value="true" ${u.paid===true?"selected":""}>Pagó</option></select><span class="payBadge ${u.paid===true?"payYes":"payNo"}">${u.paid===true?"Pagó":"No pagó"}</span></td><td data-label="Estado">${u.active===false?"Pendiente":"Activo"}</td><td data-label="Acción"><button class="miniBtn" onclick="saveUserAdmin('${uid}')">Guardar</button><button class="${u.active===false?"secondary":"danger"} miniBtn" onclick="toggleUserActive('${uid}')">${u.active===false?"Activar":"Desactivar"}</button><button class="danger miniBtn" onclick="deleteUser('${uid}')">Eliminar</button></td></tr>`}).join("");
 adminUsersView.innerHTML=`<h2>👥 Usuarios</h2><p class="small">Si un usuario tiene rol admin, sus pronósticos siguen contando. El rol solo agrega permisos de gestión.</p><button class="secondary" onclick="activateAllUsers()">Activar todos</button> <button class="secondary" onclick="assignGroupToAll()">Asignar grupo a todos</button><div class="tableWrap"><table class="adminTable"><thead><tr><th>Usuario</th><th>Grupos</th><th>Rol</th><th>Pago</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${userRows||"<tr><td colspan='6'>Sin usuarios</td></tr>"}</tbody></table></div>`;
 let groupRows=Object.entries(state.groups||{}).map(([gid,g])=>`<tr><td><input id="gname-${gid}" value="${esc(g.name)}"></td><td><input id="gval-${gid}" type="number" value="${Number(g.value||0)}"></td><td>${Object.values(state.users||{}).filter(u=>userGroups(u).includes(g.name)).length}</td><td><button class="miniBtn" onclick="updateGroup('${gid}')">Guardar</button><button class="danger miniBtn" onclick="deleteGroup('${gid}')">Eliminar</button></td></tr>`).join("");
-adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><p class="small">Si borraste un grupo, limpia sus referencias en usuarios.</p><button class="secondary" onclick="cleanOrphanGroups()">Limpiar grupos borrados</button><div class="match"><label>Nuevo grupo</label><input id="newGroupName"><label>Valor</label><input id="newGroupValue" type="number"><button onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div>`;
+adminGroupsView.innerHTML=`<h2>🏆 Grupos</h2><div class="match"><label>Nuevo grupo</label><input id="newGroupName"><label>Valor</label><input id="newGroupValue" type="number"><button onclick="addGroup()">Crear grupo</button></div><div class="tableWrap"><table class="groupTable"><thead><tr><th>Grupo</th><th>Valor</th><th>Usuarios</th><th>Acción</th></tr></thead><tbody>${groupRows||"<tr><td colspan='4'>Sin grupos</td></tr>"}</tbody></table></div>`;
 adminMatchesView.innerHTML=`<h2>⚽ Partidos</h2><form class="match" onsubmit="return false"><div class="two"><div><label>Local</label><input id="newHome"></div><div><label>Visitante</label><input id="newAway"></div></div><label>Fecha visible</label><input id="newDateText"><label>Cierre</label><input id="newLock" type="datetime-local"><button onclick="addMatch()">Agregar partido</button></form>`+matches.map(m=>`<div class="match"><b>${esc(m.home)} vs ${esc(m.away)}</b><br>${isLocked(m)?"🔴 Cerrado":"🟢 Abierto"}<br><button class="miniBtn" onclick="toggleMatchClosed('${esc(m.id)}')">${m.closed?"Reabrir":"Cerrar"}</button></div>`).join("");
 adminResultsView.innerHTML=`<h2>📈 Resultados</h2>`+matches.map(m=>{let r=state.results?.[m.id]||{};return`<form class="match" onsubmit="return false"><b>${esc(m.home)} vs ${esc(m.away)}</b><div class="scorebox"><label>${esc(m.home)}</label>${score("r-"+m.id+"-h",r.home,false,"Resultado")}<span>-</span>${score("r-"+m.id+"-a",r.away,false,"Resultado")}<label>${esc(m.away)}</label></div><button onclick="saveResult('${esc(m.id)}')">Guardar</button></form>`}).join("")}
 
-window.saveUserAdmin=async uid=>{const valid=validGroupNames();const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group).filter(g=>valid.includes(g));await setUserGroups(uid,selected.length?selected:["Sin asignar"]);let roleEl=document.getElementById("role-"+uid);if(roleEl)await save(`users/${uid}/role`,roleEl.value);let paidEl=document.getElementById("paid-"+uid);if(paidEl)await save(`users/${uid}/paid`,paidEl.value==="true");msg("Usuario actualizado ✅");await forceRefreshData()}
+window.migrateLegacyPredictions=async uid=>{
+ const u=state.users?.[uid]||{};
+ const groups=userGroups(u).filter(g=>g!=="Sin asignar");
+ if(!groups.length)return msg("Primero asigna el usuario a un grupo","bad");
+ let group=groups[0];
+ if(groups.length>1){
+   const chosen=prompt("¿A qué grupo quieres mover los pronósticos antiguos?\n"+groups.join("\n"),groups[0]);
+   if(!chosen||!groups.includes(chosen))return msg("Grupo no válido","bad");
+   group=chosen;
+ }
+ const legacy=legacyDirectPredictions(uid);
+ const ids=Object.keys(legacy);
+ if(!ids.length)return msg("No hay pronósticos antiguos para migrar","bad");
+ if(!confirm(`Se migrarán ${ids.length} pronósticos antiguos al grupo "${group}". ¿Continuar?`))return;
+ for(const id of ids){
+   await save(predictionPath(uid,group,id),{...legacy[id],group,updatedAt:legacy[id].updatedAt||Date.now(),migratedFromLegacy:true});
+ }
+ msg("Pronósticos antiguos migrados ✅");
+ await forceRefreshData();
+}
+window.saveUserAdmin=async uid=>{const selected=[...document.querySelectorAll(`.usergroup-check[data-user="${uid}"]:checked`)].map(x=>x.dataset.group);await setUserGroups(uid,selected.length?selected:["Sin asignar"]);let roleEl=document.getElementById("role-"+uid);if(roleEl)await save(`users/${uid}/role`,roleEl.value);let paidEl=document.getElementById("paid-"+uid);if(paidEl)await save(`users/${uid}/paid`,paidEl.value==="true");msg("Usuario actualizado ✅");await forceRefreshData()}
 window.activateAllUsers=async()=>{if(!confirm("¿Activar todos los usuarios pendientes?"))return;for(const uid of Object.keys(state.users||{}))await save(`users/${uid}/active`,true);msg("Todos activados ✅");await forceRefreshData()}
 window.assignGroupToAll=async()=>{const groups=Object.values(state.groups||{}).map(g=>g.name).filter(Boolean);if(!groups.length)return msg("Primero crea un grupo","bad");const group=prompt("Nombre exacto del grupo:\\n"+groups.join("\\n"));if(!group||!groups.includes(group))return msg("Grupo no válido","bad");for(const uid of Object.keys(state.users||{})){const current=userGroups(state.users[uid]).filter(g=>g!=="Sin asignar");await setUserGroups(uid,[...current,group])}msg("Grupo asignado a todos ✅");await forceRefreshData()}
 window.addGroup=async()=>{let name=txt(newGroupName.value),value=Number(newGroupValue.value||0);if(!name)return msg("Nombre inválido","bad");await save(`groups/${key(name).toUpperCase()}`,{name,value,createdAt:Date.now()});msg("Grupo creado ✅");await forceRefreshData()}
 window.updateGroup=async gid=>{await save(`groups/${gid}/name`,txt(document.getElementById("gname-"+gid).value));await save(`groups/${gid}/value`,Number(document.getElementById("gval-"+gid).value||0));msg("Grupo actualizado ✅");await forceRefreshData()}
-window.deleteGroup=async gid=>{
- if(confirm("¿Eliminar grupo?")){
-  const groupName=state.groups?.[gid]?.name;
-  await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));
-  if(groupName){
-   for(const [uid,u] of Object.entries(state.users||{})){
-    const remaining=userGroups(u).filter(g=>g!==groupName&&validGroupNames().includes(g));
-    await setUserGroups(uid,remaining.length?remaining:["Sin asignar"]);
-   }
-  }
-  await forceRefreshData();
- }
-}
+window.deleteGroup=async gid=>{if(confirm("¿Eliminar grupo?")){await fb.remove(fb.ref(db,"/quiniela_colombia/groups/"+gid));await forceRefreshData()}}
 window.toggleUserActive=async uid=>{let a=state.users?.[uid]?.active===true;await save(`users/${uid}/active`,!a);msg(a?"Desactivado":"Activado ✅");await forceRefreshData()}
 window.deleteUser=async uid=>{if(uid===currentUser.uid)return msg("No puedes eliminarte","bad");if(confirm("¿Eliminar usuario y pronósticos?")){await fb.remove(fb.ref(db,"/quiniela_colombia/users/"+uid));await fb.remove(fb.ref(db,"/quiniela_colombia/predictions/"+uid));msg("Usuario eliminado ✅");await forceRefreshData()}}
 window.addMatch=async()=>{let h=txt(newHome.value),a=txt(newAway.value),date=String(newDateText.value).trim(),li=newLock.value;if(!h||!a||!date||!li)return msg("Completa datos","bad");let lock=new Date(li).toISOString(),id=matchId(h,a,lock);await save(`extraMatches/${id}`,{id,home:h,away:a,homeFlag:flagFor(h),awayFlag:flagFor(a),competition:"Siguiente ronda",date,lock,closed:false});msg("Partido agregado ✅");await forceRefreshData()}
